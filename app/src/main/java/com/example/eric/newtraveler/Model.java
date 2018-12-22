@@ -56,7 +56,7 @@ public class Model {
         mBackgroundHandler.post(runHandleAllCounty);
     }
 
-    private Runnable runHandleAllCounty = new Runnable () {
+    private Runnable runHandleAllCounty = new Runnable() {
 
         public void run() {
 
@@ -88,7 +88,7 @@ public class Model {
                     bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                     String line;
-                    for (;(line = bufferedReader.readLine()) != null;){
+                    for (; (line = bufferedReader.readLine()) != null; ) {
                         mResult = line;
                         Log.d(MainActivity.TAG, "Query Result: " + mResult);
                     }

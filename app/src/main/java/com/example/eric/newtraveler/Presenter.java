@@ -21,7 +21,7 @@ public class Presenter implements IPresenter {
 
     @Override
     public void showAllCity() {
-        Log.v(MainActivity.TAG,"showAllCity");
+        Log.v(MainActivity.TAG, "showAllCity");
         mModel.addObserver(mPresenterObserver);
         mModel.handleAllCounty();
     }
