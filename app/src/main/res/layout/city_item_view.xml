@@ -4,11 +4,11 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/cityItem"
+        android:id="@+id/recycle_view_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:background="#AA47BC"
+        android:layout_height="50dp"
+        android:textColor="@android:color/background_dark"
+        android:background="@android:color/darker_gray"
         android:gravity="center"/>
 
 </LinearLayout>

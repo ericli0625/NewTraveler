@@ -1,9 +1,7 @@
 package com.example.eric.newtraveler.view;
 
 public interface IMainView {
+    void showCityListResult(String string);
 
-    void showCityResult(String string);
-
-    void ShowSpotResult();
-
+    void showKeywordSearchSpotResult(String string);
 }

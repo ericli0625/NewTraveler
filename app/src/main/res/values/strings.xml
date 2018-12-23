@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">NewTraveler</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Traveler</string>
 
     <string name="search_all_county_button">Click</string>
+
+    <string name="click_keyword_search_button">Search</string>
+
+    <string name="chose_city_title">請選擇城市</string>
 
 </resources>

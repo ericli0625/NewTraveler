@@ -5,24 +5,30 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
-import com.example.eric.newtraveler.adapter.CityAdapter;
+import com.example.eric.newtraveler.adapter.CityListAdapter;
+import com.example.eric.newtraveler.adapter.KeywordSearchSpotAdapter;
 import com.example.eric.newtraveler.view.*;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
 
     public final static String TAG = "Travel";
-
-    public static final int MSG_SHOW_CITY_RESULT = 1;
+    public final static int MSG_SHOW_CITY_LIST_RESULT = 1;
+    public final static int MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT = 2;
 
     private Presenter mPresenter;
-    private Button mButton;
-    private TextView mTextView;
+
+    private ImageButton mKeywordSearchModeButton;
+    private ImageButton mNormalSearchModeButton;
+    private EditText mEditText;
+    private Button mKeywordSearchButton;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mCityAdapter;
@@ -33,8 +39,15 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPresenter = new Presenter(this);
+        loadInitCommonView();
 
+        mPresenter = new Presenter(this);
+        mPresenter.showCityList();
+    }
+
+    public void loadInitCommonView() {
+
+        // use a recycler view
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -44,46 +57,77 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mButton = (Button) this.findViewById(R.id.click_button);
-        mButton.setOnClickListener(mButtonListener);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        mTextView = (TextView) this.findViewById(R.id.textView);
+        mNormalSearchModeButton = (ImageButton) findViewById(R.id.normal_search);
+        mKeywordSearchModeButton = (ImageButton) findViewById(R.id.keyword_search);
+        mNormalSearchModeButton.setOnClickListener(mNormalSearchModeButtonListener);
+        mKeywordSearchModeButton.setOnClickListener(mKeywordSearchModeButtonListener);
 
     }
 
-    public View.OnClickListener mButtonListener = new View.OnClickListener() {
+    public View.OnClickListener mNormalSearchModeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mPresenter.showAllCity();
+            setContentView(R.layout.activity_main);
+            loadInitCommonView();
+
+            mPresenter.showCityList();
+        }
+    };
+
+    public View.OnClickListener mKeywordSearchModeButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setContentView(R.layout.keyword_search_layout);
+            loadInitCommonView();
+
+            mEditText = (EditText) findViewById(R.id.editText);
+
+            mKeywordSearchButton = (Button) findViewById(R.id.keyword_search_button);
+            mKeywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
+        }
+    };
+
+    public View.OnClickListener mKeywordSearchButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
         }
     };
 
     @Override
-    public void showCityResult(String string) {
+    public void showCityListResult(String string) {
         Message msg = new Message();
-        msg.what = MSG_SHOW_CITY_RESULT;
+        msg.what = MSG_SHOW_CITY_LIST_RESULT;
         msg.obj = string;
         mMainHandler.sendMessage(msg);
     }
 
     @Override
-    public void ShowSpotResult() {
-
+    public void showKeywordSearchSpotResult(String string) {
+        Message msg = new Message();
+        msg.what = MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT;
+        msg.obj = string;
+        mMainHandler.sendMessage(msg);
     }
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             // Gets the image task from the incoming Message object.
-            switch (msg.what) {
-                case MSG_SHOW_CITY_RESULT:
-                    String string = (String) msg.obj;
-                    mTextView.setText(string);
-
+            String string = msg.obj != null ? (String) msg.obj : "";
+            int msgType = msg.what;
+            switch (msgType) {
+                case MSG_SHOW_CITY_LIST_RESULT:
                     // set result data to an adapter
-                    mCityAdapter = new CityAdapter(string);
+                    mCityAdapter = new CityListAdapter(string);
                     mRecyclerView.setAdapter(mCityAdapter);
-
+                    break;
+                case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
+                    // set result data to an adapter
+                    mCityAdapter = new KeywordSearchSpotAdapter(string);
+                    mRecyclerView.setAdapter(mCityAdapter);
                     break;
                 default:
                     break;

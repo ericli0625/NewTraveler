@@ -2,7 +2,7 @@ package com.example.eric.newtraveler;
 
 import android.util.Log;
 
-import com.example.eric.newtraveler.presenter.IObserver;
+import com.example.eric.newtraveler.view.IObserver;
 import com.example.eric.newtraveler.presenter.IPresenter;
 import com.example.eric.newtraveler.view.IMainView;
 
@@ -11,7 +11,9 @@ public class Presenter implements IPresenter {
 
     private IMainView mMainView;
     private Model mModel;
-    private PresenterObserver mPresenterObserver = new PresenterObserver();
+
+    private QueryCityListObserver mQueryCityListObserver = new QueryCityListObserver();
+    private QueryKeywordSearchSpotObserver mQueryKeywordSearchSpotObserver = new QueryKeywordSearchSpotObserver();
 
     public Presenter(IMainView mainView) {
         this.mMainView = mainView;
@@ -20,17 +22,33 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showAllCity() {
-        Log.v(MainActivity.TAG, "showAllCity");
-        mModel.addObserver(mPresenterObserver);
-        mModel.handleAllCounty();
+    public void showCityList() {
+        Log.v(MainActivity.TAG, "showCityList");
+        mModel.addObserver(mQueryCityListObserver);
+        mModel.queryCityList();
     }
 
-    public class PresenterObserver implements IObserver {
+    @Override
+    public void showKeywordSearchSpot(String queryString) {
+        Log.v(MainActivity.TAG, "showKeywordSearchSpot");
+        mModel.addObserver(mQueryKeywordSearchSpotObserver);
+        mModel.queryKeywordSearchSpot(queryString);
+    }
+
+    public class QueryCityListObserver implements IObserver {
         @Override
         public void notifyResult(String string) {
-            mMainView.showCityResult(string);
-            mModel.removeObserver(mPresenterObserver);
+            mMainView.showCityListResult(string);
+            mModel.removeObserver(mQueryCityListObserver);
+        }
+    }
+
+    public class QueryKeywordSearchSpotObserver implements IObserver {
+        @Override
+        public void notifyResult(String string) {
+            Log.v(MainActivity.TAG, "showKeywordSearchSpot = " + string);
+            mMainView.showKeywordSearchSpotResult(string);
+            mModel.removeObserver(mQueryKeywordSearchSpotObserver);
         }
     }
 

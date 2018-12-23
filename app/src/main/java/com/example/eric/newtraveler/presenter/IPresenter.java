@@ -1,5 +1,7 @@
 package com.example.eric.newtraveler.presenter;
 
 public interface IPresenter {
-    void showAllCity();
+    void showCityList();
+
+    void showKeywordSearchSpot(String queryString);
 }
