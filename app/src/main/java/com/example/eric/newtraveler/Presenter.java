@@ -38,17 +38,16 @@ public class Presenter implements IPresenter {
     public class QueryCityListObserver implements IObserver {
         @Override
         public void notifyResult(String string) {
-            mMainView.showCityListResult(string);
             mModel.removeObserver(mQueryCityListObserver);
+            mMainView.showCityListResult(string);
         }
     }
 
     public class QueryKeywordSearchSpotObserver implements IObserver {
         @Override
         public void notifyResult(String string) {
-            Log.v(MainActivity.TAG, "showKeywordSearchSpot = " + string);
-            mMainView.showKeywordSearchSpotResult(string);
             mModel.removeObserver(mQueryKeywordSearchSpotObserver);
+            mMainView.showKeywordSearchSpotResult(string);
         }
     }
 

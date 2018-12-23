@@ -19,7 +19,7 @@ public class CityListAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull CityListAdapter.ViewHolder viewHolder, int position) {
         String string = null;
         try {
-            string = mJsonArray.getString(position);
+            string = getJsonArray().getString(position);
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e(MainActivity.TAG, "BaseAdapter onBindViewHolder, JSONException");

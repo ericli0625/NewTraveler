@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.eric.newtraveler.MainActivity;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class KeywordSearchSpotAdapter extends BaseAdapter {
 
@@ -18,7 +19,8 @@ public class KeywordSearchSpotAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         String string = null;
         try {
-            string = mJsonArray.getString(position);
+            JSONObject jsonobject = getJsonArray().getJSONObject(position);
+            string= jsonobject.getString("name");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e(MainActivity.TAG, "BaseAdapter onBindViewHolder, JSONException");

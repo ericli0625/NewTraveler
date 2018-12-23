@@ -8,13 +8,17 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.example.eric.newtraveler.adapter.BaseAdapter;
 import com.example.eric.newtraveler.adapter.CityListAdapter;
 import com.example.eric.newtraveler.adapter.KeywordSearchSpotAdapter;
+import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.view.*;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
@@ -29,9 +33,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private ImageButton mNormalSearchModeButton;
     private EditText mEditText;
     private Button mKeywordSearchButton;
+    private Toast mToastSearching;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mCityAdapter;
+    private BaseAdapter mCityAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
@@ -92,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public View.OnClickListener mKeywordSearchButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            mToastSearching = Toast.makeText(MainActivity.this, R.string.toast_searching, Toast.LENGTH_SHORT);
+            mToastSearching.show();
             mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
         }
     };
@@ -123,15 +130,32 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                     // set result data to an adapter
                     mCityAdapter = new CityListAdapter(string);
                     mRecyclerView.setAdapter(mCityAdapter);
+                    mRecyclerView.addOnItemTouchListener(new RecyclerItemTouchListener(
+                            getApplicationContext(), new BaseRecyclerItemTouchListener()));
                     break;
                 case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
                     // set result data to an adapter
                     mCityAdapter = new KeywordSearchSpotAdapter(string);
                     mRecyclerView.setAdapter(mCityAdapter);
+                    mRecyclerView.addOnItemTouchListener(new RecyclerItemTouchListener(
+                            getApplicationContext(), new BaseRecyclerItemTouchListener()));
                     break;
                 default:
                     break;
             }
         }
     };
+
+    public class BaseRecyclerItemTouchListener implements RecyclerItemTouchListener.OnItemClickListener {
+        @Override
+        public void onItemClick(int position) {
+            Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
+        }
+
+        @Override
+        public void onItemLongPress(int position) {
+            Log.v(MainActivity.TAG, "BaseAdapter, onItemLongPress " + position);
+        }
+    }
+
 }

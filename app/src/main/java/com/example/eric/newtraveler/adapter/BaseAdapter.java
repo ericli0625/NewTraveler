@@ -16,15 +16,18 @@ import org.json.JSONException;
 
 public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
 
-    protected JSONArray mJsonArray;
+    private JSONArray mJsonArray;
 
     public BaseAdapter(String string) {
         try {
             mJsonArray = new JSONArray(string);
         } catch (JSONException e) {
-            e.printStackTrace();
             Log.e(MainActivity.TAG, "BaseAdapter constructer, JSONException");
         }
+    }
+
+    protected JSONArray getJsonArray() {
+        return mJsonArray;
     }
 
     // Provide a reference to the views for each data item
@@ -55,7 +58,6 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
         try {
             string = mJsonArray.getString(position);
         } catch (JSONException e) {
-            e.printStackTrace();
             Log.e(MainActivity.TAG, "BaseAdapter onBindViewHolder, JSONException");
         }
         viewHolder.mTextView.setText(string);
