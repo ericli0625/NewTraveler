@@ -1,11 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SpotDetailActivity">
+
+    <TextView
+        android:id="@+id/textView_name_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/textView_category_detail"
+        app:layout_constraintStart_toEndOf="@+id/textView_name" />
+
+    <TextView
+        android:id="@+id/textView_category_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/divider_1"
+        app:layout_constraintStart_toEndOf="@+id/textView_category" />
+
+    <TextView
+        android:id="@+id/textView_address_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/textView_telephone_detail"
+        app:layout_constraintStart_toEndOf="@+id/textView_address" />
+
+    <TextView
+        android:id="@+id/textView_telephone_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/divider_2"
+        app:layout_constraintStart_toEndOf="@+id/textView_telephone" />
 
     <TextView
         android:id="@+id/textView_name"
@@ -14,8 +53,9 @@
         android:layout_marginStart="@dimen/spot_activity_all_view_margin"
         android:layout_marginTop="@dimen/spot_activity_all_view_margin"
         android:text="@string/spot_detail_name"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView_category"
@@ -24,19 +64,19 @@
         android:layout_marginStart="@dimen/spot_activity_all_view_margin"
         android:layout_marginTop="@dimen/spot_activity_all_view_margin"
         android:text="@string/spot_detail_category"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_name"
-    />
+        app:layout_constraintTop_toBottomOf="@+id/textView_name" />
 
     <View
         android:id="@+id/divider_1"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="5dp"
         android:layout_marginTop="@dimen/spot_activity_all_view_margin"
         android:background="@android:color/darker_gray"
         app:layout_constraintTop_toBottomOf="@+id/textView_category"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp"/>
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/textView_address"
@@ -45,8 +85,9 @@
         android:layout_marginStart="@dimen/spot_activity_all_view_margin"
         android:layout_marginTop="@dimen/spot_activity_all_view_margin"
         android:text="@string/spot_detail_address"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_1"/>
+        app:layout_constraintTop_toBottomOf="@+id/divider_1" />
 
     <TextView
         android:id="@+id/textView_telephone"
@@ -55,8 +96,9 @@
         android:layout_marginStart="@dimen/spot_activity_all_view_margin"
         android:layout_marginTop="@dimen/spot_activity_all_view_margin"
         android:text="@string/spot_detail_telephone"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_address"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView_address" />
 
     <View
         android:id="@+id/divider_2"
@@ -66,7 +108,7 @@
         android:background="@android:color/darker_gray"
         app:layout_constraintTop_toBottomOf="@+id/textView_telephone"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="0dp"/>
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/textView_content"
@@ -75,11 +117,27 @@
         android:layout_marginStart="@dimen/spot_activity_all_view_margin"
         android:layout_marginTop="@dimen/spot_activity_all_view_margin"
         android:layout_marginEnd="@dimen/spot_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
         android:text="@string/spot_detail_content"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView_content_detail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_2"/>
+        app:layout_constraintTop_toBottomOf="@+id/divider_2" />
 
+    <TextView
+        android:id="@+id/textView_content_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+        android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/spot_activity_all_view_margin"
+        android:layout_marginBottom="16dp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_content" />
 
 </android.support.constraint.ConstraintLayout>

@@ -9,7 +9,7 @@
 
     <string name="toast_searching">搜尋中</string>
 
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main2">SpotDetailActivity</string>
 
     <string name="input_hint">請輸入景點</string>
 
