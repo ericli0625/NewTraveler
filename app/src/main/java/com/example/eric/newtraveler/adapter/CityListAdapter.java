@@ -3,7 +3,6 @@ package com.example.eric.newtraveler.adapter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-
 import com.example.eric.newtraveler.MainActivity;
 
 import org.json.JSONException;

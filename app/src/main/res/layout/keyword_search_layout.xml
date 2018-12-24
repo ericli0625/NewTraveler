@@ -8,53 +8,55 @@
 
     <ImageButton
         android:id="@+id/normal_search"
-        android:layout_width="160dp"
+        android:layout_width="@dimen/main_activity_button_width"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
         app:srcCompat="@drawable/ic_house" />
 
     <ImageButton
         android:id="@+id/keyword_search"
-        android:layout_width="160dp"
+        android:layout_width="@dimen/main_activity_button_width"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
         app:srcCompat="@drawable/ic_magnifying_glass" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_keyword_search"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="@dimen/recyclerView_height"
         android:layout_below="@id/editText"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin" />
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/search_edit_text_width"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
         android:layout_below="@id/normal_search"
         android:inputType="text"
         android:importantForAutofill="no"
-        tools:ignore="LabelFor" />
+        tools:ignore="LabelFor"
+        android:hint="@string/input_hint"
+        android:text="台北"/>
 
     <Button
         android:id="@+id/keyword_search_button"
-        android:layout_width="100dp"
+        android:layout_width="@dimen/keyword_search_button_width"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
         android:layout_below="@id/keyword_search"
         android:layout_toEndOf="@id/editText"
         android:text="@string/click_keyword_search_button" />

@@ -4,4 +4,6 @@ public interface IMainView {
     void showCityListResult(String string);
 
     void showKeywordSearchSpotResult(String string);
+
+    void showCountyListResult(String string);
 }

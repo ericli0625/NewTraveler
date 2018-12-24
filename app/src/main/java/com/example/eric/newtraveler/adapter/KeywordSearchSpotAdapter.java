@@ -20,7 +20,7 @@ public class KeywordSearchSpotAdapter extends BaseAdapter {
         String string = null;
         try {
             JSONObject jsonobject = getJsonArray().getJSONObject(position);
-            string= jsonobject.getString("name");
+            string = jsonobject.getString("name");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e(MainActivity.TAG, "BaseAdapter onBindViewHolder, JSONException");

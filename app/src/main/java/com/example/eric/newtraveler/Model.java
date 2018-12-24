@@ -1,11 +1,16 @@
 package com.example.eric.newtraveler;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import com.example.eric.newtraveler.view.IObserver;
 import com.example.eric.newtraveler.presenter.ISubject;
+import com.example.eric.newtraveler.view.IObserver;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,10 +19,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-
 import javax.net.ssl.HttpsURLConnection;
 
 public class Model implements ISubject {
+
+    private final static String TAG_ALL_COUNTY = "all_county";
+    private final static String TAG_QUERY_SPOT_NAME = "query_spot_name";
+    private final static String TAG_QUERY_COUNTY = "query_county";
 
     private HandlerThread mBackgroundThread = null;
     private Handler mBackgroundHandler = null;
@@ -54,11 +62,15 @@ public class Model implements ISubject {
         mBackgroundHandler.post(new RunnableQueryKeywordSearchSpot(queryString));
     }
 
+    public void queryCountyList(String cityList, int position) {
+        mBackgroundHandler.post(new RunnableQueryCountyList(cityList, position));
+    }
+
     public class RunQueryCityList implements Runnable {
 
         @Override
         public void run() {
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
+            queryRestFullAPI("GET", TAG_ALL_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
         }
 
     }
@@ -73,12 +85,36 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + mQueryString);
+            queryRestFullAPI("GET", TAG_QUERY_SPOT_NAME, "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + mQueryString);
         }
 
     }
 
-    private void queryRestFullAPI(String requestMethod, String url) {
+    private class RunnableQueryCountyList implements Runnable {
+
+        private String cityList;
+        private int position;
+
+        public RunnableQueryCountyList(String cityList, int position) {
+            this.cityList = cityList;
+            this.position = position;
+        }
+
+        @Override
+        public void run() {
+            String queryString = null;
+            try {
+                JSONArray jsonArray = new JSONArray(cityList);
+                queryString = jsonArray.getString(position);
+            } catch (JSONException e) {
+                Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
+            }
+
+            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelcity/query_county/?county=" + queryString);
+        }
+    }
+
+    private void queryRestFullAPI(String requestMethod, String tag, String url) {
         URL queryAllCountyUrl = null;
         HttpsURLConnection connection = null;
         BufferedReader bufferedReader = null;
@@ -120,6 +156,28 @@ public class Model implements ISubject {
         }
 
         notifyObservers(result);
+    }
+
+    public Bundle getSpotDetailBundle(String string, int position) {
+        try {
+            JSONArray jsonArray = new JSONArray(string);
+            JSONObject jsonobject = jsonArray.getJSONObject(position);
+            Bundle bundle = new Bundle();
+            bundle.putString("id", jsonobject.getString("id"));
+            bundle.putString("name", jsonobject.getString("name"));
+            bundle.putString("city", jsonobject.getString("city"));
+            bundle.putString("county", jsonobject.getString("county"));
+            bundle.putString("category", jsonobject.getString("category"));
+            bundle.putString("address", jsonobject.getString("address"));
+            bundle.putString("telephone", jsonobject.getString("telephone"));
+            bundle.putString("longitude", jsonobject.getString("longitude"));
+            bundle.putString("latitude", jsonobject.getString("latitude"));
+            bundle.putString("content", jsonobject.getString("content"));
+            return bundle;
+        } catch (JSONException e) {
+            Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
+        }
+        return null;
     }
 
 }

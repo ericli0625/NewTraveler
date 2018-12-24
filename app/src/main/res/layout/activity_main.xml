@@ -8,24 +8,24 @@
 
     <ImageButton
         android:id="@+id/normal_search"
-        android:layout_width="160dp"
+        android:layout_width="@dimen/main_activity_button_width"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
         app:srcCompat="@drawable/ic_house" />
 
     <ImageButton
         android:id="@+id/keyword_search"
-        android:layout_width="160dp"
+        android:layout_width="@dimen/main_activity_button_width"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
         app:srcCompat="@drawable/ic_magnifying_glass" />
 
     <TextView
@@ -34,18 +34,18 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/recyclerView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
         android:text="@string/chose_city_title" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="@dimen/recyclerView_height"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin" />
 
 </RelativeLayout>

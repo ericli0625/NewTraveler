@@ -9,4 +9,18 @@
 
     <string name="toast_searching">搜尋中</string>
 
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="input_hint">請輸入景點</string>
+
+    <string name="spot_detail_name">景點名稱:</string>
+
+    <string name="spot_detail_category">景點類型:</string>
+
+    <string name="spot_detail_address">地址:</string>
+
+    <string name="spot_detail_telephone">電話:</string>
+
+    <string name="spot_detail_content">景點介紹:</string>
+
 </resources>

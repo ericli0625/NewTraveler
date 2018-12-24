@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private CityListAdapter mCityListAdapter;
     private KeywordSearchSpotAdapter mKeywordSearchSpotAdapter;
 
+    private String mStringKeywordSearchSpotResult;
+    private String mStringCityListResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         loadInitCommonView();
         mCityListAdapter = new CityListAdapter();
-        mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView);
+        mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView,
+                mCityListRecyclerItemTouchListener);
 
         mPresenter = new Presenter(this);
         mPresenter.showCityList();
@@ -53,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     }
 
-    private RecyclerView getRecycleView(BaseAdapter adapter, int recyclerViewId) {
+    private RecyclerView getRecycleView(BaseAdapter adapter, int recyclerViewId,
+            RecyclerItemTouchListener.OnItemClickListener listener) {
         // use a recycler view
         RecyclerView recyclerView = (RecyclerView) findViewById(recyclerViewId);
         // use this setting to improve performance if you know that changes
@@ -69,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.addOnItemTouchListener(new RecyclerItemTouchListener(
-                getApplicationContext(), new BaseRecyclerItemTouchListener()));
+                getApplicationContext(), listener));
 
         return recyclerView;
     }
@@ -78,32 +83,39 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         @Override
         public void onClick(View v) {
             setContentView(R.layout.activity_main);
-
-            loadInitCommonView();
-            mCityListAdapter = new CityListAdapter();
-            mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView);
+            loadInitNormalSearch();
 
             mPresenter.showCityList();
         }
     };
 
+    public void loadInitNormalSearch() {
+        loadInitCommonView();
+        mCityListAdapter = new CityListAdapter();
+        mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView,
+                mCityListRecyclerItemTouchListener);
+    }
+
+
     public View.OnClickListener mKeywordSearchModeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             setContentView(R.layout.keyword_search_layout);
-
-            loadInitCommonView();
-            mKeywordSearchSpotAdapter = new KeywordSearchSpotAdapter();
-            mRecyclerView = getRecycleView(mKeywordSearchSpotAdapter,
-                    R.id.recyclerView_keyword_search);
-
-            mEditText = (EditText) findViewById(R.id.editText);
-
-            Button keywordSearchButton = (Button) findViewById(R.id.keyword_search_button);
-            keywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
-
+            loadInitKeyWordSearchView();
         }
     };
+
+    public void loadInitKeyWordSearchView() {
+        loadInitCommonView();
+        mKeywordSearchSpotAdapter = new KeywordSearchSpotAdapter();
+        mRecyclerView = getRecycleView(mKeywordSearchSpotAdapter,
+                R.id.recyclerView_keyword_search, mKeywordSearchSpotRecyclerItemTouchListener);
+
+        mEditText = (EditText) findViewById(R.id.editText);
+
+        Button keywordSearchButton = (Button) findViewById(R.id.keyword_search_button);
+        keywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
+    }
 
     public View.OnClickListener mKeywordSearchButtonListener = new View.OnClickListener() {
         @Override
@@ -111,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
             mToastSearching = Toast.makeText(MainActivity.this, R.string.toast_searching,
                     Toast.LENGTH_SHORT);
             mToastSearching.show();
+
             mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
         }
     };
@@ -120,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         // set result data to an adapter
         mCityListAdapter.setJsonArray(string);
         mCityListAdapter.notifyDataSetChanged();
+        mStringCityListResult = string;
     }
 
     @Override
@@ -128,19 +142,47 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mKeywordSearchSpotAdapter.setJsonArray(string);
         mKeywordSearchSpotAdapter.notifyDataSetChanged();
         mToastSearching.cancel();
+        mStringKeywordSearchSpotResult = string;
     }
 
-    public class BaseRecyclerItemTouchListener implements
-            RecyclerItemTouchListener.OnItemClickListener {
-        @Override
-        public void onItemClick(int position) {
-            Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
-        }
-
-        @Override
-        public void onItemLongPress(int position) {
-            Log.v(MainActivity.TAG, "BaseAdapter, onItemLongPress " + position);
-        }
+    @Override
+    public void showCountyListResult(String string) {
+        Log.v(MainActivity.TAG, "MainActivity, showCountyListResult " + string);
+        mCityListAdapter.setJsonArray(string);
+        mCityListAdapter.notifyDataSetChanged();
+        mStringCityListResult = string;
     }
+
+    public RecyclerItemTouchListener.OnItemClickListener
+            mCityListRecyclerItemTouchListener =
+            new RecyclerItemTouchListener.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(int position) {
+                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
+                    mPresenter.showCountyList(mStringCityListResult, position);
+                }
+
+                @Override
+                public void onItemLongPress(int position) {
+                    Log.v(MainActivity.TAG, "BaseAdapter, onItemLongPress " + position);
+                }
+            };
+
+    public RecyclerItemTouchListener.OnItemClickListener
+            mKeywordSearchSpotRecyclerItemTouchListener =
+            new RecyclerItemTouchListener.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(int position) {
+                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
+                    mPresenter.showSpotDetail(getApplicationContext(), mStringKeywordSearchSpotResult, position);
+                }
+
+                @Override
+                public void onItemLongPress(int position) {
+                    Log.v(MainActivity.TAG, "BaseAdapter, onItemLongPress " + position);
+                }
+            };
 
 }
