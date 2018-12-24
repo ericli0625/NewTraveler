@@ -18,7 +18,11 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
 
     private JSONArray mJsonArray;
 
-    public BaseAdapter(String string) {
+    public BaseAdapter() {
+
+    }
+
+    public void setJsonArray(String string) {
         try {
             mJsonArray = new JSONArray(string);
         } catch (JSONException e) {

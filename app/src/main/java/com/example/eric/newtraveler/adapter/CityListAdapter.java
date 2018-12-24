@@ -10,8 +10,8 @@ import org.json.JSONException;
 
 public class CityListAdapter extends BaseAdapter {
 
-    public CityListAdapter(String string) {
-        super(string);
+    public CityListAdapter() {
+
     }
 
     // Replace the contents of a view (invoked by the layout manager)

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.eric.newtraveler.adapter.BaseAdapter;
 import com.example.eric.newtraveler.adapter.CityListAdapter;
 import com.example.eric.newtraveler.adapter.KeywordSearchSpotAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
@@ -25,7 +26,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     private EditText mEditText;
     private Toast mToastSearching;
+
     private RecyclerView mRecyclerView;
+    private CityListAdapter mCityListAdapter;
+    private KeywordSearchSpotAdapter mKeywordSearchSpotAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         setContentView(R.layout.activity_main);
 
         loadInitCommonView();
-        mRecyclerView = getRecycleView(R.id.recyclerView);
+        mCityListAdapter = new CityListAdapter();
+        mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView);
 
         mPresenter = new Presenter(this);
         mPresenter.showCityList();
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     }
 
-    private RecyclerView getRecycleView(int recyclerViewId) {
+    private RecyclerView getRecycleView(BaseAdapter adapter, int recyclerViewId) {
         // use a recycler view
         RecyclerView recyclerView = (RecyclerView) findViewById(recyclerViewId);
         // use this setting to improve performance if you know that changes
@@ -58,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         // use a linear layout manager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(adapter);
 
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -73,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
             setContentView(R.layout.activity_main);
 
             loadInitCommonView();
-            mRecyclerView = getRecycleView(R.id.recyclerView);
+            mCityListAdapter = new CityListAdapter();
+            mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView);
 
             mPresenter.showCityList();
         }
@@ -85,7 +93,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
             setContentView(R.layout.keyword_search_layout);
 
             loadInitCommonView();
-            mRecyclerView = getRecycleView(R.id.recyclerView_keyword_search);
+            mKeywordSearchSpotAdapter = new KeywordSearchSpotAdapter();
+            mRecyclerView = getRecycleView(mKeywordSearchSpotAdapter,
+                    R.id.recyclerView_keyword_search);
 
             mEditText = (EditText) findViewById(R.id.editText);
 
@@ -108,13 +118,15 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     public void showCityListResult(String string) {
         // set result data to an adapter
-        mRecyclerView.setAdapter(new CityListAdapter(string));
+        mCityListAdapter.setJsonArray(string);
+        mCityListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showKeywordSearchSpotResult(String string) {
         // set result data to an adapter
-        mRecyclerView.setAdapter(new KeywordSearchSpotAdapter(string));
+        mKeywordSearchSpotAdapter.setJsonArray(string);
+        mKeywordSearchSpotAdapter.notifyDataSetChanged();
         mToastSearching.cancel();
     }
 

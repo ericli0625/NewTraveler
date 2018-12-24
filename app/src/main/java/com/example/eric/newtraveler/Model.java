@@ -110,7 +110,7 @@ public class Model implements ISubject {
                 String line;
                 for (; (line = bufferedReader.readLine()) != null; ) {
                     result = line;
-                    Log.d(MainActivity.TAG, "Query result: " + result);
+//                    Log.d(MainActivity.TAG, "Query result: " + result);
                 }
             } else {
                 Log.e(MainActivity.TAG, "Query failed, statusCode is not HTTP_OK");

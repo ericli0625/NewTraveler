@@ -10,8 +10,8 @@ import org.json.JSONObject;
 
 public class KeywordSearchSpotAdapter extends BaseAdapter {
 
-    public KeywordSearchSpotAdapter(String string) {
-        super(string);
+    public KeywordSearchSpotAdapter() {
+
     }
 
     // Replace the contents of a view (invoked by the layout manager)
