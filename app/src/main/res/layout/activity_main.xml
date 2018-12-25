@@ -28,6 +28,16 @@
         android:layout_marginBottom="@dimen/main_activity_all_view_margin"
         app:srcCompat="@drawable/ic_magnifying_glass" />
 
+    <ImageButton
+        android:id="@+id/return_icon"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/keyword_search"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        app:srcCompat="@drawable/ic_return"/>
+
     <TextView
         android:id="@+id/list_title"
         android:layout_width="wrap_content"

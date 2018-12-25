@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -30,7 +30,10 @@ public class Model implements ISubject {
     private HandlerThread mBackgroundThread = null;
     private Handler mBackgroundHandler = null;
 
-    private ArrayList<IObserver> mObserveList = new ArrayList<IObserver>();
+    private CopyOnWriteArrayList<IObserver> mObserveList = new CopyOnWriteArrayList<IObserver>();
+
+    private String nowCity;
+    private String nowCounty;
 
     public void initBackgroundHandler() {
         if (mBackgroundThread == null || !mBackgroundThread.isAlive()) {
@@ -58,12 +61,16 @@ public class Model implements ISubject {
         mBackgroundHandler.post(new RunQueryCityList());
     }
 
-    public void queryKeywordSearchSpot(String queryString) {
-        mBackgroundHandler.post(new RunnableQueryKeywordSearchSpot(queryString));
-    }
-
     public void queryCountyList(String cityList, int position) {
         mBackgroundHandler.post(new RunnableQueryCountyList(cityList, position));
+    }
+
+    public void queryNormalSearchSpot(String countyList, int position) {
+        mBackgroundHandler.post(new RunnableQuerySpotList(countyList, position));
+    }
+
+    public void queryKeywordSearchSpot(String queryString) {
+        mBackgroundHandler.post(new RunnableQueryKeywordSearchSpot(queryString));
     }
 
     public class RunQueryCityList implements Runnable {
@@ -71,21 +78,6 @@ public class Model implements ISubject {
         @Override
         public void run() {
             queryRestFullAPI("GET", TAG_ALL_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
-        }
-
-    }
-
-    public class RunnableQueryKeywordSearchSpot implements Runnable {
-
-        private final String mQueryString;
-
-        public RunnableQueryKeywordSearchSpot(String queryString) {
-            this.mQueryString = queryString;
-        }
-
-        @Override
-        public void run() {
-            queryRestFullAPI("GET", TAG_QUERY_SPOT_NAME, "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + mQueryString);
         }
 
     }
@@ -106,12 +98,54 @@ public class Model implements ISubject {
             try {
                 JSONArray jsonArray = new JSONArray(cityList);
                 queryString = jsonArray.getString(position);
+                nowCity = queryString;
             } catch (JSONException e) {
                 Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
             }
 
-            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelcity/query_county/?county=" + queryString);
+            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelcity/query_county/?county=" + nowCity);
         }
+    }
+
+    private class RunnableQuerySpotList implements Runnable {
+
+
+        private String countyList;
+        private int position;
+
+        public RunnableQuerySpotList(String countyList, int position) {
+            this.countyList = countyList;
+            this.position = position;
+        }
+
+        @Override
+        public void run() {
+            String queryString = null;
+            try {
+                JSONArray jsonArray = new JSONArray(countyList);
+                queryString = jsonArray.getString(position);
+                nowCounty = queryString;
+            } catch (JSONException e) {
+                Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
+            }
+
+            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com//api/travelspot/query_spot/?place=" + nowCity + "," + nowCounty);
+        }
+    }
+
+    public class RunnableQueryKeywordSearchSpot implements Runnable {
+
+        private final String mQueryString;
+
+        public RunnableQueryKeywordSearchSpot(String queryString) {
+            this.mQueryString = queryString;
+        }
+
+        @Override
+        public void run() {
+            queryRestFullAPI("GET", TAG_QUERY_SPOT_NAME, "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + mQueryString);
+        }
+
     }
 
     private void queryRestFullAPI(String requestMethod, String tag, String url) {

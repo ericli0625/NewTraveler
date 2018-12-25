@@ -1,5 +1,7 @@
 package com.example.eric.newtraveler;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,40 +23,41 @@ import com.example.eric.newtraveler.view.IMainView;
 public class MainActivity extends AppCompatActivity implements IMainView {
 
     public final static String TAG = "Travel";
+    private final static String PREFS_NAME = "TravelPrefsFile";
 
     private Presenter mPresenter;
 
     private EditText mEditText;
-    private Toast mToastSearching;
+    private Toast mToast;
 
     private RecyclerView mRecyclerView;
-    private CityListAdapter mCityListAdapter;
-    private KeywordSearchSpotAdapter mKeywordSearchSpotAdapter;
+    private BaseAdapter mNormalListAdapter;
+    private BaseAdapter mKeywordSearchSpotAdapter;
 
     private String mStringKeywordSearchSpotResult;
-    private String mStringCityListResult;
+    private String mStringNormalListResult;
+
+    private int mTriggerListLevel = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadInitCommonView();
-        mCityListAdapter = new CityListAdapter();
-        mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView,
-                mCityListRecyclerItemTouchListener);
+        loadCommonView();
+        mNormalListAdapter = new CityListAdapter();
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
 
-        mPresenter = new Presenter(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        mPresenter = new Presenter(this, sharedPreferences);
         mPresenter.showCityList();
     }
 
-    public void loadInitCommonView() {
-
+    public void loadCommonView() {
         ImageButton normalSearchModeButton = (ImageButton) findViewById(R.id.normal_search);
         ImageButton keywordSearchModeButton = (ImageButton) findViewById(R.id.keyword_search);
         normalSearchModeButton.setOnClickListener(mNormalSearchModeButtonListener);
         keywordSearchModeButton.setOnClickListener(mKeywordSearchModeButtonListener);
-
     }
 
     private RecyclerView getRecycleView(BaseAdapter adapter, int recyclerViewId,
@@ -79,37 +82,39 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         return recyclerView;
     }
 
-    public View.OnClickListener mNormalSearchModeButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.activity_main);
-            loadInitNormalSearch();
-
-            mPresenter.showCityList();
-        }
-    };
-
-    public void loadInitNormalSearch() {
-        loadInitCommonView();
-        mCityListAdapter = new CityListAdapter();
-        mRecyclerView = getRecycleView(mCityListAdapter, R.id.recyclerView,
-                mCityListRecyclerItemTouchListener);
+    public void loadNormalCitySearch() {
+        loadCommonView();
+        mNormalListAdapter = new CityListAdapter();
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
+        mTriggerListLevel = 0;
     }
 
+    public void loadNormalCountySearch() {
+        loadCommonView();
+        mNormalListAdapter = new CityListAdapter();
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
 
-    public View.OnClickListener mKeywordSearchModeButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.keyword_search_layout);
-            loadInitKeyWordSearchView();
-        }
-    };
+        ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
+        returnIcon.setVisibility(View.VISIBLE);
+        returnIcon.setOnClickListener(mNormalSearchModeButtonListener);
+        mTriggerListLevel = 1;
+    }
 
-    public void loadInitKeyWordSearchView() {
-        loadInitCommonView();
+    public void loadNormalSpotSearch() {
+        loadCommonView();
+        mNormalListAdapter = new CityListAdapter();
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
+
+        ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
+        returnIcon.setVisibility(View.VISIBLE);
+        returnIcon.setOnClickListener(mNormalSearchModeButtonListener);
+        mTriggerListLevel = 2;
+    }
+
+    public void loadKeyWordSearchView() {
+        loadCommonView();
         mKeywordSearchSpotAdapter = new KeywordSearchSpotAdapter();
-        mRecyclerView = getRecycleView(mKeywordSearchSpotAdapter,
-                R.id.recyclerView_keyword_search, mKeywordSearchSpotRecyclerItemTouchListener);
+        mRecyclerView = getRecycleView(mKeywordSearchSpotAdapter, R.id.recyclerView_keyword_search, mKeywordSearchSpotRecyclerItemTouchListener);
 
         mEditText = (EditText) findViewById(R.id.editText);
 
@@ -117,12 +122,28 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         keywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
     }
 
+    public View.OnClickListener mNormalSearchModeButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setContentView(R.layout.activity_main);
+            loadNormalCitySearch();
+
+            mPresenter.showCityList();
+        }
+    };
+
+    public View.OnClickListener mKeywordSearchModeButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setContentView(R.layout.keyword_search_layout);
+            loadKeyWordSearchView();
+        }
+    };
+
     public View.OnClickListener mKeywordSearchButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mToastSearching = Toast.makeText(MainActivity.this, R.string.toast_searching,
-                    Toast.LENGTH_SHORT);
-            mToastSearching.show();
+            showToast(true);
 
             mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
         }
@@ -131,9 +152,29 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     public void showCityListResult(String string) {
         // set result data to an adapter
-        mCityListAdapter.setJsonArray(string);
-        mCityListAdapter.notifyDataSetChanged();
-        mStringCityListResult = string;
+        mNormalListAdapter.setJsonArray(string);
+        mNormalListAdapter.notifyDataSetChanged();
+        mStringNormalListResult = string;
+    }
+
+    @Override
+    public void showCountyListResult(String string) {
+        // set result data to an adapter
+        mNormalListAdapter.setJsonArray(string);
+        mNormalListAdapter.notifyDataSetChanged();
+        mStringNormalListResult = string;
+
+        showToast(false);
+    }
+
+    @Override
+    public void showSpotListResult(String string) {
+        // set result data to an adapter
+        mNormalListAdapter.setJsonArray(string);
+        mNormalListAdapter.notifyDataSetChanged();
+        mStringNormalListResult = string;
+
+        showToast(false);
     }
 
     @Override
@@ -141,16 +182,19 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         // set result data to an adapter
         mKeywordSearchSpotAdapter.setJsonArray(string);
         mKeywordSearchSpotAdapter.notifyDataSetChanged();
-        mToastSearching.cancel();
         mStringKeywordSearchSpotResult = string;
+
+        showToast(false);
     }
 
     @Override
-    public void showCountyListResult(String string) {
-        Log.v(MainActivity.TAG, "MainActivity, showCountyListResult " + string);
-        mCityListAdapter.setJsonArray(string);
-        mCityListAdapter.notifyDataSetChanged();
-        mStringCityListResult = string;
+    public void showSpotDetailResult(Bundle bundle) {
+        Intent intent = new Intent();
+        intent.setClass(getApplicationContext(), SpotDetailActivity.class);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        getApplicationContext().startActivity(intent);
     }
 
     public RecyclerItemTouchListener.OnItemClickListener
@@ -159,8 +203,22 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                 @Override
                 public void onItemClick(int position) {
-                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
-                    mPresenter.showCountyList(mStringCityListResult, position);
+                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position + " mTriggerListLevel =" + mTriggerListLevel);
+                    showToast(true);
+
+                    switch (mTriggerListLevel) {
+                        case 0:
+                            loadNormalCountySearch();
+                            mPresenter.showCountyList(mStringNormalListResult, position);
+                            break;
+                        case 1:
+                            loadNormalSpotSearch();
+                            mPresenter.showSpotList(mStringNormalListResult, position);
+                            break;
+                        case 2:
+                            mPresenter.showSpotDetail(mStringNormalListResult, position);
+                            break;
+                    }
                 }
 
                 @Override
@@ -176,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 @Override
                 public void onItemClick(int position) {
                     Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
-                    mPresenter.showSpotDetail(getApplicationContext(), mStringKeywordSearchSpotResult, position);
+                    mPresenter.showSpotDetail(mStringKeywordSearchSpotResult, position);
                 }
 
                 @Override
@@ -185,4 +243,18 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 }
             };
 
+    private void showToast(boolean isShow) {
+        if (isShow) {
+            mToast = Toast.makeText(MainActivity.this, R.string.toast_searching, Toast.LENGTH_LONG);
+            mToast.show();
+        } else {
+            mToast.cancel();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mTriggerListLevel = 0;
+    }
 }

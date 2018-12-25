@@ -1,7 +1,6 @@
 package com.example.eric.newtraveler;
 
-import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,19 +17,25 @@ import java.lang.ref.WeakReference;
 public class Presenter implements IPresenter {
 
     private final static int MSG_SHOW_CITY_LIST_RESULT = 1;
-    private final static int MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT = 2;
-    private final static int MSG_SHOW_COUNTY_LIST_RESULT = 3;
+    private final static int MSG_SHOW_COUNTY_LIST_RESULT = 2;
+    private final static int MSG_SHOW_SPOT_LIST_RESULT = 3;
+    private final static int MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT = 4;
 
+    private SharedPreferences mSharedPreferences;
+    private IMainView mMainView;
     private Model mModel;
 
     private UIHandler mMainHandler;
 
     private IObserver mQueryCityListObserver = new QueryCityListObserver();
-    private IObserver mQueryKeywordSearchSpotObserver = new QueryKeywordSearchSpotObserver();
     private IObserver mQueryCountyListObserver = new QueryCountyListObserver();
+    private IObserver mQuerySpotListObserver = new QuerySpotListObserver();
+    private IObserver mQueryKeywordSearchSpotObserver = new QueryKeywordSearchSpotObserver();
 
-    public Presenter(IMainView mainView) {
+    public Presenter(IMainView mainView, SharedPreferences sharedPreferences) {
         this.mModel = new Model();
+        this.mMainView = mainView;
+        this.mSharedPreferences = sharedPreferences;
         mModel.initBackgroundHandler();
         mMainHandler = new UIHandler(mainView, Looper.getMainLooper());
     }
@@ -38,8 +43,25 @@ public class Presenter implements IPresenter {
     @Override
     public void showCityList() {
         Log.v(MainActivity.TAG, "Presenter, showCityList");
-        mModel.addObserver(mQueryCityListObserver);
-        mModel.queryCityList();
+        if (mSharedPreferences.getString("citylist", "").equals("")) {
+            mModel.addObserver(mQueryCityListObserver);
+            mModel.queryCityList();
+        } else {
+            String string = mSharedPreferences.getString("citylist", "");
+            mMainView.showCityListResult(string);
+        }
+    }
+
+    @Override
+    public void showCountyList(String cityList, int position) {
+        mModel.addObserver(mQueryCountyListObserver);
+        mModel.queryCountyList(cityList, position);
+    }
+
+    @Override
+    public void showSpotList(String result, int position) {
+        mModel.addObserver(mQuerySpotListObserver);
+        mModel.queryNormalSearchSpot(result, position);
     }
 
     @Override
@@ -50,39 +72,20 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showSpotDetail(Context context, String result, int position) {
-        Intent intent = new Intent();
-        intent.setClass(context, SpotDetailActivity.class);
+    public void showSpotDetail(String result, int position) {
         Bundle bundle = mModel.getSpotDetailBundle(result, position);
-        if (bundle != null) {
-            intent.putExtras(bundle);
-        }
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void showCountyList(String cityList, int position) {
-        mModel.addObserver(mQueryCountyListObserver);
-        mModel.queryCountyList(cityList, position);
+        mMainView.showSpotDetailResult(bundle);
     }
 
     public class QueryCityListObserver implements IObserver {
         @Override
         public void notifyResult(String string) {
+            if (mSharedPreferences.getString("citylist", "").equals("")) {
+                mSharedPreferences.edit().putString("citylist", string).apply();
+            }
             mModel.removeObserver(mQueryCityListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_CITY_LIST_RESULT;
-            msg.obj = string;
-            mMainHandler.sendMessage(msg);
-        }
-    }
-
-    public class QueryKeywordSearchSpotObserver implements IObserver {
-        @Override
-        public void notifyResult(String string) {
-            mModel.removeObserver(mQueryKeywordSearchSpotObserver);
-            Message msg = new Message();
-            msg.what = MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT;
             msg.obj = string;
             mMainHandler.sendMessage(msg);
         }
@@ -94,6 +97,28 @@ public class Presenter implements IPresenter {
             mModel.removeObserver(mQueryCountyListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_COUNTY_LIST_RESULT;
+            msg.obj = string;
+            mMainHandler.sendMessage(msg);
+        }
+    }
+
+    public class QuerySpotListObserver implements IObserver {
+        @Override
+        public void notifyResult(String string) {
+            mModel.removeObserver(mQuerySpotListObserver);
+            Message msg = new Message();
+            msg.what = MSG_SHOW_SPOT_LIST_RESULT;
+            msg.obj = string;
+            mMainHandler.sendMessage(msg);
+        }
+    }
+
+    public class QueryKeywordSearchSpotObserver implements IObserver {
+        @Override
+        public void notifyResult(String string) {
+            mModel.removeObserver(mQueryKeywordSearchSpotObserver);
+            Message msg = new Message();
+            msg.what = MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT;
             msg.obj = string;
             mMainHandler.sendMessage(msg);
         }
@@ -121,11 +146,14 @@ public class Presenter implements IPresenter {
                 case MSG_SHOW_CITY_LIST_RESULT:
                     mainView.showCityListResult(string);
                     break;
-                case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
-                    mainView.showKeywordSearchSpotResult(string);
-                    break;
                 case MSG_SHOW_COUNTY_LIST_RESULT:
                     mainView.showCountyListResult(string);
+                    break;
+                case MSG_SHOW_SPOT_LIST_RESULT:
+                    mainView.showSpotListResult(string);
+                    break;
+                case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
+                    mainView.showKeywordSearchSpotResult(string);
                     break;
                 default:
                     break;
