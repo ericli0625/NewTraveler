@@ -8,9 +8,9 @@ import com.example.eric.newtraveler.MainActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class KeywordSearchSpotAdapter extends BaseAdapter {
+public class SpotDetailAdapter extends BaseAdapter {
 
-    public KeywordSearchSpotAdapter() {
+    public SpotDetailAdapter() {
 
     }
 

@@ -7,15 +7,15 @@ import com.example.eric.newtraveler.MainActivity;
 
 import org.json.JSONException;
 
-public class CityListAdapter extends BaseAdapter {
+public class NormalListAdapter extends BaseAdapter {
 
-    public CityListAdapter() {
+    public NormalListAdapter() {
 
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull CityListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull NormalListAdapter.ViewHolder viewHolder, int position) {
         String string = null;
         try {
             string = getJsonArray().getString(position);

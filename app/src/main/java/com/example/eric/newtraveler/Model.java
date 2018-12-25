@@ -129,7 +129,7 @@ public class Model implements ISubject {
                 Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
             }
 
-            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com//api/travelspot/query_spot/?place=" + nowCity + "," + nowCounty);
+            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + nowCity + "," + nowCounty);
         }
     }
 

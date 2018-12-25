@@ -15,8 +15,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.eric.newtraveler.adapter.BaseAdapter;
-import com.example.eric.newtraveler.adapter.CityListAdapter;
-import com.example.eric.newtraveler.adapter.KeywordSearchSpotAdapter;
+import com.example.eric.newtraveler.adapter.NormalListAdapter;
+import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.view.IMainView;
 
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     private RecyclerView mRecyclerView;
     private BaseAdapter mNormalListAdapter;
-    private BaseAdapter mKeywordSearchSpotAdapter;
+    private BaseAdapter mSpotDetailAdapter;
 
     private String mStringKeywordSearchSpotResult;
     private String mStringNormalListResult;
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         setContentView(R.layout.activity_main);
 
         loadCommonView();
-        mNormalListAdapter = new CityListAdapter();
+        mNormalListAdapter = new NormalListAdapter();
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -84,14 +84,14 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     public void loadNormalCitySearch() {
         loadCommonView();
-        mNormalListAdapter = new CityListAdapter();
+        mNormalListAdapter = new NormalListAdapter();
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
         mTriggerListLevel = 0;
     }
 
     public void loadNormalCountySearch() {
         loadCommonView();
-        mNormalListAdapter = new CityListAdapter();
+        mNormalListAdapter = new NormalListAdapter();
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
 
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     public void loadNormalSpotSearch() {
         loadCommonView();
-        mNormalListAdapter = new CityListAdapter();
-        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
+        mSpotDetailAdapter = new SpotDetailAdapter();
+        mRecyclerView = getRecycleView(mSpotDetailAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
 
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
         returnIcon.setVisibility(View.VISIBLE);
@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     public void loadKeyWordSearchView() {
         loadCommonView();
-        mKeywordSearchSpotAdapter = new KeywordSearchSpotAdapter();
-        mRecyclerView = getRecycleView(mKeywordSearchSpotAdapter, R.id.recyclerView_keyword_search, mKeywordSearchSpotRecyclerItemTouchListener);
+        mSpotDetailAdapter = new SpotDetailAdapter();
+        mRecyclerView = getRecycleView(mSpotDetailAdapter, R.id.recyclerView_keyword_search, mKeywordSearchSpotRecyclerItemTouchListener);
 
         mEditText = (EditText) findViewById(R.id.editText);
 
@@ -170,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     public void showSpotListResult(String string) {
         // set result data to an adapter
-        mNormalListAdapter.setJsonArray(string);
-        mNormalListAdapter.notifyDataSetChanged();
+        mSpotDetailAdapter.setJsonArray(string);
+        mSpotDetailAdapter.notifyDataSetChanged();
         mStringNormalListResult = string;
 
         showToast(false);
@@ -180,8 +180,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     public void showKeywordSearchSpotResult(String string) {
         // set result data to an adapter
-        mKeywordSearchSpotAdapter.setJsonArray(string);
-        mKeywordSearchSpotAdapter.notifyDataSetChanged();
+        mSpotDetailAdapter.setJsonArray(string);
+        mSpotDetailAdapter.notifyDataSetChanged();
         mStringKeywordSearchSpotResult = string;
 
         showToast(false);
