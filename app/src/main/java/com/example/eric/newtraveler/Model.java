@@ -23,17 +23,13 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class Model implements ISubject {
 
-    private final static String TAG_ALL_COUNTY = "all_county";
-    private final static String TAG_QUERY_SPOT_NAME = "query_spot_name";
-    private final static String TAG_QUERY_COUNTY = "query_county";
-
     private HandlerThread mBackgroundThread = null;
     private Handler mBackgroundHandler = null;
 
     private CopyOnWriteArrayList<IObserver> mObserveList = new CopyOnWriteArrayList<IObserver>();
 
-    private String nowCity;
-    private String nowCounty;
+    private String mNowCounty;
+    private String mNowCity;
 
     public void initBackgroundHandler() {
         if (mBackgroundThread == null || !mBackgroundThread.isAlive()) {
@@ -57,12 +53,16 @@ public class Model implements ISubject {
         }
     }
 
-    public void queryCityList() {
-        mBackgroundHandler.post(new RunQueryCityList());
+    public void queryAllCountyAndCityList() {
+        mBackgroundHandler.post(new RunQueryAllCountyList());
     }
 
-    public void queryCountyList(String cityList, int position) {
-        mBackgroundHandler.post(new RunnableQueryCountyList(cityList, position));
+    public void queryCountyList() {
+        mBackgroundHandler.post(new RunQueryCountyList());
+    }
+
+    public void queryCityList(String cityList, int position) {
+        mBackgroundHandler.post(new RunnableQueryCityList(cityList, position));
     }
 
     public void queryNormalSearchSpot(String countyList, int position) {
@@ -73,37 +73,49 @@ public class Model implements ISubject {
         mBackgroundHandler.post(new RunnableQueryKeywordSearchSpot(queryString));
     }
 
-    public class RunQueryCityList implements Runnable {
+    public class RunQueryCountyList implements Runnable {
 
         @Override
         public void run() {
-            queryRestFullAPI("GET", TAG_ALL_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
+            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
         }
 
     }
 
-    private class RunnableQueryCountyList implements Runnable {
+    private class RunQueryAllCountyList implements Runnable {
+
+        @Override
+        public void run() {
+            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/");
+        }
+
+    }
+
+    public String getListItem(String cityList, int position) {
+        String result = null;
+        try {
+            JSONArray jsonArray = new JSONArray(cityList);
+            result = jsonArray.getString(position);
+        } catch (JSONException e) {
+            Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
+        }
+        return result;
+    }
+
+    private class RunnableQueryCityList implements Runnable {
 
         private String cityList;
         private int position;
 
-        public RunnableQueryCountyList(String cityList, int position) {
+        public RunnableQueryCityList(String cityList, int position) {
             this.cityList = cityList;
             this.position = position;
         }
 
         @Override
         public void run() {
-            String queryString = null;
-            try {
-                JSONArray jsonArray = new JSONArray(cityList);
-                queryString = jsonArray.getString(position);
-                nowCity = queryString;
-            } catch (JSONException e) {
-                Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
-            }
-
-            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelcity/query_county/?county=" + nowCity);
+            String queryString = getListItem(cityList, position);
+            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/query_city/?county=" + queryString);
         }
     }
 
@@ -120,35 +132,46 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            String queryString = null;
-            try {
-                JSONArray jsonArray = new JSONArray(countyList);
-                queryString = jsonArray.getString(position);
-                nowCounty = queryString;
-            } catch (JSONException e) {
-                Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
-            }
-
-            queryRestFullAPI("GET", TAG_QUERY_COUNTY, "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + nowCity + "," + nowCounty);
+            String queryString = getListItem(countyList, position);
+            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + getNowCounty()
+                    + "," + queryString);
         }
     }
 
     public class RunnableQueryKeywordSearchSpot implements Runnable {
 
-        private final String mQueryString;
+        private final String queryString;
 
         public RunnableQueryKeywordSearchSpot(String queryString) {
-            this.mQueryString = queryString;
+            this.queryString = queryString;
         }
 
         @Override
         public void run() {
-            queryRestFullAPI("GET", TAG_QUERY_SPOT_NAME, "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + mQueryString);
+            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + queryString);
         }
 
     }
 
-    private void queryRestFullAPI(String requestMethod, String tag, String url) {
+    public String getNowCounty() {
+        return mNowCounty;
+    }
+
+    public Model setNowCounty(String nowCounty) {
+        this.mNowCounty = nowCounty;
+        return this;
+    }
+
+    public String getNowCity() {
+        return mNowCity;
+    }
+
+    public Model setNowCity(String nowCity) {
+        this.mNowCity = nowCity;
+        return this;
+    }
+
+    private void queryRestFullAPI(String requestMethod, String url) {
         URL queryAllCountyUrl = null;
         HttpsURLConnection connection = null;
         BufferedReader bufferedReader = null;

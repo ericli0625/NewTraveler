@@ -52,8 +52,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 mNormalListRecyclerItemTouchListener);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        mPresenter = new Presenter(this, sharedPreferences);
-        mPresenter.showCityList();
+        Repository repository = new Repository(sharedPreferences);
+        mPresenter = new Presenter(this, repository);
+        mPresenter.preloadAllCountyAndCityList();
     }
 
     public void loadCommonView() {
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         return recyclerView;
     }
 
-    public void loadNormalCitySearch() {
+    public void loadNormalCountySearch() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mTriggerListLevel = 0;
     }
 
-    public void loadNormalCountySearch() {
+    public void loadNormalCitySearch() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
@@ -136,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         @Override
         public void onClick(View v) {
             setContentView(R.layout.activity_main);
-            loadNormalCitySearch();
+            loadNormalCountySearch();
 
-            mPresenter.showCityList();
+            mPresenter.showCountyList();
         }
     };
 
@@ -160,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     };
 
     @Override
-    public void showCityListResult(String string) {
+    public void showCountyListResult(String string) {
         // set result data to an adapter
         mNormalListAdapter.setJsonArray(string);
         mNormalListAdapter.notifyDataSetChanged();
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showCountyListResult(String string) {
+    public void showCityListResult(String string) {
         // set result data to an adapter
         mNormalListAdapter.setJsonArray(string);
         mNormalListAdapter.notifyDataSetChanged();
@@ -217,10 +218,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                     switch (mTriggerListLevel) {
                         case 0:
-                            loadNormalCountySearch();
+                            loadNormalCitySearch();
                             showToast(true);
 
-                            mPresenter.showCountyList(mStringNormalListResult, position);
+                            mPresenter.showCityList(mStringNormalListResult, position);
                             break;
                         case 1:
                             loadNormalSpotSearch();

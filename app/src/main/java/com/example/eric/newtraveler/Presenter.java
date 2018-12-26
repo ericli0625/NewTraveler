@@ -1,6 +1,5 @@
 package com.example.eric.newtraveler;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,52 +15,70 @@ import java.lang.ref.WeakReference;
 
 public class Presenter implements IPresenter {
 
-    private final static int MSG_SHOW_CITY_LIST_RESULT = 1;
-    private final static int MSG_SHOW_COUNTY_LIST_RESULT = 2;
+    private final static int MSG_SHOW_COUNTY_LIST_RESULT = 1;
+    private final static int MSG_SHOW_CITY_LIST_RESULT = 2;
     private final static int MSG_SHOW_SPOT_LIST_RESULT = 3;
     private final static int MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT = 4;
 
-    private SharedPreferences mSharedPreferences;
-    private IMainView mMainView;
-    private Model mModel;
+    private final Repository mRepository;
+    private final IMainView mMainView;
+    private final Model mModel;
 
-    private UIHandler mMainHandler;
+    private final UIHandler mMainHandler;
 
-    private IObserver mQueryCityListObserver = new QueryCityListObserver();
+    private IObserver mQueryAllCityAndCountyListObserver = new QueryAllCityAndCountyListObserver();
     private IObserver mQueryCountyListObserver = new QueryCountyListObserver();
+    private IObserver mQueryCityListObserver = new QueryCityListObserver();
     private IObserver mQuerySpotListObserver = new QuerySpotListObserver();
     private IObserver mQueryKeywordSearchSpotObserver = new QueryKeywordSearchSpotObserver();
 
-    public Presenter(IMainView mainView, SharedPreferences sharedPreferences) {
+    public Presenter(IMainView mainView, Repository repository) {
         this.mModel = new Model();
         this.mMainView = mainView;
-        this.mSharedPreferences = sharedPreferences;
+        this.mRepository = repository;
         mModel.initBackgroundHandler();
         mMainHandler = new UIHandler(mainView, Looper.getMainLooper());
     }
 
     @Override
-    public void showCityList() {
-        Log.v(MainActivity.TAG, "Presenter, showCityList");
-        if (mSharedPreferences.getString("citylist", "").equals("")) {
-            mModel.addObserver(mQueryCityListObserver);
-            mModel.queryCityList();
+    public void preloadAllCountyAndCityList() {
+        if (mRepository.isExistPreloadList()) {
+            showCountyList();
         } else {
-            String string = mSharedPreferences.getString("citylist", "");
-            mMainView.showCityListResult(string);
+            mModel.addObserver(mQueryAllCityAndCountyListObserver);
+            mModel.queryAllCountyAndCityList();
         }
     }
 
     @Override
-    public void showCountyList(String cityList, int position) {
-        mModel.addObserver(mQueryCountyListObserver);
-        mModel.queryCountyList(cityList, position);
+    public void showCountyList() {
+        Log.v(MainActivity.TAG, "Presenter, showCountyList");
+        if (mRepository.isExistPreloadList()) {
+            String countyList = mRepository.getCountyList();
+            mMainView.showCountyListResult(countyList);
+        } else {
+            mModel.addObserver(mQueryCountyListObserver);
+            mModel.queryCountyList();
+        }
     }
 
     @Override
-    public void showSpotList(String result, int position) {
+    public void showCityList(String countryList, int position) {
+        mModel.setNowCounty(mModel.getListItem(countryList, position));
+        if (mRepository.isExistPreloadList()) {
+            String repoCityList = mRepository.getCityList(position);
+            mMainView.showCityListResult(repoCityList);
+        } else {
+            mModel.addObserver(mQueryCityListObserver);
+            mModel.queryCityList(countryList, position);
+        }
+    }
+
+    @Override
+    public void showSpotList(String cityList, int position) {
+        mModel.setNowCity(mModel.getListItem(cityList, position));
         mModel.addObserver(mQuerySpotListObserver);
-        mModel.queryNormalSearchSpot(result, position);
+        mModel.queryNormalSearchSpot(cityList, position);
     }
 
     @Override
@@ -77,16 +94,14 @@ public class Presenter implements IPresenter {
         mMainView.showSpotDetailResult(bundle);
     }
 
-    public class QueryCityListObserver implements IObserver {
+    public class QueryAllCityAndCountyListObserver implements IObserver {
         @Override
         public void notifyResult(String string) {
-            if (mSharedPreferences.getString("citylist", "").equals("")) {
-                mSharedPreferences.edit().putString("citylist", string).apply();
-            }
-            mModel.removeObserver(mQueryCityListObserver);
+            mModel.removeObserver(mQueryAllCityAndCountyListObserver);
+            mRepository.parserAllCountyAndCityList(string);
             Message msg = new Message();
-            msg.what = MSG_SHOW_CITY_LIST_RESULT;
-            msg.obj = string;
+            msg.what = MSG_SHOW_COUNTY_LIST_RESULT;
+            msg.obj = mRepository.getCountyList();
             mMainHandler.sendMessage(msg);
         }
     }
@@ -97,6 +112,17 @@ public class Presenter implements IPresenter {
             mModel.removeObserver(mQueryCountyListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_COUNTY_LIST_RESULT;
+            msg.obj = string;
+            mMainHandler.sendMessage(msg);
+        }
+    }
+
+    public class QueryCityListObserver implements IObserver {
+        @Override
+        public void notifyResult(String string) {
+            mModel.removeObserver(mQueryCityListObserver);
+            Message msg = new Message();
+            msg.what = MSG_SHOW_CITY_LIST_RESULT;
             msg.obj = string;
             mMainHandler.sendMessage(msg);
         }
@@ -143,11 +169,11 @@ public class Presenter implements IPresenter {
             String string = msg.obj != null ? (String) msg.obj : "";
             int msgType = msg.what;
             switch (msgType) {
-                case MSG_SHOW_CITY_LIST_RESULT:
-                    mainView.showCityListResult(string);
-                    break;
                 case MSG_SHOW_COUNTY_LIST_RESULT:
                     mainView.showCountyListResult(string);
+                    break;
+                case MSG_SHOW_CITY_LIST_RESULT:
+                    mainView.showCityListResult(string);
                     break;
                 case MSG_SHOW_SPOT_LIST_RESULT:
                     mainView.showSpotListResult(string);
