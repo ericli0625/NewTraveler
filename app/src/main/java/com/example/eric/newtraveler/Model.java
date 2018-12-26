@@ -28,8 +28,11 @@ public class Model implements ISubject {
 
     private CopyOnWriteArrayList<IObserver> mObserveList = new CopyOnWriteArrayList<IObserver>();
 
-    private String mNowCounty;
-    private String mNowCity;
+    private String mNowCountyName;
+    private String mNowCityName;
+
+    private int mNowCountyPosition;
+    private int mNowCityPosition;
 
     public void initBackgroundHandler() {
         if (mBackgroundThread == null || !mBackgroundThread.isAlive()) {
@@ -133,7 +136,7 @@ public class Model implements ISubject {
         @Override
         public void run() {
             String queryString = getListItem(countyList, position);
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + getNowCounty()
+            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + getNowCountyName()
                     + "," + queryString);
         }
     }
@@ -153,22 +156,30 @@ public class Model implements ISubject {
 
     }
 
-    public String getNowCounty() {
-        return mNowCounty;
+    public String getNowCountyName() {
+        return mNowCountyName;
     }
 
-    public Model setNowCounty(String nowCounty) {
-        this.mNowCounty = nowCounty;
-        return this;
+    public int getNowCountyPosition() {
+        return mNowCountyPosition;
     }
 
-    public String getNowCity() {
-        return mNowCity;
+    public void setNowCountyStatus(String countyList, int position) {
+        mNowCountyName = getListItem(countyList, position);
+        mNowCountyPosition = position;
     }
 
-    public Model setNowCity(String nowCity) {
-        this.mNowCity = nowCity;
-        return this;
+    public String getNowCityName() {
+        return mNowCityName;
+    }
+
+    public int getNowCityPosition() {
+        return mNowCityPosition;
+    }
+
+    public void setNowCityStatus(String cityList, int position) {
+        mNowCityName = getListItem(cityList, position);
+        mNowCityPosition = position;
     }
 
     private void queryRestFullAPI(String requestMethod, String url) {

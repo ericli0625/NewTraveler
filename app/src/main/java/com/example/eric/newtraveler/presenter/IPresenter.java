@@ -12,4 +12,6 @@ public interface IPresenter {
     void showSpotList(String result, int position);
 
     void preloadAllCountyAndCityList();
+
+    void backToCityListPage();
 }

@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     public final static String TAG = "Travel";
     private final static String PREFS_NAME = "TravelPrefsFile";
+    private static final int IN_COUNTY_LIST_PAGE = 0;
+    private static final int IN_CITY_LIST_PAGE = 1;
+    private static final int IN_SPOT_LIST_PAGE = 2;
 
     private Presenter mPresenter;
 
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mNormalListAdapter = new NormalListAdapter();
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
                 mNormalListRecyclerItemTouchListener);
-        mTriggerListLevel = 0;
+        mTriggerListLevel = IN_COUNTY_LIST_PAGE;
     }
 
     public void loadNormalCitySearch() {
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
         returnIcon.setVisibility(View.VISIBLE);
         returnIcon.setOnClickListener(mNormalSearchModeButtonListener);
-        mTriggerListLevel = 1;
+        mTriggerListLevel = IN_CITY_LIST_PAGE;
     }
 
     public void loadNormalSpotSearch() {
@@ -117,8 +120,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
         returnIcon.setVisibility(View.VISIBLE);
-        returnIcon.setOnClickListener(mNormalSearchModeButtonListener);
-        mTriggerListLevel = 2;
+        returnIcon.setOnClickListener(mBackToCityListPageListener);
+        mTriggerListLevel = IN_SPOT_LIST_PAGE;
     }
 
     public void loadKeyWordSearchView() {
@@ -143,6 +146,16 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         }
     };
 
+    public View.OnClickListener mBackToCityListPageListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setContentView(R.layout.activity_main);
+            loadNormalCitySearch();
+
+            mPresenter.backToCityListPage();
+        }
+    };
+
     public View.OnClickListener mKeywordSearchModeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -162,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showCountyListResult(String string) {
+        Log.v(MainActivity.TAG, "MainActivity, showCountyListResult ");
+
         // set result data to an adapter
         mNormalListAdapter.setJsonArray(string);
         mNormalListAdapter.notifyDataSetChanged();
@@ -170,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showCityListResult(String string) {
+        Log.v(MainActivity.TAG, "MainActivity, showCityListResult ");
+
         // set result data to an adapter
         mNormalListAdapter.setJsonArray(string);
         mNormalListAdapter.notifyDataSetChanged();
@@ -180,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showSpotListResult(String string) {
+        Log.v(MainActivity.TAG, "MainActivity, showSpotListResult ");
+
         // set result data to an adapter
         mSpotDetailAdapter.setJsonArray(string);
         mSpotDetailAdapter.notifyDataSetChanged();
@@ -190,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showKeywordSearchSpotResult(String string) {
+        Log.v(MainActivity.TAG, "MainActivity, showKeywordSearchSpotResult ");
+
         // set result data to an adapter
         mSpotDetailAdapter.setJsonArray(string);
         mSpotDetailAdapter.notifyDataSetChanged();
@@ -200,6 +221,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showSpotDetailResult(Bundle bundle) {
+        Log.v(MainActivity.TAG, "MainActivity, showSpotDetailResult ");
+
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), SpotDetailActivity.class);
         if (bundle != null) {
@@ -214,22 +237,21 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                 @Override
                 public void onItemClick(int position) {
-                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
 
                     switch (mTriggerListLevel) {
-                        case 0:
+                        case IN_COUNTY_LIST_PAGE:
                             loadNormalCitySearch();
                             showToast(true);
 
                             mPresenter.showCityList(mStringNormalListResult, position);
                             break;
-                        case 1:
+                        case IN_CITY_LIST_PAGE:
                             loadNormalSpotSearch();
                             showToast(true);
 
                             mPresenter.showSpotList(mStringNormalListResult, position);
                             break;
-                        case 2:
+                        case IN_SPOT_LIST_PAGE:
                             mPresenter.showSpotDetail(mStringNormalListResult, position);
                             break;
                     }
@@ -237,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                 @Override
                 public void onItemLongPress(int position) {
-                    Log.v(MainActivity.TAG, "BaseAdapter, onItemLongPress " + position);
                 }
             };
 
@@ -247,13 +268,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                 @Override
                 public void onItemClick(int position) {
-                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
                     mPresenter.showSpotDetail(mStringKeywordSearchSpotResult, position);
                 }
 
                 @Override
                 public void onItemLongPress(int position) {
-                    Log.v(MainActivity.TAG, "BaseAdapter, onItemLongPress " + position);
                 }
             };
 

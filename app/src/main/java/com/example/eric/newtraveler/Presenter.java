@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.example.eric.newtraveler.presenter.IPresenter;
 import com.example.eric.newtraveler.view.IMainView;
@@ -51,8 +50,20 @@ public class Presenter implements IPresenter {
     }
 
     @Override
+    public void backToCityListPage() {
+        int position = mModel.getNowCountyPosition();
+        String countyList = mRepository.getCountyList();
+        if (mRepository.isExistPreloadList()) {
+            String repoCityList = mRepository.getCityList(position);
+            mMainView.showCityListResult(repoCityList);
+        } else {
+            mModel.addObserver(mQueryCityListObserver);
+            mModel.queryCityList(countyList, position);
+        }
+    }
+
+    @Override
     public void showCountyList() {
-        Log.v(MainActivity.TAG, "Presenter, showCountyList");
         if (mRepository.isExistPreloadList()) {
             String countyList = mRepository.getCountyList();
             mMainView.showCountyListResult(countyList);
@@ -63,27 +74,26 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showCityList(String countryList, int position) {
-        mModel.setNowCounty(mModel.getListItem(countryList, position));
+    public void showCityList(String countyList, int position) {
+        mModel.setNowCountyStatus(countyList, position);
         if (mRepository.isExistPreloadList()) {
             String repoCityList = mRepository.getCityList(position);
             mMainView.showCityListResult(repoCityList);
         } else {
             mModel.addObserver(mQueryCityListObserver);
-            mModel.queryCityList(countryList, position);
+            mModel.queryCityList(countyList, position);
         }
     }
 
     @Override
     public void showSpotList(String cityList, int position) {
-        mModel.setNowCity(mModel.getListItem(cityList, position));
+        mModel.setNowCityStatus(cityList, position);
         mModel.addObserver(mQuerySpotListObserver);
         mModel.queryNormalSearchSpot(cityList, position);
     }
 
     @Override
     public void showKeywordSearchSpot(String queryString) {
-        Log.v(MainActivity.TAG, "Presenter, showKeywordSearchSpot");
         mModel.addObserver(mQueryKeywordSearchSpotObserver);
         mModel.queryKeywordSearchSpot(queryString);
     }
