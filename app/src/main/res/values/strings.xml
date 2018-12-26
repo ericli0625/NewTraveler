@@ -7,6 +7,8 @@
 
     <string name="chose_city_title">請選擇城市</string>
 
+    <string name="chose_spot_title">請選擇景點</string>
+
     <string name="toast_searching">搜尋中</string>
 
     <string name="title_activity_main2">SpotDetailActivity</string>

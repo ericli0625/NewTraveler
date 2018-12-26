@@ -3,6 +3,8 @@ package com.example.eric.newtraveler;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class SpotDetailActivity extends AppCompatActivity {
@@ -22,6 +24,9 @@ public class SpotDetailActivity extends AppCompatActivity {
     }
 
     public void loadInitCommonView(Bundle bundle) {
+
+        ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
+        returnIcon.setOnClickListener(mButtonListener);
 
         if (bundle != null) {
             String id = bundle.getString("id");
@@ -48,5 +53,13 @@ public class SpotDetailActivity extends AppCompatActivity {
         }
 
     }
+
+    public View.OnClickListener mButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setContentView(R.layout.activity_main);
+            onBackPressed();
+        }
+    };
 
 }

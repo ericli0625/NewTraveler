@@ -12,12 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eric.newtraveler.adapter.BaseAdapter;
 import com.example.eric.newtraveler.adapter.NormalListAdapter;
-import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
+import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
 import com.example.eric.newtraveler.view.IMainView;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     private Presenter mPresenter;
 
+    private TextView mTextView;
     private EditText mEditText;
     private Toast mToast;
 
@@ -46,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
-        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
+                mNormalListRecyclerItemTouchListener);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         mPresenter = new Presenter(this, sharedPreferences);
@@ -85,14 +88,16 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void loadNormalCitySearch() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
-        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
+                mNormalListRecyclerItemTouchListener);
         mTriggerListLevel = 0;
     }
 
     public void loadNormalCountySearch() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
-        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
+                mNormalListRecyclerItemTouchListener);
 
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
         returnIcon.setVisibility(View.VISIBLE);
@@ -103,7 +108,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void loadNormalSpotSearch() {
         loadCommonView();
         mSpotDetailAdapter = new SpotDetailAdapter();
-        mRecyclerView = getRecycleView(mSpotDetailAdapter, R.id.recyclerView, mCityListRecyclerItemTouchListener);
+        mRecyclerView = getRecycleView(mSpotDetailAdapter, R.id.recyclerView,
+                mNormalListRecyclerItemTouchListener);
+
+        mTextView = (TextView) findViewById(R.id.list_title);
+        mTextView.setText(R.string.chose_spot_title);
 
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
         returnIcon.setVisibility(View.VISIBLE);
@@ -114,7 +123,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void loadKeyWordSearchView() {
         loadCommonView();
         mSpotDetailAdapter = new SpotDetailAdapter();
-        mRecyclerView = getRecycleView(mSpotDetailAdapter, R.id.recyclerView_keyword_search, mKeywordSearchSpotRecyclerItemTouchListener);
+        mRecyclerView = getRecycleView(mSpotDetailAdapter, R.id.recyclerView_keyword_search,
+                mKeywordSearchSpotRecyclerItemTouchListener);
 
         mEditText = (EditText) findViewById(R.id.editText);
 
@@ -198,21 +208,24 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     public RecyclerItemTouchListener.OnItemClickListener
-            mCityListRecyclerItemTouchListener =
+            mNormalListRecyclerItemTouchListener =
             new RecyclerItemTouchListener.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(int position) {
-                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position + " mTriggerListLevel =" + mTriggerListLevel);
-                    showToast(true);
+                    Log.v(MainActivity.TAG, "BaseAdapter, onItemClick " + position);
 
                     switch (mTriggerListLevel) {
                         case 0:
                             loadNormalCountySearch();
+                            showToast(true);
+
                             mPresenter.showCountyList(mStringNormalListResult, position);
                             break;
                         case 1:
                             loadNormalSpotSearch();
+                            showToast(true);
+
                             mPresenter.showSpotList(mStringNormalListResult, position);
                             break;
                         case 2:
@@ -245,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     private void showToast(boolean isShow) {
         if (isShow) {
-            mToast = Toast.makeText(MainActivity.this, R.string.toast_searching, Toast.LENGTH_LONG);
+            mToast = Toast.makeText(MainActivity.this, R.string.toast_searching, Toast.LENGTH_SHORT);
             mToast.show();
         } else {
             mToast.cancel();

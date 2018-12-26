@@ -48,8 +48,7 @@
         android:inputType="text"
         android:importantForAutofill="no"
         tools:ignore="LabelFor"
-        android:hint="@string/input_hint"
-        android:text="台北"/>
+        android:hint="@string/input_hint" />
 
     <Button
         android:id="@+id/keyword_search_button"
