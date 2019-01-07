@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public View.OnClickListener mKeywordSearchButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            showToast(true);
+            showToast(true, Toast.LENGTH_LONG);
 
             mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
         }
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mNormalListAdapter.notifyDataSetChanged();
         mStringNormalListResult = string;
 
-        showToast(false);
+        showToast(false, Toast.LENGTH_LONG);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mSpotDetailAdapter.notifyDataSetChanged();
         mStringNormalListResult = string;
 
-        showToast(false);
+        showToast(false, Toast.LENGTH_LONG);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mSpotDetailAdapter.notifyDataSetChanged();
         mStringKeywordSearchSpotResult = string;
 
-        showToast(false);
+        showToast(false, Toast.LENGTH_LONG);
     }
 
     @Override
@@ -243,13 +243,13 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                     switch (mTriggerListLevel) {
                         case IN_COUNTY_LIST_PAGE:
                             loadNormalCitySearch();
-                            showToast(true);
+                            showToast(true, Toast.LENGTH_LONG);
 
                             mPresenter.showCityList(mStringNormalListResult, position);
                             break;
                         case IN_CITY_LIST_PAGE:
                             loadNormalSpotSearch();
-                            showToast(true);
+                            showToast(true, Toast.LENGTH_LONG);
 
                             mPresenter.showSpotList(mStringNormalListResult, position);
                             break;
@@ -278,9 +278,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 }
             };
 
-    private void showToast(boolean isShow) {
+    private void showToast(boolean isShow, int toastDuration) {
         if (isShow) {
-            mToast = Toast.makeText(MainActivity.this, R.string.toast_searching, Toast.LENGTH_SHORT);
+            mToast = Toast.makeText(MainActivity.this, R.string.toast_searching, toastDuration);
             mToast.show();
         } else {
             mToast.cancel();
