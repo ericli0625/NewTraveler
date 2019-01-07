@@ -25,4 +25,10 @@
 
     <string name="spot_detail_content">景點介紹:</string>
 
+    <string name="alert_dialog_content">你是否確定要離開?</string>
+
+    <string name="alert_dialog_yes">是</string>
+
+    <string name="alert_dialog_no">否</string>
+
 </resources>

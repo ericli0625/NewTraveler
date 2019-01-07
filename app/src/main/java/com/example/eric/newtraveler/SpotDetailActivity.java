@@ -7,17 +7,32 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class SpotDetailActivity extends AppCompatActivity {
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private String mLongitude;
     private String mLatitude;
     private String mName;
+
+    private MapView mMapView;
+    private GoogleMap mGoogleMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spot_detail);
         Log.v(MainActivity.TAG, "SpotDetailActivity, onCreate ");
+
+        mMapView = (MapView) this.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume();
+        mMapView.getMapAsync(this);
 
         Bundle bundle = getIntent().getExtras();
         loadInitCommonView(bundle);
@@ -62,4 +77,14 @@ public class SpotDetailActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+
+        LatLng location = new LatLng(Double.valueOf(mLatitude), Double.valueOf(mLongitude));
+        mGoogleMap.addMarker(new MarkerOptions().position(location).title(mName));
+        mGoogleMap.setMinZoomPreference(15.0f);
+        mGoogleMap.setMaxZoomPreference(18.0f);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+    }
 }
