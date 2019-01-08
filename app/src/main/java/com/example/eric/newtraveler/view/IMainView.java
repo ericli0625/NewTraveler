@@ -12,4 +12,6 @@ public interface IMainView {
     void showKeywordSearchSpotResult(String string);
 
     void showSpotDetailResult(Bundle bundle);
+
+    void showWeatherForecastResult(String countyName);
 }

@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -65,8 +65,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void loadCommonView() {
         ImageButton normalSearchModeButton = (ImageButton) findViewById(R.id.normal_search);
         ImageButton keywordSearchModeButton = (ImageButton) findViewById(R.id.keyword_search);
+        ImageButton weatherForecastButton = (ImageButton) findViewById(R.id.weather_forecast);
         normalSearchModeButton.setOnClickListener(mNormalSearchModeButtonListener);
         keywordSearchModeButton.setOnClickListener(mKeywordSearchModeButtonListener);
+        weatherForecastButton.setOnClickListener(mWeatherForecastButtonListener);
     }
 
     private RecyclerView getRecycleView(BaseAdapter adapter, int recyclerViewId,
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setAdapter(adapter);
@@ -138,6 +140,13 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         keywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
     }
 
+    private void loadWeatherForecastView() {
+        loadCommonView();
+        mNormalListAdapter = new NormalListAdapter();
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView_weather_forecast,
+                mWeatherForecastRecyclerItemTouchListener);
+    }
+
     public View.OnClickListener mNormalSearchModeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -172,6 +181,16 @@ public class MainActivity extends AppCompatActivity implements IMainView {
             showToast(true, Toast.LENGTH_LONG);
 
             mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
+        }
+    };
+
+    public View.OnClickListener mWeatherForecastButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setContentView(R.layout.weather_layout);
+            loadWeatherForecastView();
+
+            mPresenter.showCountyList();
         }
     };
 
@@ -233,6 +252,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         getApplicationContext().startActivity(intent);
     }
 
+    @Override
+    //TODO show weather
+    public void showWeatherForecastResult(String string) {
+        Log.v(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + string);
+    }
+
     public RecyclerItemTouchListener.OnItemClickListener
             mNormalListRecyclerItemTouchListener =
             new RecyclerItemTouchListener.OnItemClickListener() {
@@ -271,6 +296,20 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 @Override
                 public void onItemClick(int position) {
                     mPresenter.showSpotDetail(mStringKeywordSearchSpotResult, position);
+                }
+
+                @Override
+                public void onItemLongPress(int position) {
+                }
+            };
+
+    public RecyclerItemTouchListener.OnItemClickListener
+            mWeatherForecastRecyclerItemTouchListener =
+            new RecyclerItemTouchListener.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(int position) {
+                    mPresenter.showWeatherForecast(mStringNormalListResult, position);
                 }
 
                 @Override

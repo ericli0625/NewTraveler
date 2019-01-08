@@ -9,6 +9,8 @@
 
     <string name="chose_spot_title">請選擇景點</string>
 
+    <string name="weather_forecast">天氣預報</string>
+
     <string name="toast_searching">搜尋中</string>
 
     <string name="title_activity_main2">SpotDetailActivity</string>

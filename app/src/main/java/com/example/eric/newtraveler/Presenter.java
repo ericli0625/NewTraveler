@@ -18,6 +18,7 @@ public class Presenter implements IPresenter {
     private final static int MSG_SHOW_CITY_LIST_RESULT = 2;
     private final static int MSG_SHOW_SPOT_LIST_RESULT = 3;
     private final static int MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT = 4;
+    private final static int MSG_SHOW_WEATHER_FORECAST_RESULT = 5;
 
     private final Repository mRepository;
     private final IMainView mMainView;
@@ -30,13 +31,14 @@ public class Presenter implements IPresenter {
     private IObserver mQueryCityListObserver = new QueryCityListObserver();
     private IObserver mQuerySpotListObserver = new QuerySpotListObserver();
     private IObserver mQueryKeywordSearchSpotObserver = new QueryKeywordSearchSpotObserver();
+    private IObserver mQueryWeatherForecastObserver = new QueryWeatherForecastObserver();
 
     public Presenter(IMainView mainView, Repository repository) {
         this.mModel = new Model();
         this.mMainView = mainView;
         this.mRepository = repository;
         mModel.initBackgroundHandler();
-        mMainHandler = new UIHandler(mainView, Looper.getMainLooper());
+        mMainHandler = new UIHandler(mainView, mModel, Looper.getMainLooper());
     }
 
     @Override
@@ -104,6 +106,13 @@ public class Presenter implements IPresenter {
         mMainView.showSpotDetailResult(bundle);
     }
 
+    @Override
+    public void showWeatherForecast(String countyList, int position) {
+        String countyName = mModel.getCountyName(countyList, position);
+        mModel.addObserver(mQueryWeatherForecastObserver);
+        mModel.QueryWeatherForecast(countyName);
+    }
+
     public class QueryAllCityAndCountyListObserver implements IObserver {
         @Override
         public void notifyResult(String string) {
@@ -160,19 +169,33 @@ public class Presenter implements IPresenter {
         }
     }
 
+    public class QueryWeatherForecastObserver implements IObserver {
+        @Override
+        public void notifyResult(String string) {
+            mModel.removeObserver(mQueryWeatherForecastObserver);
+            Message msg = new Message();
+            msg.what = MSG_SHOW_WEATHER_FORECAST_RESULT;
+            msg.obj = string;
+            mMainHandler.sendMessage(msg);
+        }
+    }
+
     private static class UIHandler extends Handler {
 
         private WeakReference<IMainView> mMinView;
+        private WeakReference<Model> mModel;
 
-        public UIHandler(IMainView mainView, Looper mainLooper) {
+        public UIHandler(IMainView mainView, Model model, Looper mainLooper) {
             super(mainLooper);
+            mModel = new WeakReference<>(model);
             mMinView = new WeakReference<>(mainView);
         }
 
         @Override
         public void handleMessage(Message msg) {
             IMainView mainView = mMinView.get();
-            if (mainView == null) {
+            Model model = mModel.get();
+            if (mainView == null || model == null) {
                 return;
             }
             // Gets the image task from the incoming Message object.
@@ -190,6 +213,10 @@ public class Presenter implements IPresenter {
                     break;
                 case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
                     mainView.showKeywordSearchSpotResult(string);
+                    break;
+                case MSG_SHOW_WEATHER_FORECAST_RESULT:
+                    model.getWeatherInfo(string);
+                    mainView.showWeatherForecastResult(string);
                     break;
                 default:
                     break;

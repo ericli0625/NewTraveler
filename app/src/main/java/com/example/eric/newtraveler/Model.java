@@ -76,6 +76,10 @@ public class Model implements ISubject {
         mBackgroundHandler.post(new RunnableQueryKeywordSearchSpot(queryString));
     }
 
+    public void QueryWeatherForecast(String countyName) {
+        mBackgroundHandler.post(new RunnableQueryWeatherForecast(countyName));
+    }
+
     public class RunQueryCountyList implements Runnable {
 
         @Override
@@ -156,6 +160,20 @@ public class Model implements ISubject {
 
     }
 
+    private class RunnableQueryWeatherForecast implements Runnable {
+        private final String countyName;
+
+        public RunnableQueryWeatherForecast(String countyName) {
+            this.countyName = countyName;
+        }
+
+        @Override
+        public void run() {
+            String authorization = "Authorization=CWB-38A07514-8234-4044-AC3D-17FE6A4320BF";
+            queryRestFullAPI("GET", "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?locationName=" + countyName + "&" + authorization);
+        }
+    }
+
     public String getNowCountyName() {
         return mNowCountyName;
     }
@@ -180,6 +198,10 @@ public class Model implements ISubject {
     public void setNowCityStatus(String cityList, int position) {
         mNowCityName = getListItem(cityList, position);
         mNowCityPosition = position;
+    }
+
+    public String getCountyName(String countyList, int position) {
+        return getListItem(countyList, position);
     }
 
     private void queryRestFullAPI(String requestMethod, String url) {
@@ -246,6 +268,17 @@ public class Model implements ISubject {
             Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
         }
         return null;
+    }
+
+    //TODO parser weather info
+    public void getWeatherInfo(String jsonWeatherInfoArray) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonWeatherInfoArray);
+            JSONObject records = (JSONObject) jsonObject.get("records");
+            JSONObject location = (JSONObject) records.get("location");
+        } catch (JSONException e) {
+            Log.e(MainActivity.TAG, "Model, getWeatherInfo, JSONException");
+        }
     }
 
 }

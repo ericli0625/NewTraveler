@@ -47,34 +47,25 @@
         android:layout_toEndOf="@id/weather_forecast"
         app:srcCompat="@drawable/ic_lace" />
 
-    <ImageButton
-        android:id="@+id/return_icon"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/keyword_search"
-        android:layout_marginStart="@dimen/main_activity_all_view_margin"
-        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
-        app:srcCompat="@drawable/ic_return"/>
-
     <TextView
         android:id="@+id/list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/recyclerView"
+        android:layout_above="@id/recyclerView_weather_forecast"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/main_activity_all_view_margin"
         android:layout_marginBottom="@dimen/main_activity_all_view_margin"
-        android:text="@string/chose_city_title" />
+        android:text="@string/weather_forecast" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerView_weather_forecast"
         android:layout_width="match_parent"
         android:layout_height="@dimen/recyclerView_height"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/main_activity_all_view_margin"
         android:layout_marginTop="@dimen/main_activity_all_view_margin"
         android:layout_marginEnd="@dimen/main_activity_all_view_margin"
-        android:layout_marginBottom="@dimen/main_activity_all_view_margin" />
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin" >
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
