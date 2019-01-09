@@ -2,6 +2,8 @@ package com.example.eric.newtraveler.view;
 
 import android.os.Bundle;
 
+import org.json.JSONArray;
+
 public interface IMainView {
     void showCountyListResult(String string);
 
@@ -13,5 +15,5 @@ public interface IMainView {
 
     void showSpotDetailResult(Bundle bundle);
 
-    void showWeatherForecastResult(String countyName);
+    void showWeatherForecastResult(JSONArray countyName);
 }

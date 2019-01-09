@@ -270,15 +270,14 @@ public class Model implements ISubject {
         return null;
     }
 
-    //TODO parser weather info
-    public void getWeatherInfo(String jsonWeatherInfoArray) {
+    public JSONArray getWeatherElement(String jsonWeatherInfoArray) {
         try {
-            JSONObject jsonObject = new JSONObject(jsonWeatherInfoArray);
-            JSONObject records = (JSONObject) jsonObject.get("records");
-            JSONObject location = (JSONObject) records.get("location");
+            JSONObject locationJsonObject = new JSONObject(jsonWeatherInfoArray).getJSONObject("records").getJSONArray("location").getJSONObject(0);
+            return locationJsonObject.getJSONArray("weatherElement");
         } catch (JSONException e) {
             Log.e(MainActivity.TAG, "Model, getWeatherInfo, JSONException");
         }
+        return new JSONArray();
     }
 
 }

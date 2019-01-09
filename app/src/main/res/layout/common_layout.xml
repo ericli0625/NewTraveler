@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <ImageButton
+        android:id="@+id/normal_search"
+        android:layout_width="@dimen/main_activity_button_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        app:srcCompat="@drawable/ic_house" />
+
+    <ImageButton
+        android:id="@+id/keyword_search"
+        android:layout_width="@dimen/main_activity_button_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        android:layout_toEndOf="@id/normal_search"
+        app:srcCompat="@drawable/ic_magnifying_glass" />
+
+    <ImageButton
+        android:id="@+id/weather_forecast"
+        android:layout_width="@dimen/main_activity_button_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        android:layout_toEndOf="@id/keyword_search"
+        app:srcCompat="@drawable/ic_cloudy"/>
+
+    <ImageButton
+        android:id="@+id/favorite"
+        android:layout_width="@dimen/main_activity_button_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
+        android:layout_toEndOf="@id/weather_forecast"
+        app:srcCompat="@drawable/ic_lace" />
+
+</RelativeLayout>

@@ -9,6 +9,8 @@ import com.example.eric.newtraveler.presenter.IPresenter;
 import com.example.eric.newtraveler.view.IMainView;
 import com.example.eric.newtraveler.view.IObserver;
 
+import org.json.JSONArray;
+
 import java.lang.ref.WeakReference;
 
 
@@ -215,8 +217,8 @@ public class Presenter implements IPresenter {
                     mainView.showKeywordSearchSpotResult(string);
                     break;
                 case MSG_SHOW_WEATHER_FORECAST_RESULT:
-                    model.getWeatherInfo(string);
-                    mainView.showWeatherForecastResult(string);
+                    JSONArray weatherElement = model.getWeatherElement(string);
+                    mainView.showWeatherForecastResult(weatherElement);
                     break;
                 default:
                     break;

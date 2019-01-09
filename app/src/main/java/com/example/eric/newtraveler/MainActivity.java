@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -22,6 +23,10 @@ import com.example.eric.newtraveler.adapter.NormalListAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
 import com.example.eric.newtraveler.view.IMainView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
 
@@ -253,9 +258,28 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    //TODO show weather
-    public void showWeatherForecastResult(String string) {
-        Log.v(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + string);
+    public void showWeatherForecastResult(JSONArray jsonArray) {
+        Log.v(MainActivity.TAG, "MainActivity, showWeatherForecastResult");
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject weatherElement = (JSONObject) jsonArray.get(i);
+                JSONArray timeArray = weatherElement.getJSONArray("time");
+
+                for (int j = 0; j < timeArray.length(); j++) {
+                    String startTime = timeArray.getJSONObject(j).getString("startTime");
+                    String endTime = timeArray.getJSONObject(j).getString("endTime");
+                    JSONObject sdf = timeArray.getJSONObject(j).getJSONObject("parameter");
+                    Log.w(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + startTime);
+                    Log.w(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + endTime);
+                    Log.w(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + sdf);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public RecyclerItemTouchListener.OnItemClickListener

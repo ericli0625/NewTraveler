@@ -6,56 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageButton
-        android:id="@+id/normal_search"
-        android:layout_width="@dimen/main_activity_button_width"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="@dimen/main_activity_all_view_margin"
-        android:layout_marginTop="@dimen/main_activity_all_view_margin"
-        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
-        app:srcCompat="@drawable/ic_house" />
-
-    <ImageButton
-        android:id="@+id/keyword_search"
-        android:layout_width="@dimen/main_activity_button_width"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/main_activity_all_view_margin"
-        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
-        android:layout_toEndOf="@id/normal_search"
-        app:srcCompat="@drawable/ic_magnifying_glass" />
-
-    <ImageButton
-        android:id="@+id/weather_forecast"
-        android:layout_width="@dimen/main_activity_button_width"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/main_activity_all_view_margin"
-        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
-        android:layout_toEndOf="@id/keyword_search"
-        app:srcCompat="@drawable/ic_cloudy"/>
-
-    <ImageButton
-        android:id="@+id/favorite"
-        android:layout_width="@dimen/main_activity_button_width"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/main_activity_all_view_margin"
-        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
-        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
-        android:layout_toEndOf="@id/weather_forecast"
-        app:srcCompat="@drawable/ic_lace" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_keyword_search"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/recyclerView_height"
-        android:layout_below="@id/editText"
-        android:layout_marginStart="@dimen/main_activity_all_view_margin"
-        android:layout_marginTop="@dimen/main_activity_all_view_margin"
-        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
-        android:layout_marginBottom="@dimen/main_activity_all_view_margin" />
+    <include
+        android:id="@+id/common_layout"
+        layout="@layout/common_layout"
+    />
 
     <EditText
         android:id="@+id/editText"
@@ -63,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/main_activity_all_view_margin"
         android:layout_marginEnd="@dimen/main_activity_all_view_margin"
-        android:layout_below="@id/normal_search"
+        android:layout_below="@id/common_layout"
         android:inputType="text"
         android:importantForAutofill="no"
         tools:ignore="LabelFor"
@@ -75,8 +29,18 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/main_activity_all_view_margin"
         android:layout_marginEnd="@dimen/main_activity_all_view_margin"
-        android:layout_below="@id/keyword_search"
+        android:layout_below="@id/common_layout"
         android:layout_toEndOf="@id/editText"
         android:text="@string/click_keyword_search_button" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_keyword_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/recyclerView_height"
+        android:layout_below="@id/editText"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin" />
 
 </RelativeLayout>
