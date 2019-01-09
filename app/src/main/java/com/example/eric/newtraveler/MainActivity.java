@@ -7,9 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -158,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private void loadWeatherForecastView() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
-        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView_weather_forecast,
+        mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView_weather_forecast_city,
                 mWeatherForecastRecyclerItemTouchListener);
     }
 
