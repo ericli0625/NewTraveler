@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -90,13 +91,20 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addItemDecoration(
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(mItemDecoration);
         recyclerView.addOnItemTouchListener(new RecyclerItemTouchListener(
                 getApplicationContext(), listener));
 
         return recyclerView;
     }
+
+    RecyclerView.ItemDecoration mItemDecoration = new RecyclerView.ItemDecoration() {
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            outRect.set(10, 0, 0, 10);
+        }
+    };
 
     public void loadNormalCountySearch() {
         loadCommonView();
@@ -109,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void loadNormalCitySearch() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
+        mRecyclerView.removeItemDecoration(mItemDecoration);
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
                 mNormalListRecyclerItemTouchListener);
 
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public void loadNormalSpotSearch() {
         loadCommonView();
         mSpotDetailAdapter = new SpotDetailAdapter();
+        mRecyclerView.removeItemDecoration(mItemDecoration);
         mRecyclerView = getRecycleView(mSpotDetailAdapter, R.id.recyclerView,
                 mNormalListRecyclerItemTouchListener);
 
@@ -254,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         if (bundle != null) {
             intent.putExtras(bundle);
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
     }
 
