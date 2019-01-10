@@ -15,49 +15,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class WeatherDetailAdapter extends RecyclerView.Adapter<WeatherDetailAdapter.ViewHolder> {
 
     private JSONArray mJsonArray;
-
-    private ArrayList<ArrayList<String>> mWeatherArrayList = new ArrayList<>();
+    private String[] mTitleArray;
 
     public WeatherDetailAdapter() {
 
     }
 
+    public void setTitleArray(String[] planets) {
+        mTitleArray = planets;
+    }
+
     public void setJsonArray(String result) {
         try {
             mJsonArray = new JSONArray(result);
-
-            for (int i = 0; i < mJsonArray.length(); i++) {
-                Log.i(MainActivity.TAG,
-                        "MainActivity, showWeatherForecastResult init i = " + i);
-                try {
-                    JSONObject weatherElement = (JSONObject) mJsonArray.get(i);
-                    JSONArray timeArray = weatherElement.getJSONArray("time");
-
-                    for (int j = 0; j < timeArray.length(); j++) {
-                        String startTime = timeArray.getJSONObject(j).getString("startTime");
-                        String endTime = timeArray.getJSONObject(j).getString("endTime");
-                        JSONObject parameter = timeArray.getJSONObject(j).getJSONObject(
-                                "parameter");
-                        Log.w(MainActivity.TAG,
-                                "MainActivity, showWeatherForecastResult j = " + j + " startTime "
-                                        + startTime);
-                        Log.w(MainActivity.TAG,
-                                "MainActivity, showWeatherForecastResult j = " + j + " endTime "
-                                        + startTime);
-                        Log.w(MainActivity.TAG,
-                                "MainActivity, showWeatherForecastResult j = " + j + " parameter "
-                                        + parameter);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
         } catch (JSONException e) {
             Log.e(MainActivity.TAG,
                     "WeatherDetailAdapter, parser weather info failed, JSONException");
@@ -72,16 +45,18 @@ public class WeatherDetailAdapter extends RecyclerView.Adapter<WeatherDetailAdap
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        protected TextView mTimeTextView1;
-        protected TextView mTimeTextView2;
-        protected TextView mTimeTextView3;
+        protected TextView mTitleTextView;
+        protected TextView mTimeTextView12;
+        protected TextView mTimeTextView24;
+        protected TextView mTimeTextView36;
 
         // each data item is just a string in this case
         public ViewHolder(View v) {
             super(v);
-            mTimeTextView1 = (TextView) v.findViewById(R.id.recycle_view_item_8hr);
-            mTimeTextView2 = (TextView) v.findViewById(R.id.recycle_view_time_16hr);
-            mTimeTextView3 = (TextView) v.findViewById(R.id.recycle_view_time_24hr);
+            mTitleTextView = (TextView) v.findViewById(R.id.recycle_view_item_title);
+            mTimeTextView12 = (TextView) v.findViewById(R.id.recycle_view_item_12hr);
+            mTimeTextView24 = (TextView) v.findViewById(R.id.recycle_view_time_24hr);
+            mTimeTextView36 = (TextView) v.findViewById(R.id.recycle_view_time_36hr);
         }
     }
 
@@ -97,27 +72,27 @@ public class WeatherDetailAdapter extends RecyclerView.Adapter<WeatherDetailAdap
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        String string = null;
         try {
             JSONObject weatherElement = (JSONObject) mJsonArray.get(position);
             JSONArray timeArray = weatherElement.getJSONArray("time");
+
+            viewHolder.mTitleTextView.setText(mTitleArray[position]);
 
             for (int j = 0; j < timeArray.length(); j++) {
                 JSONObject parameter = timeArray.getJSONObject(j).getJSONObject("parameter");
                 String parameterName = parameter.getString("parameterName");
                 switch (j) {
                     case 0:
-                        viewHolder.mTimeTextView1.setText(parameterName);
+                        viewHolder.mTimeTextView12.setText(parameterName);
                         break;
                     case 1:
-                        viewHolder.mTimeTextView2.setText(parameterName);
+                        viewHolder.mTimeTextView24.setText(parameterName);
                         break;
                     case 2:
-                        viewHolder.mTimeTextView3.setText(parameterName);
+                        viewHolder.mTimeTextView36.setText(parameterName);
                         break;
                 }
             }
-
         } catch (JSONException e) {
             Log.e(MainActivity.TAG, "WeatherDetailAdapter onBindViewHolder, JSONException");
         }

@@ -8,9 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.adapter.WeatherDetailAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class WeatherDetailActivity extends AppCompatActivity {
 
@@ -38,14 +43,50 @@ public class WeatherDetailActivity extends AppCompatActivity {
 
         if (bundle != null) {
             String result = bundle.getString("weatherElement");
+            setWeatherTime(result);
+            mAdapter.setTitleArray(getResources().getStringArray(R.array.weather_title_array));
             mAdapter.setJsonArray(result);
             mAdapter.notifyDataSetChanged();
         }
 
     }
 
-    private RecyclerView getRecycleView(WeatherDetailAdapter adapter, int recyclerViewId,
-            RecyclerItemTouchListener.OnItemClickListener listener) {
+    private void setWeatherTime(String result) {
+
+        TextView titleTextView = (TextView) findViewById(R.id.county_name);
+
+        JSONArray mJsonArray = null;
+        try {
+            mJsonArray = new JSONArray(result);
+            JSONObject weatherElement = (JSONObject) mJsonArray.get(0);
+            JSONArray timeArray = weatherElement.getJSONArray("time");
+            for (int j = 0; j < timeArray.length(); j++) {
+                String startTime = timeArray.getJSONObject(j).getString("startTime");
+                startTime = startTime.substring(5, startTime.length() - 3);
+                String endTime = timeArray.getJSONObject(j).getString("endTime");
+                endTime = endTime.substring(5, endTime.length() - 3);
+                switch (j) {
+                    case 0:
+                        TextView timeTextView12 = (TextView) findViewById(R.id.time_item_12hr);
+                        timeTextView12.setText(startTime + "\n~\n" + endTime);
+                        break;
+                    case 1:
+                        TextView timeTextView24 = (TextView) findViewById(R.id.time_item_24hr);
+                        timeTextView24.setText(startTime + "\n~\n" + endTime);
+                        break;
+                    case 2:
+                        TextView timeTextView36 = (TextView) findViewById(R.id.time_item_36hr);
+                        timeTextView36.setText(startTime + "\n~\n" + endTime);
+                        break;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private RecyclerView getRecycleView(WeatherDetailAdapter adapter, int recyclerViewId, RecyclerItemTouchListener.OnItemClickListener listener) {
         // use a recycler view
         RecyclerView recyclerView = (RecyclerView) findViewById(recyclerViewId);
         // use this setting to improve performance if you know that changes

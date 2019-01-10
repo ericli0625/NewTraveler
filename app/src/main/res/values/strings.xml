@@ -35,4 +35,12 @@
 
     <string name="alert_dialog_no">否</string>
 
+    <string-array name="weather_title_array">
+        <item>"天氣狀況"</item>
+        <item>"降雨機率 (%)"</item>
+        <item>"最低溫度 (℃)"</item>
+        <item>"舒適度"</item>
+        <item>"最高溫度 (℃)"</item>
+    </string-array>
+
 </resources>
