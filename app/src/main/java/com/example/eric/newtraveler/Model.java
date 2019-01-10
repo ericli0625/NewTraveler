@@ -270,14 +270,16 @@ public class Model implements ISubject {
         return null;
     }
 
-    public JSONArray getWeatherElement(String jsonWeatherInfoArray) {
+    public Bundle getWeatherElement(String jsonWeatherInfoArray) {
+        Bundle bundle = new Bundle();
         try {
             JSONObject locationJsonObject = new JSONObject(jsonWeatherInfoArray).getJSONObject("records").getJSONArray("location").getJSONObject(0);
-            return locationJsonObject.getJSONArray("weatherElement");
+            JSONArray array = locationJsonObject.getJSONArray("weatherElement");
+            bundle.putString("weatherElement", array.toString());
         } catch (JSONException e) {
             Log.e(MainActivity.TAG, "Model, getWeatherInfo, JSONException");
         }
-        return new JSONArray();
+        return bundle;
     }
 
 }

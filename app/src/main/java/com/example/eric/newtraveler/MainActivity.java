@@ -1,7 +1,6 @@
 package com.example.eric.newtraveler;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -22,10 +21,6 @@ import com.example.eric.newtraveler.adapter.NormalListAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
 import com.example.eric.newtraveler.view.IMainView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
 
@@ -180,12 +175,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         }
     };
 
-    public View.OnClickListener mKeywordSearchModeButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.keyword_search_layout);
-            loadKeyWordSearchView();
-        }
+    public View.OnClickListener mKeywordSearchModeButtonListener = v -> {
+        setContentView(R.layout.keyword_search_layout);
+        loadKeyWordSearchView();
     };
 
     public View.OnClickListener mKeywordSearchButtonListener = new View.OnClickListener() {
@@ -267,28 +259,16 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showWeatherForecastResult(JSONArray jsonArray) {
+    public void showWeatherForecastResult(Bundle bundle) {
         Log.v(MainActivity.TAG, "MainActivity, showWeatherForecastResult");
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                JSONObject weatherElement = (JSONObject) jsonArray.get(i);
-                JSONArray timeArray = weatherElement.getJSONArray("time");
-
-                for (int j = 0; j < timeArray.length(); j++) {
-                    String startTime = timeArray.getJSONObject(j).getString("startTime");
-                    String endTime = timeArray.getJSONObject(j).getString("endTime");
-                    JSONObject sdf = timeArray.getJSONObject(j).getJSONObject("parameter");
-                    Log.w(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + startTime);
-                    Log.w(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + endTime);
-                    Log.w(MainActivity.TAG, "MainActivity, showWeatherForecastResult " + sdf);
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        Intent intent = new Intent();
+        intent.setClass(getApplicationContext(), WeatherDetailActivity.class);
+        if (bundle != null) {
+            intent.putExtras(bundle);
         }
-
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
     }
 
     public RecyclerItemTouchListener.OnItemClickListener
@@ -364,16 +344,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.alert_dialog_content)
                 .setCancelable(false)
-                .setPositiveButton(R.string.alert_dialog_yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        MainActivity.this.finish();
-                    }
-                })
-                .setNegativeButton(R.string.alert_dialog_no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+                .setPositiveButton(R.string.alert_dialog_yes, (dialog, id) -> MainActivity.this.finish())
+                .setNegativeButton(R.string.alert_dialog_no, (dialog, id) -> dialog.cancel());
         AlertDialog alert = builder.create();
         alert.show();
     }

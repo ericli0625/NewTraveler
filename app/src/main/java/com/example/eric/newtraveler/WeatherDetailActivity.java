@@ -3,20 +3,17 @@ package com.example.eric.newtraveler;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.example.eric.newtraveler.adapter.BaseAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.adapter.WeatherDetailAdapter;
 
 public class WeatherDetailActivity extends AppCompatActivity {
 
-    private String mName;
     private RecyclerView mRecyclerView;
     private WeatherDetailAdapter mAdapter;
 
@@ -40,31 +37,15 @@ public class WeatherDetailActivity extends AppCompatActivity {
                 mRecyclerItemTouchListener);
 
         if (bundle != null) {
-            String id = bundle.getString("id");
-            mName = bundle.getString("name");
-            String category = bundle.getString("category");
-            String address = bundle.getString("address");
-            String telephone = bundle.getString("telephone");
-            String content = bundle.getString("content");
-
-            TextView textViewNameDetail = (TextView) findViewById(R.id.textView_name_detail);
-            TextView textViewCategoryDetail = (TextView) findViewById(R.id.textView_category_detail);
-            TextView textViewAddressDetail = (TextView) findViewById(R.id.textView_address_detail);
-            TextView textViewTelephoneDetail = (TextView) findViewById(R.id.textView_telephone_detail);
-            TextView textViewContentDetail = (TextView) findViewById(R.id.textView_content_detail);
-
-            textViewNameDetail.setText(mName);
-            textViewCategoryDetail.setText(category);
-            textViewAddressDetail.setText(address);
-            textViewTelephoneDetail.setText(telephone);
-            textViewContentDetail.setText(content);
-
+            String result = bundle.getString("weatherElement");
+            mAdapter.setJsonArray(result);
+            mAdapter.notifyDataSetChanged();
         }
 
     }
 
-    private RecyclerView getRecycleView(BaseAdapter adapter, int recyclerViewId,
-                                        RecyclerItemTouchListener.OnItemClickListener listener) {
+    private RecyclerView getRecycleView(WeatherDetailAdapter adapter, int recyclerViewId,
+            RecyclerItemTouchListener.OnItemClickListener listener) {
         // use a recycler view
         RecyclerView recyclerView = (RecyclerView) findViewById(recyclerViewId);
         // use this setting to improve performance if you know that changes
@@ -72,7 +53,7 @@ public class WeatherDetailActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setAdapter(adapter);
@@ -85,12 +66,9 @@ public class WeatherDetailActivity extends AppCompatActivity {
         return recyclerView;
     }
 
-    public View.OnClickListener mButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.activity_main);
-            onBackPressed();
-        }
+    public View.OnClickListener mButtonListener = v -> {
+        setContentView(R.layout.activity_main);
+        onBackPressed();
     };
 
     public RecyclerItemTouchListener.OnItemClickListener

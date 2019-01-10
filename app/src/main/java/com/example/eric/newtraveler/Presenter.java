@@ -217,8 +217,8 @@ public class Presenter implements IPresenter {
                     mainView.showKeywordSearchSpotResult(string);
                     break;
                 case MSG_SHOW_WEATHER_FORECAST_RESULT:
-                    JSONArray weatherElement = model.getWeatherElement(string);
-                    mainView.showWeatherForecastResult(weatherElement);
+                    Bundle bundle = model.getWeatherElement(string);
+                    mainView.showWeatherForecastResult(bundle);
                     break;
                 default:
                     break;
