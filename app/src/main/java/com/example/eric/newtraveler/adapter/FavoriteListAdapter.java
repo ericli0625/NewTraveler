@@ -6,7 +6,6 @@ import android.util.Log;
 import com.example.eric.newtraveler.MainActivity;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class FavoriteListAdapter extends BaseAdapter {
 
@@ -19,10 +18,8 @@ public class FavoriteListAdapter extends BaseAdapter {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         String string = null;
         try {
-            JSONObject jsonobject = getJsonArray().getJSONObject(position);
-            string = jsonobject.getString("name");
+            string = (String) getJsonArray().get(position);
         } catch (JSONException e) {
-            e.printStackTrace();
             Log.e(MainActivity.TAG, "FavoriteListAdapter onBindViewHolder, JSONException");
         }
         viewHolder.mTextView.setText(string);

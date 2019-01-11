@@ -83,7 +83,7 @@ public class WeatherDetailActivity extends AppCompatActivity {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(MainActivity.TAG, "WeatherDetailActivity setWeatherForecastTime, JSONException");
         }
     }
 

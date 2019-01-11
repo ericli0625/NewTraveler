@@ -41,10 +41,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private RecyclerView mRecyclerView;
     private BaseAdapter mNormalListAdapter;
     private BaseAdapter mSpotDetailAdapter;
-    private BaseAdapter mFavoriteListAdapter;
+    private FavoriteListAdapter mFavoriteListAdapter;
 
     private String mStringKeywordSearchSpotResult;
     private String mStringNormalListResult;
+    private String mStringFavoriteListResult;
 
     private int mTriggerListLevel = 0;
 
@@ -300,8 +301,13 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showFavoriteListResult(Bundle bundle) {
+    public void showFavoriteListResult(String string) {
         Log.v(MainActivity.TAG, "MainActivity, showFavoriteListResult");
+
+        // set result data to an adapter
+        mFavoriteListAdapter.setJsonArray(string);
+        mFavoriteListAdapter.notifyDataSetChanged();
+        mStringFavoriteListResult = string;
 
     }
 
@@ -370,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                 @Override
                 public void onItemClick(int position) {
-
+                    mPresenter.showFavoriteSpotDetail(mStringFavoriteListResult, position);
                 }
 
                 @Override

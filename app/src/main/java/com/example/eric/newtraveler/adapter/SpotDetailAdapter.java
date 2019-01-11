@@ -22,7 +22,6 @@ public class SpotDetailAdapter extends BaseAdapter {
             JSONObject jsonobject = getJsonArray().getJSONObject(position);
             string = jsonobject.getString("name");
         } catch (JSONException e) {
-            e.printStackTrace();
             Log.e(MainActivity.TAG, "SpotDetailAdapter onBindViewHolder, JSONException");
         }
         viewHolder.mTextView.setText(string);

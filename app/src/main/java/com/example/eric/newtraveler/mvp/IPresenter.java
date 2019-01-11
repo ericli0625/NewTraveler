@@ -18,4 +18,6 @@ public interface IPresenter {
     void showWeatherForecast(String result, int position);
 
     void showFavoriteList();
+
+    void showFavoriteSpotDetail(String result, int position);
 }

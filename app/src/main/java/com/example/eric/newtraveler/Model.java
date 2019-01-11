@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -79,12 +80,20 @@ public class Model implements ISubject {
         mBackgroundHandler.post(new RunnableQueryKeywordSearchSpot(queryString));
     }
 
+    public void querySpotDetail(String result, int position) {
+        mBackgroundHandler.post(new RunnableQuerySpotDetail(result, position));
+    }
+
     public void QueryWeatherForecast(String countyName) {
         mBackgroundHandler.post(new RunnableQueryWeatherForecast(countyName));
     }
 
     public void QueryFavoriteList() {
         mBackgroundHandler.post(new RunnableQueryFavoriteList());
+    }
+
+    public void QueryFavoriteSpotDetail(String result, int position) {
+        mBackgroundHandler.post(new RunnableQueryFavoriteSpotDetail(result, position));
     }
 
     public class RunQueryCountyList implements Runnable {
@@ -111,7 +120,7 @@ public class Model implements ISubject {
             JSONArray jsonArray = new JSONArray(cityList);
             result = jsonArray.getString(position);
         } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
+            Log.e(MainActivity.TAG, "Model, getListItem, JSONException");
         }
         return result;
     }
@@ -129,12 +138,12 @@ public class Model implements ISubject {
         @Override
         public void run() {
             String queryString = getListItem(cityList, position);
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/query_city/?county=" + queryString);
+            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/query_city/?county=" + queryString);
+            notifyObservers(result);
         }
     }
 
     private class RunnableQuerySpotList implements Runnable {
-
 
         private String countyList;
         private int position;
@@ -147,8 +156,8 @@ public class Model implements ISubject {
         @Override
         public void run() {
             String queryString = getListItem(countyList, position);
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + getNowCountyName()
-                    + "," + queryString);
+            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + getNowCountyName() + "," + queryString);
+            notifyObservers(result);
         }
     }
 
@@ -162,7 +171,49 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + queryString);
+            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + queryString);
+            notifyObservers(result);
+        }
+
+    }
+
+    private class RunnableQuerySpotDetail implements Runnable {
+
+        private String result;
+        private int position;
+
+        public RunnableQuerySpotDetail(String result, int position) {
+            this.result = result;
+            this.position = position;
+        }
+
+        @Override
+        public void run() {
+            Bundle bundle = getSpotDetailBundle(result, position);
+            notifyObservers(bundle);
+        }
+
+        private Bundle getSpotDetailBundle(String string, int position) {
+            try {
+                JSONArray jsonArray = new JSONArray(string);
+                JSONObject jsonobject = jsonArray.getJSONObject(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", jsonobject.getString("id"));
+                bundle.putString("name", jsonobject.getString("name"));
+                bundle.putString("city", jsonobject.getString("city"));
+                bundle.putString("county", jsonobject.getString("county"));
+                bundle.putString("category", jsonobject.getString("category"));
+                bundle.putString("address", jsonobject.getString("address"));
+                bundle.putString("telephone", jsonobject.getString("telephone"));
+                bundle.putString("longitude", jsonobject.getString("longitude"));
+                bundle.putString("latitude", jsonobject.getString("latitude"));
+                bundle.putString("content", jsonobject.getString("content"));
+                bundle.putBoolean("favorite", false);
+                return bundle;
+            } catch (JSONException e) {
+                Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
+            }
+            return null;
         }
 
     }
@@ -177,7 +228,23 @@ public class Model implements ISubject {
         @Override
         public void run() {
             String authorization = "Authorization=CWB-38A07514-8234-4044-AC3D-17FE6A4320BF";
-            queryRestFullAPI("GET", "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?locationName=" + countyName + "&" + authorization);
+            String result = queryRestFullAPI("GET", "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?locationName=" + countyName + "&" + authorization);
+            Bundle bundle = getWeatherElement(result);
+            notifyObservers(bundle);
+        }
+
+        private Bundle getWeatherElement(String jsonWeatherInfoArray) {
+            Bundle bundle = new Bundle();
+            try {
+                JSONObject locationJsonObject = new JSONObject(jsonWeatherInfoArray).getJSONObject("records").getJSONArray("location").getJSONObject(0);
+                JSONArray array = locationJsonObject.getJSONArray("weatherElement");
+                String locationName = locationJsonObject.getString("locationName");
+                bundle.putString("weatherElement", array.toString());
+                bundle.putString("locationName", locationName);
+            } catch (JSONException e) {
+                Log.e(MainActivity.TAG, "Model, getWeatherElement, JSONException");
+            }
+            return bundle;
         }
     }
 
@@ -192,6 +259,67 @@ public class Model implements ISubject {
             queryFavoriteList();
         }
 
+        private void queryFavoriteList() {
+            ArrayList<String> arrayList = new ArrayList<String>();
+            Cursor cursor = SQLiteManager.getInstance().select();
+            if (cursor.getCount() != 0) {
+                cursor.moveToFirst();
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    String name = cursor.getString(1);
+                    arrayList.add(name);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+            JSONArray jsArray = new JSONArray(arrayList);
+            notifyObservers(jsArray.toString());
+        }
+    }
+
+    private class RunnableQueryFavoriteSpotDetail implements Runnable {
+
+        private String result;
+        private int position;
+
+        public RunnableQueryFavoriteSpotDetail(String result, int position) {
+            this.result = result;
+            this.position = position;
+        }
+
+        @Override
+        public void run() {
+            queryFavoriteSpotDetail(result, position);
+        }
+
+        private void queryFavoriteSpotDetail(String result, int position) {
+            String spotName = null;
+            try {
+                JSONArray mJsonArray = new JSONArray(result);
+                spotName = (String) mJsonArray.get(position);
+            } catch (JSONException e) {
+                Log.e(MainActivity.TAG, "queryFavoriteSpotDetail, JSONException");
+            }
+
+            Bundle bundle = new Bundle();
+            Cursor cursor = SQLiteManager.getInstance().findSpot(spotName);
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                bundle.putString("id", cursor.getString(0));
+                bundle.putString("name", cursor.getString(1));
+                bundle.putString("category", cursor.getString(2));
+                bundle.putString("address", cursor.getString(3));
+                bundle.putString("telephone", cursor.getString(4));
+                bundle.putString("longitude", cursor.getString(5));
+                bundle.putString("latitude", cursor.getString(6));
+                bundle.putString("content", cursor.getString(7));
+                cursor.moveToNext();
+            }
+            cursor.close();
+
+            bundle.putBoolean("favorite", true);
+
+            notifyObservers(bundle);
+        }
     }
 
     public String getNowCountyName() {
@@ -224,7 +352,7 @@ public class Model implements ISubject {
         return getListItem(countyList, position);
     }
 
-    private void queryRestFullAPI(String requestMethod, String url) {
+    private String queryRestFullAPI(String requestMethod, String url) {
         URL queryAllCountyUrl = null;
         HttpsURLConnection connection = null;
         BufferedReader bufferedReader = null;
@@ -265,49 +393,7 @@ public class Model implements ISubject {
             Log.e(MainActivity.TAG, "Query failed, IOException");
         }
 
-        notifyObservers(result);
-    }
-
-    public Bundle getSpotDetailBundle(String string, int position) {
-        try {
-            JSONArray jsonArray = new JSONArray(string);
-            JSONObject jsonobject = jsonArray.getJSONObject(position);
-            Bundle bundle = new Bundle();
-            bundle.putString("id", jsonobject.getString("id"));
-            bundle.putString("name", jsonobject.getString("name"));
-            bundle.putString("city", jsonobject.getString("city"));
-            bundle.putString("county", jsonobject.getString("county"));
-            bundle.putString("category", jsonobject.getString("category"));
-            bundle.putString("address", jsonobject.getString("address"));
-            bundle.putString("telephone", jsonobject.getString("telephone"));
-            bundle.putString("longitude", jsonobject.getString("longitude"));
-            bundle.putString("latitude", jsonobject.getString("latitude"));
-            bundle.putString("content", jsonobject.getString("content"));
-            return bundle;
-        } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "Model, getSpotDetailBundle, JSONException");
-        }
-        return null;
-    }
-
-    public Bundle getWeatherElement(String jsonWeatherInfoArray) {
-        Bundle bundle = new Bundle();
-        try {
-            JSONObject locationJsonObject = new JSONObject(jsonWeatherInfoArray).getJSONObject("records").getJSONArray("location").getJSONObject(0);
-            JSONArray array = locationJsonObject.getJSONArray("weatherElement");
-            String locationName = locationJsonObject.getString("locationName");
-            bundle.putString("weatherElement", array.toString());
-            bundle.putString("locationName", locationName);
-        } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "Model, getWeatherInfo, JSONException");
-        }
-        return bundle;
-    }
-
-    public void queryFavoriteList() {
-        Bundle bundle = new Bundle();
-        Cursor cursor = SQLiteManager.getInstance().select();
-        notifyObservers(bundle);
+        return result;
     }
 
 }

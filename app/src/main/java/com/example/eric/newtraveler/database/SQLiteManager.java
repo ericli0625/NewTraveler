@@ -98,6 +98,20 @@ public class SQLiteManager extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor findSpot(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "select * from " + TABLE_NAME + " where " + FIELD_Name + " like ? ";
+
+        Cursor cursor = db.rawQuery(sql,
+                new String[]{name});
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
     public void delete(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String where = FIELD_Id + " = ?";

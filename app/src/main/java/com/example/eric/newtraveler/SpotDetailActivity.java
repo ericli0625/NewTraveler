@@ -29,7 +29,6 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     private MapView mMapView;
     private GoogleMap mGoogleMap;
-    private SQLiteManager mSQLiteManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,6 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
         mMapView.getMapAsync(this);
-
-        mSQLiteManager = SQLiteManager.getInstance();
 
         Bundle bundle = getIntent().getExtras();
         loadInitCommonView(bundle);
@@ -65,6 +62,10 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
             mContent = bundle.getString("content");
             mLongitude = bundle.getString("longitude");
             mLatitude = bundle.getString("latitude");
+            boolean isFavorite = bundle.getBoolean("favorite");
+            if (isFavorite) {
+                addFavoriteButton.setVisibility(View.INVISIBLE);
+            }
 
             TextView textViewNameDetail = (TextView) findViewById(R.id.textView_name_detail);
             TextView textViewCategoryDetail = (TextView) findViewById(R.id.textView_category_detail);
@@ -89,17 +90,19 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     public View.OnClickListener mAddFavoriteButtonListener = v -> {
         // Perform action on click
-        Cursor cursor = mSQLiteManager.matchData(mName, mCategory, mAddress, mTelephone,
+        Cursor cursor = SQLiteManager.getInstance().matchData(mName, mCategory, mAddress, mTelephone,
                 mLongitude, mLatitude, mContent);
 
         int rows_num = cursor.getCount();
+
+        cursor.close();
 
         if (rows_num == 1) {
             Toast.makeText(v.getContext(), R.string.already_add_favorite_toast,
                     Toast.LENGTH_SHORT)
                     .show();
         } else {
-            mSQLiteManager.insert(mName, mCategory, mAddress, mTelephone, mLongitude, mLatitude,
+            SQLiteManager.getInstance().insert(mName, mCategory, mAddress, mTelephone, mLongitude, mLatitude,
                     mContent);
             Toast.makeText(v.getContext(), R.string.add_favorite_toast, Toast.LENGTH_SHORT)
                     .show();

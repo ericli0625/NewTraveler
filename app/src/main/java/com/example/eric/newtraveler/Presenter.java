@@ -20,6 +20,7 @@ public class Presenter implements IPresenter {
     private final static int MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT = 4;
     private final static int MSG_SHOW_WEATHER_FORECAST_RESULT = 5;
     private final static int MSG_SHOW_FAVORITE_LIST_RESULT = 6;
+    private final static int MSG_SHOW_SPOT_DETAIL_RESULT = 7;
 
     private final Repository mRepository;
     private final IMainView mMainView;
@@ -34,6 +35,7 @@ public class Presenter implements IPresenter {
     private IObserver mQueryKeywordSearchSpotObserver = new QueryKeywordSearchSpotObserver();
     private IObserver mQueryWeatherForecastObserver = new QueryWeatherForecastObserver();
     private IObserver mQueryFavoriteListObserver = new QueryFavoriteListObserver();
+    private IObserver mQuerySpotDetailObserver = new QuerySpotDetailObserver();
 
     public Presenter(IMainView mainView, Repository repository) {
         this.mModel = new Model();
@@ -104,8 +106,8 @@ public class Presenter implements IPresenter {
 
     @Override
     public void showSpotDetail(String result, int position) {
-        Bundle bundle = mModel.getSpotDetailBundle(result, position);
-        mMainView.showSpotDetailResult(bundle);
+        mModel.addObserver(mQuerySpotDetailObserver);
+        mModel.querySpotDetail(result, position);
     }
 
     @Override
@@ -119,6 +121,12 @@ public class Presenter implements IPresenter {
     public void showFavoriteList() {
         mModel.addObserver(mQueryFavoriteListObserver);
         mModel.QueryFavoriteList();
+    }
+
+    @Override
+    public void showFavoriteSpotDetail(String result, int position) {
+        mModel.addObserver(mQuerySpotDetailObserver);
+        mModel.QueryFavoriteSpotDetail(result, position);
     }
 
     public class QueryAllCityAndCountyListObserver implements IObserver {
@@ -199,6 +207,17 @@ public class Presenter implements IPresenter {
         }
     }
 
+    private class QuerySpotDetailObserver implements IObserver {
+        @Override
+        public <T> void notifyResult(T string) {
+            mModel.removeObserver(mQuerySpotDetailObserver);
+            Message msg = new Message();
+            msg.what = MSG_SHOW_SPOT_DETAIL_RESULT;
+            msg.obj = string;
+            mMainHandler.sendMessage(msg);
+        }
+    }
+
     private static class UIHandler extends Handler {
 
         private WeakReference<IMainView> mMinView;
@@ -234,11 +253,13 @@ public class Presenter implements IPresenter {
                     mainView.showKeywordSearchSpotResult((String) result);
                     break;
                 case MSG_SHOW_WEATHER_FORECAST_RESULT:
-                    Bundle bundle = model.getWeatherElement((String) result);
-                    mainView.showWeatherForecastResult(bundle);
+                    mainView.showWeatherForecastResult((Bundle) result);
                     break;
                 case MSG_SHOW_FAVORITE_LIST_RESULT:
-                    mainView.showFavoriteListResult((Bundle) result);
+                    mainView.showFavoriteListResult((String) result);
+                    break;
+                case MSG_SHOW_SPOT_DETAIL_RESULT:
+                    mainView.showSpotDetailResult((Bundle) result);
                     break;
                 default:
                     break;

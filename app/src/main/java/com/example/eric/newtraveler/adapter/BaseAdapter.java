@@ -26,7 +26,7 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
         try {
             mJsonArray = new JSONArray(string);
         } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "BaseAdapter constructer, JSONException");
+            Log.e(MainActivity.TAG, "BaseAdapter setJsonArray, JSONException");
         }
     }
 

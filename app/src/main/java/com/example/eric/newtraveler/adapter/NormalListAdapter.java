@@ -20,7 +20,6 @@ public class NormalListAdapter extends BaseAdapter {
         try {
             string = getJsonArray().getString(position);
         } catch (JSONException e) {
-            e.printStackTrace();
             Log.e(MainActivity.TAG, "NormalListAdapter onBindViewHolder, JSONException");
         }
         viewHolder.mTextView.setText(string);
