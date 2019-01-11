@@ -1,5 +1,6 @@
 package com.example.eric.newtraveler.mvp;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
 public interface IMainView {
@@ -14,4 +15,6 @@ public interface IMainView {
     void showSpotDetailResult(Bundle bundle);
 
     void showWeatherForecastResult(Bundle bundle);
+
+    void showFavoriteListResult(Bundle bundle);
 }

@@ -1,12 +1,15 @@
 package com.example.eric.newtraveler;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.eric.newtraveler.database.SQLiteManager;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -19,9 +22,14 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
     private String mLongitude;
     private String mLatitude;
     private String mName;
+    private String mContent;
+    private String mCategory;
+    private String mAddress;
+    private String mTelephone;
 
     private MapView mMapView;
     private GoogleMap mGoogleMap;
+    private SQLiteManager mSQLiteManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +42,8 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
         mMapView.onResume();
         mMapView.getMapAsync(this);
 
+        mSQLiteManager = SQLiteManager.getInstance();
+
         Bundle bundle = getIntent().getExtras();
         loadInitCommonView(bundle);
     }
@@ -41,15 +51,18 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
     public void loadInitCommonView(Bundle bundle) {
 
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
-        returnIcon.setOnClickListener(mButtonListener);
+        returnIcon.setOnClickListener(mReturnButtonListener);
+
+        ImageButton addFavoriteButton = (ImageButton) findViewById(R.id.add_favorite);
+        addFavoriteButton.setOnClickListener(mAddFavoriteButtonListener);
 
         if (bundle != null) {
             String id = bundle.getString("id");
             mName = bundle.getString("name");
-            String category = bundle.getString("category");
-            String address = bundle.getString("address");
-            String telephone = bundle.getString("telephone");
-            String content = bundle.getString("content");
+            mCategory = bundle.getString("category");
+            mAddress = bundle.getString("address");
+            mTelephone = bundle.getString("telephone");
+            mContent = bundle.getString("content");
             mLongitude = bundle.getString("longitude");
             mLatitude = bundle.getString("latitude");
 
@@ -60,20 +73,36 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
             TextView textViewContentDetail = (TextView) findViewById(R.id.textView_content_detail);
 
             textViewNameDetail.setText(mName);
-            textViewCategoryDetail.setText(category);
-            textViewAddressDetail.setText(address);
-            textViewTelephoneDetail.setText(telephone);
-            textViewContentDetail.setText(content);
+            textViewCategoryDetail.setText(mCategory);
+            textViewAddressDetail.setText(mAddress);
+            textViewTelephoneDetail.setText(mTelephone);
+            textViewContentDetail.setText(mContent);
 
         }
 
     }
 
-    public View.OnClickListener mButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.activity_main);
-            onBackPressed();
+    public View.OnClickListener mReturnButtonListener = v -> {
+        setContentView(R.layout.activity_main);
+        onBackPressed();
+    };
+
+    public View.OnClickListener mAddFavoriteButtonListener = v -> {
+        // Perform action on click
+        Cursor cursor = mSQLiteManager.matchData(mName, mCategory, mAddress, mTelephone,
+                mLongitude, mLatitude, mContent);
+
+        int rows_num = cursor.getCount();
+
+        if (rows_num == 1) {
+            Toast.makeText(v.getContext(), R.string.already_add_favorite_toast,
+                    Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            mSQLiteManager.insert(mName, mCategory, mAddress, mTelephone, mLongitude, mLatitude,
+                    mContent);
+            Toast.makeText(v.getContext(), R.string.add_favorite_toast, Toast.LENGTH_SHORT)
+                    .show();
         }
     };
 

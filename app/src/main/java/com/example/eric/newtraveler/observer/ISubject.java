@@ -5,5 +5,5 @@ public interface ISubject {
 
     void removeObserver(IObserver queryCityListObserver);
 
-    void notifyObservers(String string);
+    <T> void notifyObservers(T string);
 }

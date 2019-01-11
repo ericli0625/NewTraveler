@@ -19,6 +19,7 @@ public class Presenter implements IPresenter {
     private final static int MSG_SHOW_SPOT_LIST_RESULT = 3;
     private final static int MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT = 4;
     private final static int MSG_SHOW_WEATHER_FORECAST_RESULT = 5;
+    private final static int MSG_SHOW_FAVORITE_LIST_RESULT = 6;
 
     private final Repository mRepository;
     private final IMainView mMainView;
@@ -32,6 +33,7 @@ public class Presenter implements IPresenter {
     private IObserver mQuerySpotListObserver = new QuerySpotListObserver();
     private IObserver mQueryKeywordSearchSpotObserver = new QueryKeywordSearchSpotObserver();
     private IObserver mQueryWeatherForecastObserver = new QueryWeatherForecastObserver();
+    private IObserver mQueryFavoriteListObserver = new QueryFavoriteListObserver();
 
     public Presenter(IMainView mainView, Repository repository) {
         this.mModel = new Model();
@@ -113,11 +115,17 @@ public class Presenter implements IPresenter {
         mModel.QueryWeatherForecast(countyName);
     }
 
+    @Override
+    public void showFavoriteList() {
+        mModel.addObserver(mQueryFavoriteListObserver);
+        mModel.QueryFavoriteList();
+    }
+
     public class QueryAllCityAndCountyListObserver implements IObserver {
         @Override
-        public void notifyResult(String string) {
+        public <T> void notifyResult(T string) {
             mModel.removeObserver(mQueryAllCityAndCountyListObserver);
-            mRepository.parserAllCountyAndCityList(string);
+            mRepository.parserAllCountyAndCityList((String) string);
             Message msg = new Message();
             msg.what = MSG_SHOW_COUNTY_LIST_RESULT;
             msg.obj = mRepository.getCountyList();
@@ -127,7 +135,7 @@ public class Presenter implements IPresenter {
 
     public class QueryCountyListObserver implements IObserver {
         @Override
-        public void notifyResult(String string) {
+        public <T> void notifyResult(T string) {
             mModel.removeObserver(mQueryCountyListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_COUNTY_LIST_RESULT;
@@ -138,7 +146,7 @@ public class Presenter implements IPresenter {
 
     public class QueryCityListObserver implements IObserver {
         @Override
-        public void notifyResult(String string) {
+        public <T> void notifyResult(T string) {
             mModel.removeObserver(mQueryCityListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_CITY_LIST_RESULT;
@@ -149,7 +157,7 @@ public class Presenter implements IPresenter {
 
     public class QuerySpotListObserver implements IObserver {
         @Override
-        public void notifyResult(String string) {
+        public <T> void notifyResult(T string) {
             mModel.removeObserver(mQuerySpotListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_SPOT_LIST_RESULT;
@@ -160,7 +168,7 @@ public class Presenter implements IPresenter {
 
     public class QueryKeywordSearchSpotObserver implements IObserver {
         @Override
-        public void notifyResult(String string) {
+        public <T> void notifyResult(T string) {
             mModel.removeObserver(mQueryKeywordSearchSpotObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT;
@@ -171,10 +179,21 @@ public class Presenter implements IPresenter {
 
     public class QueryWeatherForecastObserver implements IObserver {
         @Override
-        public void notifyResult(String string) {
+        public <T> void notifyResult(T string) {
             mModel.removeObserver(mQueryWeatherForecastObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_WEATHER_FORECAST_RESULT;
+            msg.obj = string;
+            mMainHandler.sendMessage(msg);
+        }
+    }
+
+    public class QueryFavoriteListObserver implements IObserver {
+        @Override
+        public <T> void notifyResult(T string) {
+            mModel.removeObserver(mQueryFavoriteListObserver);
+            Message msg = new Message();
+            msg.what = MSG_SHOW_FAVORITE_LIST_RESULT;
             msg.obj = string;
             mMainHandler.sendMessage(msg);
         }
@@ -199,24 +218,27 @@ public class Presenter implements IPresenter {
                 return;
             }
             // Gets the image task from the incoming Message object.
-            String string = msg.obj != null ? (String) msg.obj : "";
+            Object result = msg.obj != null ? msg.obj : "";
             int msgType = msg.what;
             switch (msgType) {
                 case MSG_SHOW_COUNTY_LIST_RESULT:
-                    mainView.showCountyListResult(string);
+                    mainView.showCountyListResult((String) result);
                     break;
                 case MSG_SHOW_CITY_LIST_RESULT:
-                    mainView.showCityListResult(string);
+                    mainView.showCityListResult((String) result);
                     break;
                 case MSG_SHOW_SPOT_LIST_RESULT:
-                    mainView.showSpotListResult(string);
+                    mainView.showSpotListResult((String) result);
                     break;
                 case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
-                    mainView.showKeywordSearchSpotResult(string);
+                    mainView.showKeywordSearchSpotResult((String) result);
                     break;
                 case MSG_SHOW_WEATHER_FORECAST_RESULT:
-                    Bundle bundle = model.getWeatherElement(string);
+                    Bundle bundle = model.getWeatherElement((String) result);
                     mainView.showWeatherForecastResult(bundle);
+                    break;
+                case MSG_SHOW_FAVORITE_LIST_RESULT:
+                    mainView.showFavoriteListResult((Bundle) result);
                     break;
                 default:
                     break;

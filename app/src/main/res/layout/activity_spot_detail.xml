@@ -161,5 +161,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_content_detail"/>
 
+        <ImageButton
+            android:id="@+id/add_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+            android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+            android:layout_marginEnd="@dimen/spot_activity_all_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_2"
+            app:srcCompat="@drawable/ic_placeholder"/>
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

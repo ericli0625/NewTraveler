@@ -6,22 +6,24 @@ import android.util.Log;
 import com.example.eric.newtraveler.MainActivity;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
-public class NormalListAdapter extends BaseAdapter {
+public class FavoriteListAdapter extends BaseAdapter {
 
-    public NormalListAdapter() {
+    public FavoriteListAdapter() {
 
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull NormalListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         String string = null;
         try {
-            string = getJsonArray().getString(position);
+            JSONObject jsonobject = getJsonArray().getJSONObject(position);
+            string = jsonobject.getString("name");
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e(MainActivity.TAG, "NormalListAdapter onBindViewHolder, JSONException");
+            Log.e(MainActivity.TAG, "FavoriteListAdapter onBindViewHolder, JSONException");
         }
         viewHolder.mTextView.setText(string);
     }

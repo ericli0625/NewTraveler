@@ -43,4 +43,10 @@
         <item>"最高溫度 (℃)"</item>
     </string-array>
 
+    <string name="already_add_favorite_toast">"您已經新增過了"</string>
+
+    <string name="add_favorite_toast">"新增至我的最愛"</string>
+
+    <string name="favorite_title">我的最愛</string>
+
 </resources>

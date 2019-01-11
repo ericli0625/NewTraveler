@@ -17,9 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eric.newtraveler.adapter.BaseAdapter;
+import com.example.eric.newtraveler.adapter.FavoriteListAdapter;
 import com.example.eric.newtraveler.adapter.NormalListAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
+import com.example.eric.newtraveler.database.SQLiteManager;
 import com.example.eric.newtraveler.mvp.IMainView;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private RecyclerView mRecyclerView;
     private BaseAdapter mNormalListAdapter;
     private BaseAdapter mSpotDetailAdapter;
+    private BaseAdapter mFavoriteListAdapter;
 
     private String mStringKeywordSearchSpotResult;
     private String mStringNormalListResult;
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         Repository repository = new Repository(sharedPreferences);
+        SQLiteManager.createInstance(this);
+
         mPresenter = new Presenter(this, repository);
         mPresenter.preloadAllCountyAndCityList();
     }
@@ -65,9 +70,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         ImageButton normalSearchModeButton = (ImageButton) findViewById(R.id.normal_search);
         ImageButton keywordSearchModeButton = (ImageButton) findViewById(R.id.keyword_search);
         ImageButton weatherForecastButton = (ImageButton) findViewById(R.id.weather_forecast);
+        ImageButton favoriteListButton = (ImageButton) findViewById(R.id.favorite_list);
         normalSearchModeButton.setOnClickListener(mNormalSearchModeButtonListener);
         keywordSearchModeButton.setOnClickListener(mKeywordSearchModeButtonListener);
         weatherForecastButton.setOnClickListener(mWeatherForecastButtonListener);
+        favoriteListButton.setOnClickListener(mFavoriteListButtonListener);
     }
 
     private RecyclerView getRecycleView(BaseAdapter adapter, int recyclerViewId,
@@ -99,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         }
     };
 
-    public void loadNormalCountySearch() {
+    public void loadNormalCountySearchView() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
         mRecyclerView = getRecycleView(mNormalListAdapter, R.id.recyclerView,
@@ -107,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mTriggerListLevel = IN_COUNTY_LIST_PAGE;
     }
 
-    public void loadNormalCitySearch() {
+    public void loadNormalCitySearchView() {
         loadCommonView();
         mNormalListAdapter = new NormalListAdapter();
         mRecyclerView.removeItemDecoration(mItemDecoration);
@@ -155,11 +162,22 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 mWeatherForecastRecyclerItemTouchListener);
     }
 
+    private void loadFavoriteListView() {
+        loadCommonView();
+        mFavoriteListAdapter = new FavoriteListAdapter();
+        mRecyclerView = getRecycleView(mFavoriteListAdapter, R.id.recyclerView,
+                mFavoriteListRecyclerItemTouchListener);
+
+        mTextView = (TextView) findViewById(R.id.list_title);
+        mTextView.setText(R.string.favorite_title);
+
+    }
+
     public View.OnClickListener mNormalSearchModeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             setContentView(R.layout.activity_main);
-            loadNormalCountySearch();
+            loadNormalCountySearchView();
 
             mPresenter.showCountyList();
         }
@@ -169,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         @Override
         public void onClick(View v) {
             setContentView(R.layout.activity_main);
-            loadNormalCitySearch();
+            loadNormalCitySearchView();
 
             mPresenter.backToCityListPage();
         }
@@ -196,6 +214,16 @@ public class MainActivity extends AppCompatActivity implements IMainView {
             loadWeatherForecastView();
 
             mPresenter.showCountyList();
+        }
+    };
+
+    public View.OnClickListener mFavoriteListButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setContentView(R.layout.activity_main);
+            loadFavoriteListView();
+
+            mPresenter.showFavoriteList();
         }
     };
 
@@ -271,6 +299,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         getApplicationContext().startActivity(intent);
     }
 
+    @Override
+    public void showFavoriteListResult(Bundle bundle) {
+        Log.v(MainActivity.TAG, "MainActivity, showFavoriteListResult");
+
+    }
+
     public RecyclerItemTouchListener.OnItemClickListener
             mNormalListRecyclerItemTouchListener =
             new RecyclerItemTouchListener.OnItemClickListener() {
@@ -280,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                     switch (mTriggerListLevel) {
                         case IN_COUNTY_LIST_PAGE:
-                            loadNormalCitySearch();
+                            loadNormalCitySearchView();
                             showToast(true, Toast.LENGTH_LONG);
 
                             mPresenter.showCityList(mStringNormalListResult, position);
@@ -323,6 +357,20 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 @Override
                 public void onItemClick(int position) {
                     mPresenter.showWeatherForecast(mStringNormalListResult, position);
+                }
+
+                @Override
+                public void onItemLongPress(int position) {
+                }
+            };
+
+    public RecyclerItemTouchListener.OnItemClickListener
+            mFavoriteListRecyclerItemTouchListener =
+            new RecyclerItemTouchListener.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(int position) {
+
                 }
 
                 @Override

@@ -1,10 +1,12 @@
 package com.example.eric.newtraveler;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.example.eric.newtraveler.database.SQLiteManager;
 import com.example.eric.newtraveler.observer.ISubject;
 import com.example.eric.newtraveler.observer.IObserver;
 
@@ -50,7 +52,8 @@ public class Model implements ISubject {
         mObserveList.remove(observer);
     }
 
-    public void notifyObservers(String string) {
+    @Override
+    public <T> void notifyObservers(T string) {
         for (IObserver iObserver : mObserveList) {
             iObserver.notifyResult(string);
         }
@@ -78,6 +81,10 @@ public class Model implements ISubject {
 
     public void QueryWeatherForecast(String countyName) {
         mBackgroundHandler.post(new RunnableQueryWeatherForecast(countyName));
+    }
+
+    public void QueryFavoriteList() {
+        mBackgroundHandler.post(new RunnableQueryFavoriteList());
     }
 
     public class RunQueryCountyList implements Runnable {
@@ -172,6 +179,19 @@ public class Model implements ISubject {
             String authorization = "Authorization=CWB-38A07514-8234-4044-AC3D-17FE6A4320BF";
             queryRestFullAPI("GET", "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?locationName=" + countyName + "&" + authorization);
         }
+    }
+
+    private class RunnableQueryFavoriteList implements Runnable {
+
+        public RunnableQueryFavoriteList() {
+
+        }
+
+        @Override
+        public void run() {
+            queryFavoriteList();
+        }
+
     }
 
     public String getNowCountyName() {
@@ -282,6 +302,12 @@ public class Model implements ISubject {
             Log.e(MainActivity.TAG, "Model, getWeatherInfo, JSONException");
         }
         return bundle;
+    }
+
+    public void queryFavoriteList() {
+        Bundle bundle = new Bundle();
+        Cursor cursor = SQLiteManager.getInstance().select();
+        notifyObservers(bundle);
     }
 
 }

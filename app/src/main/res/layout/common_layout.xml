@@ -35,7 +35,7 @@
         app:srcCompat="@drawable/ic_cloudy"/>
 
     <ImageButton
-        android:id="@+id/favorite"
+        android:id="@+id/favorite_list"
         android:layout_width="@dimen/main_activity_button_width"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

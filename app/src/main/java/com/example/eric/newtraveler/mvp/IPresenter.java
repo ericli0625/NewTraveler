@@ -16,4 +16,6 @@ public interface IPresenter {
     void backToCityListPage();
 
     void showWeatherForecast(String result, int position);
+
+    void showFavoriteList();
 }
