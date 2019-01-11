@@ -29,10 +29,12 @@
         <activity
             android:name=".SpotDetailActivity"
             android:label="@string/title_activity_main2"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".WeatherDetailActivity"
             android:label="@string/title_activity_main2"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme"></activity>
 
     </application>
