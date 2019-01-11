@@ -43,7 +43,7 @@ public class WeatherDetailActivity extends AppCompatActivity {
 
         if (bundle != null) {
             String result = bundle.getString("weatherElement");
-            setWeatherTime(result);
+            setWeatherForecastTime(result);
             mAdapter.setTitleArray(getResources().getStringArray(R.array.weather_title_array));
             mAdapter.setJsonArray(result);
             mAdapter.notifyDataSetChanged();
@@ -51,14 +51,11 @@ public class WeatherDetailActivity extends AppCompatActivity {
 
     }
 
-    private void setWeatherTime(String result) {
-
-        TextView titleTextView = (TextView) findViewById(R.id.county_name);
-
-        JSONArray mJsonArray = null;
+    private void setWeatherForecastTime(String result) {
+        JSONArray jsonArray = null;
         try {
-            mJsonArray = new JSONArray(result);
-            JSONObject weatherElement = (JSONObject) mJsonArray.get(0);
+            jsonArray = new JSONArray(result);
+            JSONObject weatherElement = (JSONObject) jsonArray.get(0);
             JSONArray timeArray = weatherElement.getJSONArray("time");
             for (int j = 0; j < timeArray.length(); j++) {
                 String startTime = timeArray.getJSONObject(j).getString("startTime");
@@ -83,7 +80,6 @@ public class WeatherDetailActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     private RecyclerView getRecycleView(WeatherDetailAdapter adapter, int recyclerViewId, RecyclerItemTouchListener.OnItemClickListener listener) {

@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,63 +9,62 @@
         android:id="@+id/return_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/weather_activity_all_view_margin"
+        android:layout_marginTop="@dimen/weather_activity_all_view_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_return" />
+        app:srcCompat="@drawable/ic_return"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_weather_forecast_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/weather_activity_recyclerView_margin_top"
+        android:layout_marginEnd="@dimen/main_activity_all_view_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/county_name" />
+        app:layout_constraintTop_toBottomOf="@+id/forecast_time_title"/>
 
     <TextView
-        android:id="@+id/county_name"
+        android:id="@+id/forecast_time_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="地區"
+        android:layout_marginStart="@dimen/weather_activity_all_view_margin"
+        android:layout_marginTop="@dimen/weather_activity_all_view_margin"
+        android:text="預測時段"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/return_icon" />
+        app:layout_constraintTop_toBottomOf="@+id/return_icon"/>
 
     <TextView
         android:id="@+id/time_item_12hr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginStart="@dimen/weather_activity_margin_start"
+        android:layout_marginTop="@dimen/weather_activity_margin_top"
         android:text="12hr"
-        app:layout_constraintStart_toEndOf="@+id/county_name"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/forecast_time_title"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/time_item_24hr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginStart="@dimen/weather_activity_margin_start"
+        android:layout_marginTop="@dimen/weather_activity_margin_top"
         android:text="24hr"
         app:layout_constraintStart_toEndOf="@+id/time_item_12hr"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/time_item_36hr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginStart="@dimen/weather_activity_margin_start"
+        android:layout_marginTop="@dimen/weather_activity_margin_top"
         android:text="36hr"
         app:layout_constraintStart_toEndOf="@+id/time_item_24hr"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

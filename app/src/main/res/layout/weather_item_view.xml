@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/recycle_view_item_title"
+        android:layout_width="@dimen/weather_item_view_title_layout_width"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/main_activity_all_view_margin"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        android:text="項目"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/recycle_view_item_12hr"
+        android:layout_width="@dimen/weather_item_view_layout_width"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/weather_item_view_margin_start"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        android:text="未來十二小時"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recycle_view_item_title"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/recycle_view_time_24hr"
+        android:layout_width="@dimen/weather_item_view_layout_width"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/weather_item_view_margin_start"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        android:text="未來二十四小時"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recycle_view_item_12hr"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/recycle_view_time_36hr"
+        android:layout_width="@dimen/weather_item_view_layout_width"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/weather_item_view_margin_start"
+        android:layout_marginTop="@dimen/main_activity_all_view_margin"
+        android:layout_marginBottom="@dimen/main_activity_all_view_margin"
+        android:text="未來三十六小時"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recycle_view_time_24hr"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>
