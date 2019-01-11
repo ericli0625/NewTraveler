@@ -100,7 +100,8 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
+            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
+            notifyObservers(result);
         }
 
     }
@@ -109,7 +110,8 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/");
+            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/");
+            notifyObservers(result);
         }
 
     }
