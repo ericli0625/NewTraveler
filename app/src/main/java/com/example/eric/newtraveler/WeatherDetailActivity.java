@@ -42,16 +42,21 @@ public class WeatherDetailActivity extends AppCompatActivity {
                 mRecyclerItemTouchListener);
 
         if (bundle != null) {
-            String result = bundle.getString("weatherElement");
-            setWeatherForecastTime(result);
+            String weatherElement = bundle.getString("weatherElement");
+            String locationName = bundle.getString("locationName");
+            setWeatherForecastTime(weatherElement, locationName);
             mAdapter.setTitleArray(getResources().getStringArray(R.array.weather_title_array));
-            mAdapter.setJsonArray(result);
+            mAdapter.setJsonArray(weatherElement);
             mAdapter.notifyDataSetChanged();
         }
 
     }
 
-    private void setWeatherForecastTime(String result) {
+    private void setWeatherForecastTime(String result, String locationName) {
+
+        TextView locationTextView = (TextView) findViewById(R.id.location_name);
+        locationTextView.setText(locationName);
+
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(result);

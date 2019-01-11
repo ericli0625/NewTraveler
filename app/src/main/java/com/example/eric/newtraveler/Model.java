@@ -275,7 +275,9 @@ public class Model implements ISubject {
         try {
             JSONObject locationJsonObject = new JSONObject(jsonWeatherInfoArray).getJSONObject("records").getJSONArray("location").getJSONObject(0);
             JSONArray array = locationJsonObject.getJSONArray("weatherElement");
+            String locationName = locationJsonObject.getString("locationName");
             bundle.putString("weatherElement", array.toString());
+            bundle.putString("locationName", locationName);
         } catch (JSONException e) {
             Log.e(MainActivity.TAG, "Model, getWeatherInfo, JSONException");
         }
