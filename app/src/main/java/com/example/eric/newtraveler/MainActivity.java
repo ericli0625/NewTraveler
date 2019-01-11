@@ -20,7 +20,7 @@ import com.example.eric.newtraveler.adapter.BaseAdapter;
 import com.example.eric.newtraveler.adapter.NormalListAdapter;
 import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
-import com.example.eric.newtraveler.view.IMainView;
+import com.example.eric.newtraveler.mvp.IMainView;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
 

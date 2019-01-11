@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.view;
+package com.example.eric.newtraveler.observer;
 
 public interface IObserver {
     void notifyResult(String string);

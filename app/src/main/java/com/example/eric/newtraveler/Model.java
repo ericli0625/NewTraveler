@@ -5,8 +5,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import com.example.eric.newtraveler.presenter.ISubject;
-import com.example.eric.newtraveler.view.IObserver;
+import com.example.eric.newtraveler.observer.ISubject;
+import com.example.eric.newtraveler.observer.IObserver;
 
 import org.json.JSONArray;
 import org.json.JSONException;

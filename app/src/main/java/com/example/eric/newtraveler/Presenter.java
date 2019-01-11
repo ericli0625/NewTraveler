@@ -5,11 +5,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.example.eric.newtraveler.presenter.IPresenter;
-import com.example.eric.newtraveler.view.IMainView;
-import com.example.eric.newtraveler.view.IObserver;
-
-import org.json.JSONArray;
+import com.example.eric.newtraveler.mvp.IPresenter;
+import com.example.eric.newtraveler.mvp.IMainView;
+import com.example.eric.newtraveler.observer.IObserver;
 
 import java.lang.ref.WeakReference;
 
