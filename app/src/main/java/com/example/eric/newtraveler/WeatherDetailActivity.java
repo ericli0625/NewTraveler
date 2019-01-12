@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.eric.newtraveler.adapter.RecyclerItemTouchListener;
 import com.example.eric.newtraveler.adapter.WeatherDetailAdapter;
 
 import org.json.JSONArray;
@@ -18,9 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WeatherDetailActivity extends AppCompatActivity {
-
-    private RecyclerView mRecyclerView;
-    private WeatherDetailAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +33,16 @@ public class WeatherDetailActivity extends AppCompatActivity {
         ImageButton returnIcon = (ImageButton) findViewById(R.id.return_icon);
         returnIcon.setOnClickListener(mButtonListener);
 
-        mAdapter = new WeatherDetailAdapter();
-        mRecyclerView = getRecycleView(mAdapter, R.id.recyclerView_weather_forecast_detail,
-                mRecyclerItemTouchListener);
+        RecyclerView mRecyclerView = getRecycleView(R.id.recyclerView_weather_forecast_detail);
 
         if (bundle != null) {
             String weatherElement = bundle.getString("weatherElement");
             String locationName = bundle.getString("locationName");
             setWeatherForecastTime(weatherElement, locationName);
-            mAdapter.setTitleArray(getResources().getStringArray(R.array.weather_title_array));
-            mAdapter.setJsonArray(weatherElement);
-            mAdapter.notifyDataSetChanged();
+            WeatherDetailAdapter adapter = new WeatherDetailAdapter(weatherElement,
+                    getResources().getStringArray(R.array.weather_title_array));
+            mRecyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
 
     }
@@ -87,7 +82,7 @@ public class WeatherDetailActivity extends AppCompatActivity {
         }
     }
 
-    private RecyclerView getRecycleView(WeatherDetailAdapter adapter, int recyclerViewId, RecyclerItemTouchListener.OnItemClickListener listener) {
+    private RecyclerView getRecycleView(int recyclerViewId) {
         // use a recycler view
         RecyclerView recyclerView = (RecyclerView) findViewById(recyclerViewId);
         // use this setting to improve performance if you know that changes
@@ -98,12 +93,7 @@ public class WeatherDetailActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(adapter);
-
-        recyclerView.addItemDecoration(
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        recyclerView.addOnItemTouchListener(new RecyclerItemTouchListener(
-                getApplicationContext(), listener));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         return recyclerView;
     }
@@ -112,19 +102,5 @@ public class WeatherDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         onBackPressed();
     };
-
-    public RecyclerItemTouchListener.OnItemClickListener
-            mRecyclerItemTouchListener =
-            new RecyclerItemTouchListener.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(int position) {
-
-                }
-
-                @Override
-                public void onItemLongPress(int position) {
-                }
-            };
 
 }

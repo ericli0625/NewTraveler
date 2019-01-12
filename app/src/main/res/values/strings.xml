@@ -47,6 +47,11 @@
 
     <string name="add_favorite_toast">"新增至我的最愛"</string>
 
-    <string name="favorite_title">我的最愛</string>
+    <string name="favorite_title">"我的最愛"</string>
+
+    <string name="delete_dialog_title">"刪除"</string>
+    <string name="delete_dialog_message">"是否刪除此景點"</string>
+    <string name="delete_dialog_ok">"確定"</string>
+    <string name="delete_dialog_cancel">"取消"</string>
 
 </resources>

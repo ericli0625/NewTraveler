@@ -13,7 +13,11 @@ public interface IMainView {
 
     void showSpotDetailResult(Bundle bundle);
 
+    void showWeatherCountyListResult(String string);
+
     void showWeatherForecastResult(Bundle bundle);
 
     void showFavoriteListResult(String string);
+
+    void showDeleteFavoriteResult(String result);
 }

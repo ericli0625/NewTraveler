@@ -15,9 +15,13 @@ public interface IPresenter {
 
     void backToCityListPage();
 
+    void showWeatherCountyList();
+
     void showWeatherForecast(String result, int position);
 
     void showFavoriteList();
 
     void showFavoriteSpotDetail(String result, int position);
+
+    void deleteFavoriteSpot(String result, int position);
 }

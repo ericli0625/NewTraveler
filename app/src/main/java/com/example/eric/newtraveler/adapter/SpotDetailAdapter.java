@@ -4,14 +4,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.eric.newtraveler.MainActivity;
+import com.example.eric.newtraveler.mvp.IBaseAdapterClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SpotDetailAdapter extends BaseAdapter {
 
-    public SpotDetailAdapter() {
-
+    public SpotDetailAdapter(String string, IBaseAdapterClickListener listener) {
+        super(string, listener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -24,7 +25,7 @@ public class SpotDetailAdapter extends BaseAdapter {
         } catch (JSONException e) {
             Log.e(MainActivity.TAG, "SpotDetailAdapter onBindViewHolder, JSONException");
         }
-        viewHolder.mTextView.setText(string);
+        viewHolder.getTextView().setText(string);
     }
 
 }

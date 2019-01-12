@@ -4,13 +4,14 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.eric.newtraveler.MainActivity;
+import com.example.eric.newtraveler.mvp.IBaseAdapterClickListener;
 
 import org.json.JSONException;
 
 public class NormalListAdapter extends BaseAdapter {
 
-    public NormalListAdapter() {
-
+    public NormalListAdapter(String string, IBaseAdapterClickListener listener) {
+        super(string, listener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -22,7 +23,7 @@ public class NormalListAdapter extends BaseAdapter {
         } catch (JSONException e) {
             Log.e(MainActivity.TAG, "NormalListAdapter onBindViewHolder, JSONException");
         }
-        viewHolder.mTextView.setText(string);
+        viewHolder.getTextView().setText(string);
     }
 
 }

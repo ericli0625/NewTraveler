@@ -20,21 +20,14 @@ public class WeatherDetailAdapter extends RecyclerView.Adapter<WeatherDetailAdap
     private JSONArray mJsonArray;
     private String[] mTitleArray;
 
-    public WeatherDetailAdapter() {
-
-    }
-
-    public void setTitleArray(String[] planets) {
-        mTitleArray = planets;
-    }
-
-    public void setJsonArray(String result) {
+    public WeatherDetailAdapter(String weatherElement, String[] stringArray) {
         try {
-            mJsonArray = new JSONArray(result);
+            mJsonArray = new JSONArray(weatherElement);
         } catch (JSONException e) {
             Log.e(MainActivity.TAG,
                     "WeatherDetailAdapter, parser weather info failed, JSONException");
         }
+        mTitleArray = stringArray;
     }
 
     protected JSONArray getJsonArray() {
@@ -73,7 +66,7 @@ public class WeatherDetailAdapter extends RecyclerView.Adapter<WeatherDetailAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         try {
-            JSONObject weatherElement = (JSONObject) mJsonArray.get(position);
+            JSONObject weatherElement = (JSONObject) getJsonArray().get(position);
             JSONArray timeArray = weatherElement.getJSONArray("time");
 
             viewHolder.mTitleTextView.setText(mTitleArray[position]);

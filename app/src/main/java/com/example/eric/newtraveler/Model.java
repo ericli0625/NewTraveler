@@ -96,6 +96,10 @@ public class Model implements ISubject {
         mBackgroundHandler.post(new RunnableQueryFavoriteSpotDetail(result, position));
     }
 
+    public void DeleteFavoriteSpot(String result, int position) {
+        mBackgroundHandler.post(new RunnableDeleteFavoriteSpot(result, position));
+    }
+
     public class RunQueryCountyList implements Runnable {
 
         @Override
@@ -261,21 +265,6 @@ public class Model implements ISubject {
             queryFavoriteList();
         }
 
-        private void queryFavoriteList() {
-            ArrayList<String> arrayList = new ArrayList<String>();
-            Cursor cursor = SQLiteManager.getInstance().select();
-            if (cursor.getCount() != 0) {
-                cursor.moveToFirst();
-                for (int i = 0; i < cursor.getCount(); i++) {
-                    String name = cursor.getString(1);
-                    arrayList.add(name);
-                    cursor.moveToNext();
-                }
-            }
-            cursor.close();
-            JSONArray jsArray = new JSONArray(arrayList);
-            notifyObservers(jsArray.toString());
-        }
     }
 
     private class RunnableQueryFavoriteSpotDetail implements Runnable {
@@ -321,6 +310,30 @@ public class Model implements ISubject {
             bundle.putBoolean("favorite", true);
 
             notifyObservers(bundle);
+        }
+    }
+
+    private class RunnableDeleteFavoriteSpot implements Runnable {
+
+        private String result;
+        private int position;
+
+        public RunnableDeleteFavoriteSpot(String result, int position) {
+            this.result = result;
+            this.position = position;
+        }
+
+        @Override
+        public void run() {
+            String spotName = null;
+            try {
+                JSONArray mJsonArray = new JSONArray(result);
+                spotName = (String) mJsonArray.get(position);
+            } catch (JSONException e) {
+                Log.e(MainActivity.TAG, "queryFavoriteSpotDetail, JSONException");
+            }
+            SQLiteManager.getInstance().delete(spotName);
+            queryFavoriteList();
         }
     }
 
@@ -396,6 +409,22 @@ public class Model implements ISubject {
         }
 
         return result;
+    }
+
+    private void queryFavoriteList() {
+        ArrayList<String> arrayList = new ArrayList<String>();
+        Cursor cursor = SQLiteManager.getInstance().select();
+        if (cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                String name = cursor.getString(1);
+                arrayList.add(name);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        JSONArray jsArray = new JSONArray(arrayList);
+        notifyObservers(jsArray.toString());
     }
 
 }

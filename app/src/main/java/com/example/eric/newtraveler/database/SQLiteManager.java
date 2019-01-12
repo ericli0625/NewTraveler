@@ -112,10 +112,10 @@ public class SQLiteManager extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void delete(int id) {
+    public void delete(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String where = FIELD_Id + " = ?";
-        String[] whereValues = {Integer.toString(id)};
+        String where = FIELD_Name + " = ?";
+        String[] whereValues = {name};
         db.delete(TABLE_NAME, where, whereValues);
     }
 
