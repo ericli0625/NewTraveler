@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.eric.newtraveler.database.SQLiteManager;
@@ -29,6 +30,8 @@ public class Model implements ISubject {
     private HandlerThread mBackgroundThread = null;
     private Handler mBackgroundHandler = null;
 
+    private final Repository mRepository;
+
     private CopyOnWriteArrayList<IObserver> mObserveList = new CopyOnWriteArrayList<IObserver>();
 
     private String mNowCountyName;
@@ -36,6 +39,14 @@ public class Model implements ISubject {
 
     private int mNowCountyPosition;
     private int mNowCityPosition;
+
+    //TODO: refactor them
+    private String mFavoriteList;
+    private String mSpotList;
+
+    public Model(Repository repository) {
+        this.mRepository = repository;
+    }
 
     public void initBackgroundHandler() {
         if (mBackgroundThread == null || !mBackgroundThread.isAlive()) {
@@ -61,43 +72,81 @@ public class Model implements ISubject {
     }
 
     public void queryAllCountyAndCityList() {
-        mBackgroundHandler.post(new RunQueryAllCountyList());
+        if (mRepository.isExistPreloadList()) {
+            queryCountyList();
+        } else {
+            mBackgroundHandler.post(new RunQueryAllCountyList());
+        }
+    }
+
+    public void backToCityListPage() {
+        int position = getNowCountyPosition();
+        if (mRepository.isExistPreloadList()) {
+            String repoCityList = mRepository.getCityList(position);
+            notifyObservers(repoCityList);
+        } else {
+            queryCityList(position);
+        }
     }
 
     public void queryCountyList() {
-        mBackgroundHandler.post(new RunQueryCountyList());
+        if (mRepository.isExistPreloadList()) {
+            String repoCountyList = mRepository.getCountyList();
+            notifyObservers(repoCountyList);
+        } else {
+            mBackgroundHandler.post(new RunQueryCountyList());
+        }
     }
 
-    public void queryCityList(String cityList, int position) {
-        mBackgroundHandler.post(new RunnableQueryCityList(cityList, position));
+    public void queryWeatherCountyList() {
+        if (mRepository.isExistPreloadList()) {
+            String repoCountyList = mRepository.getCountyList();
+            notifyObservers(repoCountyList);
+        } else {
+            queryCountyList();
+        }
     }
 
-    public void queryNormalSearchSpot(String countyList, int position) {
-        mBackgroundHandler.post(new RunnableQuerySpotList(countyList, position));
+    public void queryCityList(int position) {
+        String repoCountyList = mRepository.getCountyList();
+        setNowCountyStatus(repoCountyList, position);
+        if (mRepository.isExistPreloadList()) {
+            String repoCityList = mRepository.getCityList(position);
+            notifyObservers(repoCityList);
+        } else {
+            mBackgroundHandler.post(new RunnableQueryCityList(repoCountyList, position));
+        }
+    }
+
+    public void queryNormalSearchSpot(int position) {
+        String repoCityList = mRepository.getCityList(getNowCountyPosition());
+        setNowCityStatus(repoCityList, position);
+        mBackgroundHandler.post(new RunnableQuerySpotList(repoCityList, position));
     }
 
     public void queryKeywordSearchSpot(String queryString) {
         mBackgroundHandler.post(new RunnableQueryKeywordSearchSpot(queryString));
     }
 
-    public void querySpotDetail(String result, int position) {
-        mBackgroundHandler.post(new RunnableQuerySpotDetail(result, position));
+    public void querySpotDetail(int position) {
+        mBackgroundHandler.post(new RunnableQuerySpotDetail(position));
     }
 
-    public void QueryWeatherForecast(String countyName) {
-        mBackgroundHandler.post(new RunnableQueryWeatherForecast(countyName));
+    public void QueryWeatherForecast(int position) {
+        String repoCountyList = mRepository.getCountyList();
+        mBackgroundHandler.post(new RunnableQueryWeatherForecast(repoCountyList, position));
     }
 
     public void QueryFavoriteList() {
         mBackgroundHandler.post(new RunnableQueryFavoriteList());
     }
 
-    public void QueryFavoriteSpotDetail(String result, int position) {
-        mBackgroundHandler.post(new RunnableQueryFavoriteSpotDetail(result, position));
+    public void QueryFavoriteSpotDetail(int position) {
+        mBackgroundHandler.post(new RunnableQueryFavoriteSpotDetail(position));
     }
 
-    public void DeleteFavoriteSpot(String result, int position) {
-        mBackgroundHandler.post(new RunnableDeleteFavoriteSpot(result, position));
+    public void DeleteFavoriteSpot(int position) {
+        mBackgroundHandler.post(new RunnableDeleteFavoriteSpot(position));
     }
 
     public class RunQueryCountyList implements Runnable {
@@ -115,7 +164,8 @@ public class Model implements ISubject {
         @Override
         public void run() {
             String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/");
-            notifyObservers(result);
+            mRepository.parserAllCountyAndCityList((String) result);
+            notifyObservers(mRepository.getCountyList());
         }
 
     }
@@ -133,37 +183,33 @@ public class Model implements ISubject {
 
     private class RunnableQueryCityList implements Runnable {
 
-        private String cityList;
-        private int position;
+        private String queryCounty;
 
-        public RunnableQueryCityList(String cityList, int position) {
-            this.cityList = cityList;
-            this.position = position;
+        public RunnableQueryCityList(String repoCountyList, int position) {
+            this.queryCounty = getListItem(repoCountyList, position);
         }
 
         @Override
         public void run() {
-            String queryString = getListItem(cityList, position);
-            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/query_city/?county=" + queryString);
+            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/query_city/?county=" + queryCounty);
             notifyObservers(result);
         }
     }
 
     private class RunnableQuerySpotList implements Runnable {
 
-        private String countyList;
-        private int position;
+        private String queryCounty;
+        private String queryCity;
 
-        public RunnableQuerySpotList(String countyList, int position) {
-            this.countyList = countyList;
-            this.position = position;
+        public RunnableQuerySpotList(String repoCityList, int position) {
+            this.queryCounty = getNowCountyName();
+            this.queryCity = getListItem(repoCityList, position);
         }
 
         @Override
         public void run() {
-            String queryString = getListItem(countyList, position);
-            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + getNowCountyName() + "," + queryString);
-            notifyObservers(result);
+            mSpotList = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot/?place=" + queryCounty + "," + queryCity);
+            notifyObservers(mSpotList);
         }
     }
 
@@ -177,8 +223,8 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + queryString);
-            notifyObservers(result);
+            mSpotList = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + queryString);
+            notifyObservers(mSpotList);
         }
 
     }
@@ -188,8 +234,8 @@ public class Model implements ISubject {
         private String result;
         private int position;
 
-        public RunnableQuerySpotDetail(String result, int position) {
-            this.result = result;
+        public RunnableQuerySpotDetail(int position) {
+            this.result = mSpotList;
             this.position = position;
         }
 
@@ -225,10 +271,10 @@ public class Model implements ISubject {
     }
 
     private class RunnableQueryWeatherForecast implements Runnable {
-        private final String countyName;
+        private String countyName;
 
-        public RunnableQueryWeatherForecast(String countyName) {
-            this.countyName = countyName;
+        public RunnableQueryWeatherForecast(String repoCountyList, int position) {
+            this.countyName =  getListItem(repoCountyList, position);
         }
 
         @Override
@@ -272,8 +318,8 @@ public class Model implements ISubject {
         private String result;
         private int position;
 
-        public RunnableQueryFavoriteSpotDetail(String result, int position) {
-            this.result = result;
+        public RunnableQueryFavoriteSpotDetail(int position) {
+            this.result = mFavoriteList;
             this.position = position;
         }
 
@@ -283,13 +329,7 @@ public class Model implements ISubject {
         }
 
         private void queryFavoriteSpotDetail(String result, int position) {
-            String spotName = null;
-            try {
-                JSONArray mJsonArray = new JSONArray(result);
-                spotName = (String) mJsonArray.get(position);
-            } catch (JSONException e) {
-                Log.e(MainActivity.TAG, "queryFavoriteSpotDetail, JSONException");
-            }
+            String spotName = getFavoriteSpot(result, position);
 
             Bundle bundle = new Bundle();
             Cursor cursor = SQLiteManager.getInstance().findSpot(spotName);
@@ -318,20 +358,14 @@ public class Model implements ISubject {
         private String result;
         private int position;
 
-        public RunnableDeleteFavoriteSpot(String result, int position) {
-            this.result = result;
+        public RunnableDeleteFavoriteSpot(int position) {
+            this.result = mFavoriteList;
             this.position = position;
         }
 
         @Override
         public void run() {
-            String spotName = null;
-            try {
-                JSONArray mJsonArray = new JSONArray(result);
-                spotName = (String) mJsonArray.get(position);
-            } catch (JSONException e) {
-                Log.e(MainActivity.TAG, "queryFavoriteSpotDetail, JSONException");
-            }
+            String spotName = getFavoriteSpot(result, position);
             SQLiteManager.getInstance().delete(spotName);
             queryFavoriteList();
         }
@@ -361,10 +395,6 @@ public class Model implements ISubject {
     public void setNowCityStatus(String cityList, int position) {
         mNowCityName = getListItem(cityList, position);
         mNowCityPosition = position;
-    }
-
-    public String getCountyName(String countyList, int position) {
-        return getListItem(countyList, position);
     }
 
     private String queryRestFullAPI(String requestMethod, String url) {
@@ -411,6 +441,17 @@ public class Model implements ISubject {
         return result;
     }
 
+    private String getFavoriteSpot(String result, int position) {
+        String spotName = null;
+        try {
+            JSONArray mJsonArray = new JSONArray(result);
+            spotName = (String) mJsonArray.get(position);
+        } catch (JSONException e) {
+            Log.e(MainActivity.TAG, "getFavoriteSpot, JSONException");
+        }
+        return spotName;
+    }
+
     private void queryFavoriteList() {
         ArrayList<String> arrayList = new ArrayList<String>();
         Cursor cursor = SQLiteManager.getInstance().select();
@@ -424,7 +465,8 @@ public class Model implements ISubject {
         }
         cursor.close();
         JSONArray jsArray = new JSONArray(arrayList);
-        notifyObservers(jsArray.toString());
+        mFavoriteList = jsArray.toString();
+        notifyObservers(mFavoriteList);
     }
 
 }

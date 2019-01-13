@@ -24,7 +24,6 @@ public class Presenter implements IPresenter {
     private final static int MSG_DELETE_FAVORITE_SPOT = 8;
     private final static int MSG_SHOW_WEATHER_COUNTY_LIST_RESULT = 9;
 
-    private final Repository mRepository;
     private final IMainView mMainView;
     private final Model mModel;
 
@@ -42,64 +41,40 @@ public class Presenter implements IPresenter {
     private IObserver mDeleteFavoriteSpotObserver = new DeleteFavoriteSpotObserver();
 
     public Presenter(IMainView mainView, Repository repository) {
-        this.mModel = new Model();
+        this.mModel = new Model(repository);
         this.mMainView = mainView;
-        this.mRepository = repository;
         mModel.initBackgroundHandler();
         mMainHandler = new UIHandler(mainView, mModel, Looper.getMainLooper());
     }
 
     @Override
     public void preloadAllCountyAndCityList() {
-        if (mRepository.isExistPreloadList()) {
-            showCountyList();
-        } else {
-            mModel.addObserver(mQueryAllCityAndCountyListObserver);
-            mModel.queryAllCountyAndCityList();
-        }
+        mModel.addObserver(mQueryAllCityAndCountyListObserver);
+        mModel.queryAllCountyAndCityList();
     }
 
     @Override
     public void backToCityListPage() {
-        int position = mModel.getNowCountyPosition();
-        String countyList = mRepository.getCountyList();
-        if (mRepository.isExistPreloadList()) {
-            String repoCityList = mRepository.getCityList(position);
-            mMainView.showCityListResult(repoCityList);
-        } else {
-            mModel.addObserver(mQueryCityListObserver);
-            mModel.queryCityList(countyList, position);
-        }
+        mModel.addObserver(mQueryCityListObserver);
+        mModel.backToCityListPage();
     }
 
     @Override
     public void showCountyList() {
-        if (mRepository.isExistPreloadList()) {
-            String countyList = mRepository.getCountyList();
-            mMainView.showCountyListResult(countyList);
-        } else {
-            mModel.addObserver(mQueryCountyListObserver);
-            mModel.queryCountyList();
-        }
+        mModel.addObserver(mQueryCountyListObserver);
+        mModel.queryCountyList();
     }
 
     @Override
-    public void showCityList(String countyList, int position) {
-        mModel.setNowCountyStatus(countyList, position);
-        if (mRepository.isExistPreloadList()) {
-            String repoCityList = mRepository.getCityList(position);
-            mMainView.showCityListResult(repoCityList);
-        } else {
-            mModel.addObserver(mQueryCityListObserver);
-            mModel.queryCityList(countyList, position);
-        }
+    public void showCityList(int position) {
+        mModel.addObserver(mQueryCityListObserver);
+        mModel.queryCityList(position);
     }
 
     @Override
-    public void showSpotList(String cityList, int position) {
-        mModel.setNowCityStatus(cityList, position);
+    public void showSpotList(int position) {
         mModel.addObserver(mQuerySpotListObserver);
-        mModel.queryNormalSearchSpot(cityList, position);
+        mModel.queryNormalSearchSpot(position);
     }
 
     @Override
@@ -109,27 +84,21 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showSpotDetail(String result, int position) {
+    public void showSpotDetail(int position) {
         mModel.addObserver(mQuerySpotDetailObserver);
-        mModel.querySpotDetail(result, position);
+        mModel.querySpotDetail(position);
     }
 
     @Override
     public void showWeatherCountyList() {
-        if (mRepository.isExistPreloadList()) {
-            String countyList = mRepository.getCountyList();
-            mMainView.showWeatherCountyListResult(countyList);
-        } else {
-            mModel.addObserver(mQueryWeatherCountyListObserver);
-            mModel.queryCountyList();
-        }
+        mModel.addObserver(mQueryWeatherCountyListObserver);
+        mModel.queryWeatherCountyList();
     }
 
     @Override
-    public void showWeatherForecast(String countyList, int position) {
-        String countyName = mModel.getCountyName(countyList, position);
+    public void showWeatherForecast(int position) {
         mModel.addObserver(mQueryWeatherForecastObserver);
-        mModel.QueryWeatherForecast(countyName);
+        mModel.QueryWeatherForecast(position);
     }
 
     @Override
@@ -139,25 +108,24 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showFavoriteSpotDetail(String result, int position) {
+    public void showFavoriteSpotDetail(int position) {
         mModel.addObserver(mQuerySpotDetailObserver);
-        mModel.QueryFavoriteSpotDetail(result, position);
+        mModel.QueryFavoriteSpotDetail(position);
     }
 
     @Override
-    public void deleteFavoriteSpot(String result, int position) {
+    public void deleteFavoriteSpot(int position) {
         mModel.addObserver(mDeleteFavoriteSpotObserver);
-        mModel.DeleteFavoriteSpot(result, position);
+        mModel.DeleteFavoriteSpot(position);
     }
 
     public class QueryAllCityAndCountyListObserver implements IObserver {
         @Override
         public <T> void notifyResult(T string) {
             mModel.removeObserver(mQueryAllCityAndCountyListObserver);
-            mRepository.parserAllCountyAndCityList((String) string);
             Message msg = new Message();
             msg.what = MSG_SHOW_COUNTY_LIST_RESULT;
-            msg.obj = mRepository.getCountyList();
+            msg.obj = string;
             mMainHandler.sendMessage(msg);
         }
     }
@@ -264,19 +232,16 @@ public class Presenter implements IPresenter {
     private static class UIHandler extends Handler {
 
         private WeakReference<IMainView> mMinView;
-        private WeakReference<Model> mModel;
 
         public UIHandler(IMainView mainView, Model model, Looper mainLooper) {
             super(mainLooper);
-            mModel = new WeakReference<>(model);
             mMinView = new WeakReference<>(mainView);
         }
 
         @Override
         public void handleMessage(Message msg) {
             IMainView mainView = mMinView.get();
-            Model model = mModel.get();
-            if (mainView == null || model == null) {
+            if (mainView == null) {
                 return;
             }
             // Gets the image task from the incoming Message object.

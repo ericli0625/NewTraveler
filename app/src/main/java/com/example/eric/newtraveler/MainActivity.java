@@ -297,28 +297,28 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mNormalListRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(String string, int position) {
+        public void onItemClick(int position) {
             switch (mTriggerListLevel) {
                 case IN_COUNTY_LIST_PAGE:
                     loadNormalCitySearchView();
                     showToast(true, Toast.LENGTH_LONG);
 
-                    mPresenter.showCityList(string, position);
+                    mPresenter.showCityList(position);
                     break;
                 case IN_CITY_LIST_PAGE:
                     loadNormalSpotSearch();
                     showToast(true, Toast.LENGTH_LONG);
 
-                    mPresenter.showSpotList(string, position);
+                    mPresenter.showSpotList(position);
                     break;
                 case IN_SPOT_LIST_PAGE:
-                    mPresenter.showSpotDetail(string, position);
+                    mPresenter.showSpotDetail(position);
                     break;
             }
         }
 
         @Override
-        public boolean onItemLongClick(String string, int position) {
+        public boolean onItemLongClick(int position) {
             return false;
         }
     };
@@ -326,12 +326,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mKeywordSearchSpotRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(String string, int position) {
-            mPresenter.showSpotDetail(string, position);
+        public void onItemClick(int position) {
+            mPresenter.showSpotDetail(position);
         }
 
         @Override
-        public boolean onItemLongClick(String string, int position) {
+        public boolean onItemLongClick(int position) {
             return false;
         }
     };
@@ -339,12 +339,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mWeatherForecastRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(String string, int position) {
-            mPresenter.showWeatherForecast(string, position);
+        public void onItemClick(int position) {
+            mPresenter.showWeatherForecast(position);
         }
 
         @Override
-        public boolean onItemLongClick(String string, int position) {
+        public boolean onItemLongClick(int position) {
             return false;
         }
     };
@@ -352,17 +352,17 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mFavoriteListRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(String string, int position) {
-            mPresenter.showFavoriteSpotDetail(string, position);
+        public void onItemClick(int position) {
+            mPresenter.showFavoriteSpotDetail(position);
         }
 
         @Override
-        public boolean onItemLongClick(String string, int position) {
+        public boolean onItemLongClick(int position) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle(R.string.delete_dialog_title)
                     .setMessage(R.string.delete_dialog_message)
                     .setPositiveButton(R.string.delete_dialog_ok, (dialog, id) ->
-                            mPresenter.deleteFavoriteSpot(string, position))
+                            mPresenter.deleteFavoriteSpot(position))
                     .setNegativeButton(R.string.delete_dialog_cancel, (dialog, id) -> dialog.cancel());
             AlertDialog alert = builder.create();
             alert.show();

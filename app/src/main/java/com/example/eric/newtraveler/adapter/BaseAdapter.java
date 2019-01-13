@@ -17,7 +17,7 @@ import org.json.JSONException;
 
 public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
 
-    private static JSONArray mJsonArray;
+    private JSONArray mJsonArray;
     private IBaseAdapterClickListener mListener;
 
     public BaseAdapter(String string, IBaseAdapterClickListener listener) {
@@ -29,7 +29,7 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
         this.mListener = listener;
     }
 
-    protected static JSONArray getJsonArray() {
+    protected JSONArray getJsonArray() {
         return mJsonArray;
     }
 
@@ -54,12 +54,12 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            mListener.onItemClick(getJsonArray().toString(), getAdapterPosition());
+            mListener.onItemClick(getAdapterPosition());
         }
 
         @Override
         public boolean onLongClick(View v) {
-            return mListener.onItemLongClick(getJsonArray().toString(), getAdapterPosition());
+            return mListener.onItemLongClick(getAdapterPosition());
         }
 
         public void setListener(IBaseAdapterClickListener listener) {
