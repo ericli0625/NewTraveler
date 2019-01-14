@@ -141,24 +141,18 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mTextView.setText(R.string.favorite_title);
     }
 
-    public View.OnClickListener mNormalSearchModeButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.activity_main);
-            loadNormalCountySearchView();
+    public View.OnClickListener mNormalSearchModeButtonListener = v -> {
+        setContentView(R.layout.activity_main);
+        loadNormalCountySearchView();
 
-            mPresenter.showCountyList();
-        }
+        mPresenter.showCountyList();
     };
 
-    public View.OnClickListener mBackToCityListPageListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.activity_main);
-            loadNormalCitySearchView();
+    public View.OnClickListener mBackToCityListPageListener = v -> {
+        setContentView(R.layout.activity_main);
+        loadNormalCitySearchView();
 
-            mPresenter.backToCityListPage();
-        }
+        mPresenter.backToCityListPage();
     };
 
     public View.OnClickListener mKeywordSearchModeButtonListener = v -> {
@@ -166,33 +160,24 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         loadKeyWordSearchView();
     };
 
-    public View.OnClickListener mKeywordSearchButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showToast(true, Toast.LENGTH_LONG);
+    public View.OnClickListener mKeywordSearchButtonListener = v -> {
+        showToast(true, Toast.LENGTH_LONG);
 
-            mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
-        }
+        mPresenter.showKeywordSearchSpot(mEditText.getText().toString());
     };
 
-    public View.OnClickListener mWeatherForecastButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.weather_layout);
-            loadWeatherForecastView();
+    public View.OnClickListener mWeatherForecastButtonListener = v -> {
+        setContentView(R.layout.weather_layout);
+        loadWeatherForecastView();
 
-            mPresenter.showWeatherCountyList();
-        }
+        mPresenter.showWeatherCountyList();
     };
 
-    public View.OnClickListener mFavoriteListButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setContentView(R.layout.activity_main);
-            loadFavoriteListView();
+    public View.OnClickListener mFavoriteListButtonListener = v -> {
+        setContentView(R.layout.activity_main);
+        loadFavoriteListView();
 
-            mPresenter.showFavoriteList();
-        }
+        mPresenter.showFavoriteList();
     };
 
     @Override
@@ -308,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                 case IN_CITY_LIST_PAGE:
                     loadNormalSpotSearch();
                     showToast(true, Toast.LENGTH_LONG);
+
+                    mRecyclerView.setAdapter(null);
 
                     mPresenter.showSpotList(position);
                     break;

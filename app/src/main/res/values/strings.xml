@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">Traveler</string>
 
-    <string name="search_all_county_button">Click</string>
-
-    <string name="click_keyword_search_button">Search</string>
+    <string name="click_keyword_search_button">查詢</string>
 
     <string name="chose_city_title">請選擇城市</string>
 

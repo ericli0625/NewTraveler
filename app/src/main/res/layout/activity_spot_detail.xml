@@ -17,23 +17,26 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spot_activity_all_view_margin"
             android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+            android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+            app:layout_constraintBottom_toTopOf="@+id/divider_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_return"/>
+            app:srcCompat="@drawable/ic_return" />
 
         <TextView
             android:id="@+id/textView_name_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spot_activity_title_margin"
-            android:layout_marginBottom="@dimen/spot_activity_title_margin"
+            android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+            android:layout_marginTop="@dimen/spot_activity_all_view_margin"
             android:text="title"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintHorizontal_bias="0.374"
+            app:layout_constraintStart_toEndOf="@+id/return_icon"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView_category_detail"

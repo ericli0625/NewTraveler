@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.eric.newtraveler.database.SQLiteManager;
@@ -41,7 +40,6 @@ public class Model implements ISubject {
     private int mNowCityPosition;
 
     //TODO: refactor them
-    private String mFavoriteList;
     private String mSpotList;
 
     public Model(Repository repository) {
@@ -156,7 +154,6 @@ public class Model implements ISubject {
             String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
             notifyObservers(result);
         }
-
     }
 
     private class RunQueryAllCountyList implements Runnable {
@@ -167,18 +164,6 @@ public class Model implements ISubject {
             mRepository.parserAllCountyAndCityList((String) result);
             notifyObservers(mRepository.getCountyList());
         }
-
-    }
-
-    public String getListItem(String cityList, int position) {
-        String result = null;
-        try {
-            JSONArray jsonArray = new JSONArray(cityList);
-            result = jsonArray.getString(position);
-        } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "Model, getListItem, JSONException");
-        }
-        return result;
     }
 
     private class RunnableQueryCityList implements Runnable {
@@ -226,7 +211,6 @@ public class Model implements ISubject {
             mSpotList = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelspot/query_spot_name/?spot_name=" + queryString);
             notifyObservers(mSpotList);
         }
-
     }
 
     private class RunnableQuerySpotDetail implements Runnable {
@@ -267,7 +251,6 @@ public class Model implements ISubject {
             }
             return null;
         }
-
     }
 
     private class RunnableQueryWeatherForecast implements Runnable {
@@ -308,18 +291,18 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            queryFavoriteList();
+            String result = String.valueOf(queryFavoriteList());
+            notifyObservers(result);
         }
-
     }
 
     private class RunnableQueryFavoriteSpotDetail implements Runnable {
 
-        private String result;
+        private ArrayList<String> result;
         private int position;
 
         public RunnableQueryFavoriteSpotDetail(int position) {
-            this.result = mFavoriteList;
+            this.result = queryFavoriteList();
             this.position = position;
         }
 
@@ -328,7 +311,7 @@ public class Model implements ISubject {
             queryFavoriteSpotDetail(result, position);
         }
 
-        private void queryFavoriteSpotDetail(String result, int position) {
+        private void queryFavoriteSpotDetail(ArrayList<String> result, int position) {
             String spotName = getFavoriteSpot(result, position);
 
             Bundle bundle = new Bundle();
@@ -355,11 +338,11 @@ public class Model implements ISubject {
 
     private class RunnableDeleteFavoriteSpot implements Runnable {
 
-        private String result;
+        private ArrayList<String> result;
         private int position;
 
         public RunnableDeleteFavoriteSpot(int position) {
-            this.result = mFavoriteList;
+            this.result = queryFavoriteList();
             this.position = position;
         }
 
@@ -367,7 +350,8 @@ public class Model implements ISubject {
         public void run() {
             String spotName = getFavoriteSpot(result, position);
             SQLiteManager.getInstance().delete(spotName);
-            queryFavoriteList();
+            String result = String.valueOf(queryFavoriteList());
+            notifyObservers(result);
         }
     }
 
@@ -395,6 +379,17 @@ public class Model implements ISubject {
     public void setNowCityStatus(String cityList, int position) {
         mNowCityName = getListItem(cityList, position);
         mNowCityPosition = position;
+    }
+
+    public String getListItem(String cityList, int position) {
+        String result = null;
+        try {
+            JSONArray jsonArray = new JSONArray(cityList);
+            result = jsonArray.getString(position);
+        } catch (JSONException e) {
+            Log.e(MainActivity.TAG, "Model, getListItem, JSONException");
+        }
+        return result;
     }
 
     private String queryRestFullAPI(String requestMethod, String url) {
@@ -441,7 +436,7 @@ public class Model implements ISubject {
         return result;
     }
 
-    private String getFavoriteSpot(String result, int position) {
+    private String getFavoriteSpot(ArrayList<String> result, int position) {
         String spotName = null;
         try {
             JSONArray mJsonArray = new JSONArray(result);
@@ -452,7 +447,7 @@ public class Model implements ISubject {
         return spotName;
     }
 
-    private void queryFavoriteList() {
+    private ArrayList<String> queryFavoriteList() {
         ArrayList<String> arrayList = new ArrayList<String>();
         Cursor cursor = SQLiteManager.getInstance().select();
         if (cursor.getCount() != 0) {
@@ -464,9 +459,7 @@ public class Model implements ISubject {
             }
         }
         cursor.close();
-        JSONArray jsArray = new JSONArray(arrayList);
-        mFavoriteList = jsArray.toString();
-        notifyObservers(mFavoriteList);
+        return arrayList;
     }
 
 }

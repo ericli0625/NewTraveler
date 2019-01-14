@@ -24,7 +24,6 @@ public class Presenter implements IPresenter {
     private final static int MSG_DELETE_FAVORITE_SPOT = 8;
     private final static int MSG_SHOW_WEATHER_COUNTY_LIST_RESULT = 9;
 
-    private final IMainView mMainView;
     private final Model mModel;
 
     private final UIHandler mMainHandler;
@@ -42,7 +41,6 @@ public class Presenter implements IPresenter {
 
     public Presenter(IMainView mainView, Repository repository) {
         this.mModel = new Model(repository);
-        this.mMainView = mainView;
         mModel.initBackgroundHandler();
         mMainHandler = new UIHandler(mainView, mModel, Looper.getMainLooper());
     }

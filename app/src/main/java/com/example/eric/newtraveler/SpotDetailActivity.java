@@ -27,16 +27,13 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
     private String mAddress;
     private String mTelephone;
 
-    private MapView mMapView;
-    private GoogleMap mGoogleMap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spot_detail);
         Log.v(MainActivity.TAG, "SpotDetailActivity, onCreate ");
 
-        mMapView = (MapView) this.findViewById(R.id.mapView);
+        MapView mMapView = (MapView) this.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
         mMapView.getMapAsync(this);
@@ -111,12 +108,11 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
 
         LatLng location = new LatLng(Double.valueOf(mLatitude), Double.valueOf(mLongitude));
-        mGoogleMap.addMarker(new MarkerOptions().position(location).title(mName));
-        mGoogleMap.setMinZoomPreference(15.0f);
-        mGoogleMap.setMaxZoomPreference(18.0f);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        googleMap.addMarker(new MarkerOptions().position(location).title(mName));
+        googleMap.setMinZoomPreference(15.0f);
+        googleMap.setMaxZoomPreference(18.0f);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }
 }

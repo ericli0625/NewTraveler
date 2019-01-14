@@ -7,6 +7,8 @@ import com.squareup.leakcanary.LeakCanary;
 
 public class MyApplication extends Application {
 
+    private static final boolean DEBUG = true;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -16,7 +18,9 @@ public class MyApplication extends Application {
             // You should not init your app in this process.
             return;
         }
-        LeakCanary.install(this);
+        if (DEBUG) {
+            LeakCanary.install(this);
+        }
     }
 
 }
