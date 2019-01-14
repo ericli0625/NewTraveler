@@ -1,6 +1,7 @@
 package com.example.eric.newtraveler;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,8 @@ import com.example.eric.newtraveler.adapter.WeatherDetailAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class WeatherDetailActivity extends AppCompatActivity {
 
@@ -36,13 +39,14 @@ public class WeatherDetailActivity extends AppCompatActivity {
         RecyclerView mRecyclerView = getRecycleView(R.id.recyclerView_weather_forecast_detail);
 
         if (bundle != null) {
-            String weatherElement = bundle.getString("weatherElement");
+            ArrayList<Parcelable> weatherElement = bundle.getParcelableArrayList("weatherElement");
             String locationName = bundle.getString("locationName");
-            setWeatherForecastTime(weatherElement, locationName);
-            WeatherDetailAdapter adapter = new WeatherDetailAdapter(weatherElement,
-                    getResources().getStringArray(R.array.weather_title_array));
-            mRecyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            //TODO Parcelable & GSON
+//            setWeatherForecastTime(weatherElement, locationName);
+//            WeatherDetailAdapter adapter = new WeatherDetailAdapter(weatherElement,
+//                    getResources().getStringArray(R.array.weather_title_array));
+//            mRecyclerView.setAdapter(adapter);
+//            adapter.notifyDataSetChanged();
         }
 
     }
