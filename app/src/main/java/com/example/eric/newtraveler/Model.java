@@ -275,14 +275,10 @@ public class Model implements ISubject {
             Gson gson = new Gson();
             Weather weather = gson.fromJson(result, Weather.class);
             Bundle bundle = new Bundle();
-//            try {
-            List<Weather.WeatherElement> weatherElement = weather.getRecords().getLocation().get(0).getWeatherElement();
+            ArrayList<Weather.WeatherElement> weatherElementArray = weather.getRecords().getLocation().get(0).getWeatherElement();
             String locationName = weather.getRecords().getLocation().get(0).getLocationName();
-            bundle.putParcelableArrayList("weatherElement", (ArrayList<? extends Parcelable>) weatherElement);
+            bundle.putParcelableArrayList("weatherElementArray", weatherElementArray);
             bundle.putString("locationName", locationName);
-//            } catch (JSONException e) {
-//                Log.e(MainActivity.TAG, "Model, getWeatherElement, JSONException");
-//            }
             return bundle;
         }
     }

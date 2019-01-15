@@ -73,13 +73,13 @@ public class Weather {
 
     public static class WeatherElement implements Parcelable {
         String elementName = "";
-        List<Time> time;
+        ArrayList<Time> time;
 
         public String getElementName() {
             return elementName;
         }
 
-        public List<Time> getTime() {
+        public ArrayList<Time> getTime() {
             return time;
         }
 
@@ -117,9 +117,22 @@ public class Weather {
         String endTime = "";
         Parameter parameter;
 
+        public String getStartTime() {
+            return startTime;
+        }
+
+        public String getEndTime() {
+            return endTime;
+        }
+
+        public Parameter getParameter() {
+            return parameter;
+        }
+
         protected Time(Parcel in) {
             startTime = in.readString();
             endTime = in.readString();
+            parameter = in.readParcelable(Parameter.class.getClassLoader());
         }
 
         public static final Creator<Time> CREATOR = new Creator<Time>() {
@@ -143,12 +156,59 @@ public class Weather {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(startTime);
             dest.writeString(endTime);
+            dest.writeParcelable(parameter, flags);
         }
     }
 
-    public static class Parameter {
+    public static class Parameter implements Parcelable {
+
         String parameterName = "";
         Integer parameterValue = 0;
+
+        public String getParameterName() {
+            return parameterName;
+        }
+
+        public Integer getParameterValue() {
+            return parameterValue;
+        }
+
+        protected Parameter(Parcel in) {
+            parameterName = in.readString();
+            if (in.readByte() == 0) {
+                parameterValue = null;
+            } else {
+                parameterValue = in.readInt();
+            }
+        }
+
+        public static final Creator<Parameter> CREATOR = new Creator<Parameter>() {
+            @Override
+            public Parameter createFromParcel(Parcel in) {
+                return new Parameter(in);
+            }
+
+            @Override
+            public Parameter[] newArray(int size) {
+                return new Parameter[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(parameterName);
+            if (parameterValue == null) {
+                dest.writeByte((byte) 0);
+            } else {
+                dest.writeByte((byte) 1);
+                dest.writeInt(parameterValue);
+            }
+        }
     }
 
 }
