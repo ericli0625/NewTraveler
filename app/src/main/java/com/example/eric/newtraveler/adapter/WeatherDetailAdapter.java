@@ -2,36 +2,24 @@ package com.example.eric.newtraveler.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.eric.newtraveler.MainActivity;
 import com.example.eric.newtraveler.R;
+import com.example.eric.newtraveler.Weather;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class WeatherDetailAdapter extends RecyclerView.Adapter<WeatherDetailAdapter.ViewHolder> {
 
-    private JSONArray mJsonArray;
+    private final ArrayList<Weather.WeatherElement> mWeatherElementArray;
     private String[] mTitleArray;
 
-    public WeatherDetailAdapter(String weatherElement, String[] stringArray) {
-        try {
-            mJsonArray = new JSONArray(weatherElement);
-        } catch (JSONException e) {
-            Log.e(MainActivity.TAG,
-                    "WeatherDetailAdapter, parser weather info failed, JSONException");
-        }
+    public WeatherDetailAdapter(ArrayList<Weather.WeatherElement> weatherElementArray, String[] stringArray) {
+        mWeatherElementArray = weatherElementArray;
         mTitleArray = stringArray;
-    }
-
-    protected JSONArray getJsonArray() {
-        return mJsonArray;
     }
 
     // Provide a reference to the views for each data item
@@ -65,35 +53,31 @@ public class WeatherDetailAdapter extends RecyclerView.Adapter<WeatherDetailAdap
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        try {
-            JSONObject weatherElement = (JSONObject) getJsonArray().get(position);
-            JSONArray timeArray = weatherElement.getJSONArray("time");
+        Weather.WeatherElement weatherElement = mWeatherElementArray.get(position);
+        ArrayList<Weather.Time> timeArray = weatherElement.getTime();
 
-            viewHolder.mTitleTextView.setText(mTitleArray[position]);
+        viewHolder.mTitleTextView.setText(mTitleArray[position]);
 
-            for (int j = 0; j < timeArray.length(); j++) {
-                JSONObject parameter = timeArray.getJSONObject(j).getJSONObject("parameter");
-                String parameterName = parameter.getString("parameterName");
-                switch (j) {
-                    case 0:
-                        viewHolder.mTimeTextView12.setText(parameterName);
-                        break;
-                    case 1:
-                        viewHolder.mTimeTextView24.setText(parameterName);
-                        break;
-                    case 2:
-                        viewHolder.mTimeTextView36.setText(parameterName);
-                        break;
-                }
+        for (int j = 0; j < timeArray.size(); j++) {
+            Weather.Parameter parameter = timeArray.get(j).getParameter();
+            String parameterName = parameter.getParameterName();
+            switch (j) {
+                case 0:
+                    viewHolder.mTimeTextView12.setText(parameterName);
+                    break;
+                case 1:
+                    viewHolder.mTimeTextView24.setText(parameterName);
+                    break;
+                case 2:
+                    viewHolder.mTimeTextView36.setText(parameterName);
+                    break;
             }
-        } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "WeatherDetailAdapter onBindViewHolder, JSONException");
         }
     }
 
     @Override
     public int getItemCount() {
-        return mJsonArray == null ? 0 : mJsonArray.length();
+        return mWeatherElementArray == null ? 0 : mWeatherElementArray.size();
     }
 
 }

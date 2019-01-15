@@ -4,11 +4,13 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.example.eric.newtraveler.database.SQLiteManager;
 import com.example.eric.newtraveler.observer.ISubject;
 import com.example.eric.newtraveler.observer.IObserver;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +22,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -268,17 +271,14 @@ public class Model implements ISubject {
             notifyObservers(bundle);
         }
 
-        private Bundle getWeatherElement(String jsonWeatherInfoArray) {
+        private Bundle getWeatherElement(String result) {
+            Gson gson = new Gson();
+            Weather weather = gson.fromJson(result, Weather.class);
             Bundle bundle = new Bundle();
-            try {
-                JSONObject locationJsonObject = new JSONObject(jsonWeatherInfoArray).getJSONObject("records").getJSONArray("location").getJSONObject(0);
-                JSONArray array = locationJsonObject.getJSONArray("weatherElement");
-                String locationName = locationJsonObject.getString("locationName");
-                bundle.putString("weatherElement", array.toString());
-                bundle.putString("locationName", locationName);
-            } catch (JSONException e) {
-                Log.e(MainActivity.TAG, "Model, getWeatherElement, JSONException");
-            }
+            ArrayList<Weather.WeatherElement> weatherElementArray = weather.getRecords().getLocation().get(0).getWeatherElement();
+            String locationName = weather.getRecords().getLocation().get(0).getLocationName();
+            bundle.putParcelableArrayList("weatherElementArray", weatherElementArray);
+            bundle.putString("locationName", locationName);
             return bundle;
         }
     }
