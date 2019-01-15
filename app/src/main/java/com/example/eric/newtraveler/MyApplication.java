@@ -7,7 +7,7 @@ import com.squareup.leakcanary.LeakCanary;
 
 public class MyApplication extends Application {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     @Override
     public void onCreate() {
