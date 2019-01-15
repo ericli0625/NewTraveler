@@ -4,12 +4,15 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.eric.newtraveler.database.SQLiteManager;
 import com.example.eric.newtraveler.observer.ISubject;
 import com.example.eric.newtraveler.observer.IObserver;
+import com.example.eric.newtraveler.parcelable.TravelCountyAndCity;
 import com.example.eric.newtraveler.parcelable.Weather;
+import com.example.eric.newtraveler.retrofit.ITravelRequest;
 import com.example.eric.newtraveler.retrofit.IWeatherRequest;
 
 import org.json.JSONArray;
@@ -77,11 +80,33 @@ public class Model implements ISubject {
         }
     }
 
+    @NonNull
+    private ITravelRequest getRetrofitTravelRequest() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://travelplanbackend.herokuapp.com/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit.create(ITravelRequest.class);
+    }
+
+    @NonNull
+    private IWeatherRequest getRetrofitWeatherRequest() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://opendata.cwb.gov.tw/api/v1/rest/datastore/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit.create(IWeatherRequest.class);
+    }
+
     public void queryAllCountyAndCityList() {
         if (mRepository.isExistPreloadList()) {
             queryCountyList();
         } else {
-            mBackgroundHandler.post(new RunQueryAllCountyList());
+            ITravelRequest travelRequest = getRetrofitTravelRequest();
+            Call<ArrayList<TravelCountyAndCity>> call = travelRequest.getAllCountyAndCityList();
+            call.enqueue(mAllCountyListCallback);
         }
     }
 
@@ -100,7 +125,9 @@ public class Model implements ISubject {
             String repoCountyList = mRepository.getCountyList();
             notifyObservers(repoCountyList);
         } else {
-            mBackgroundHandler.post(new RunQueryCountyList());
+            ITravelRequest travelRequest = getRetrofitTravelRequest();
+            Call<ArrayList> call = travelRequest.getAllCountyList();
+            call.enqueue(mCountyListCallback);
         }
     }
 
@@ -120,7 +147,11 @@ public class Model implements ISubject {
             String repoCityList = mRepository.getCityList(position);
             notifyObservers(repoCityList);
         } else {
-            mBackgroundHandler.post(new RunnableQueryCityList(repoCountyList, position));
+            String countyName = getListItem(repoCountyList, position);
+
+            ITravelRequest travelRequest = getRetrofitTravelRequest();
+            Call<ArrayList> call = travelRequest.getCityList(countyName);
+            call.enqueue(mCityListCallback);
         }
     }
 
@@ -141,15 +172,8 @@ public class Model implements ISubject {
     public void QueryWeatherForecast(int position) {
         String countyName = getListItem(mRepository.getCountyList(), position);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://opendata.cwb.gov.tw/api/v1/rest/datastore/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        IWeatherRequest weatherRequest = retrofit.create(IWeatherRequest.class);
-
+        IWeatherRequest weatherRequest = getRetrofitWeatherRequest();
         Call<Weather> call = weatherRequest.getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
-
         call.enqueue(mWeatherCallback);
     }
 
@@ -165,39 +189,49 @@ public class Model implements ISubject {
         mBackgroundHandler.post(new RunnableDeleteFavoriteSpot(position));
     }
 
-    public class RunQueryCountyList implements Runnable {
+    private Callback<ArrayList<TravelCountyAndCity>> mAllCountyListCallback = new Callback<ArrayList<TravelCountyAndCity>>() {
+        private String result;
 
         @Override
-        public void run() {
-            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/all_county/");
+        public void onResponse(Call<ArrayList<TravelCountyAndCity>> call, Response<ArrayList<TravelCountyAndCity>> response) {
+            if (response.body() != null) {
+                mRepository.parserAllCountyAndCityList(response.body());
+                result = mRepository.getCountyList();
+            }
             notifyObservers(result);
         }
-    }
-
-    private class RunQueryAllCountyList implements Runnable {
 
         @Override
-        public void run() {
-            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/");
-            mRepository.parserAllCountyAndCityList((String) result);
-            notifyObservers(mRepository.getCountyList());
+        public void onFailure(Call<ArrayList<TravelCountyAndCity>> call, Throwable t) {
+            Log.e(MainActivity.TAG, "AllCountyListCallback, onFailure");
         }
-    }
+    };
 
-    private class RunnableQueryCityList implements Runnable {
+    private Callback<ArrayList> mCountyListCallback = new Callback<ArrayList>() {
 
-        private String queryCounty;
-
-        public RunnableQueryCityList(String repoCountyList, int position) {
-            this.queryCounty = getListItem(repoCountyList, position);
+        @Override
+        public void onResponse(Call<ArrayList> call, Response<ArrayList> response) {
+            notifyObservers(response.body().toString());
         }
 
         @Override
-        public void run() {
-            String result = queryRestFullAPI("GET", "https://travelplanbackend.herokuapp.com/api/travelcity/query_city/?county=" + queryCounty);
-            notifyObservers(result);
+        public void onFailure(Call<ArrayList> call, Throwable t) {
+            Log.e(MainActivity.TAG, "CountyListCallback, onFailure");
         }
-    }
+    };
+
+    private Callback<ArrayList> mCityListCallback = new Callback<ArrayList>() {
+
+        @Override
+        public void onResponse(Call<ArrayList> call, Response<ArrayList> response) {
+            notifyObservers(response.body().toString());
+        }
+
+        @Override
+        public void onFailure(Call<ArrayList> call, Throwable t) {
+            Log.e(MainActivity.TAG, "CityListCallback, onFailure");
+        }
+    };
 
     private class RunnableQuerySpotList implements Runnable {
 

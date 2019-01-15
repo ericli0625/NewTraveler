@@ -1,11 +1,10 @@
 package com.example.eric.newtraveler;
 
 import android.content.SharedPreferences;
-import android.util.Log;
+
+import com.example.eric.newtraveler.parcelable.TravelCountyAndCity;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -32,37 +31,31 @@ class Repository {
         return sharedPreferences.getString(TAG_CITY_LIST + "_" + index, "");
     }
 
-    public void parserAllCountyAndCityList(String string) {
-        try {
-            ArrayList<String> countyList = new ArrayList<String>();
-            JSONArray jsonArray = new JSONArray(string);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonobject = jsonArray.getJSONObject(i);
-                String county = jsonobject.getString("county");
-                if (!countyList.contains(county)) {
-                    countyList.add(county);
-                }
-            }
-            sharedPreferences.edit().putString(TAG_COUNTY_LIST, new JSONArray(countyList).toString()).apply();
+    public void parserAllCountyAndCityList(ArrayList<TravelCountyAndCity> arrayList) {
 
-            ArrayList<ArrayList<String>> cityList = new ArrayList<ArrayList<String>>();
-            for (int i = 0; i < countyList.size(); i++) {
-                ArrayList<String> innerCityList = new ArrayList<String>();
-                for (int j = 0; j < jsonArray.length(); j++) {
-                    JSONObject jsonobject = jsonArray.getJSONObject(j);
-                    String county = jsonobject.getString("county");
-                    if (countyList.get(i).equals(county)) {
-                        String city = jsonobject.getString("city");
-                        innerCityList.add(city);
-                    }
-                }
-                cityList.add(innerCityList);
-                sharedPreferences.edit().putString(TAG_CITY_LIST + "_" + i, new JSONArray(cityList.get(i)).toString()).apply();
+        ArrayList<String> countyList = new ArrayList<String>();
+        for (int i = 0; i < arrayList.size(); i++) {
+            String county = arrayList.get(i).getCounty();
+            if (!countyList.contains(county)) {
+                countyList.add(county);
             }
-
-        } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "parserAllCountyAndCityList, JSONException");
         }
+        sharedPreferences.edit().putString(TAG_COUNTY_LIST, new JSONArray(countyList).toString()).apply();
+
+        ArrayList<ArrayList<String>> cityList = new ArrayList<ArrayList<String>>();
+        for (int i = 0; i < countyList.size(); i++) {
+            ArrayList<String> innerCityList = new ArrayList<String>();
+            for (int j = 0; j < arrayList.size(); j++) {
+                String county = arrayList.get(j).getCounty();
+                if (countyList.get(i).equals(county)) {
+                    String city = arrayList.get(j).getCity();
+                    innerCityList.add(city);
+                }
+            }
+            cityList.add(innerCityList);
+            sharedPreferences.edit().putString(TAG_CITY_LIST + "_" + i, new JSONArray(cityList.get(i)).toString()).apply();
+        }
+
     }
 
 }
