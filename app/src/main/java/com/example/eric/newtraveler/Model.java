@@ -4,13 +4,13 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.example.eric.newtraveler.database.SQLiteManager;
 import com.example.eric.newtraveler.observer.ISubject;
 import com.example.eric.newtraveler.observer.IObserver;
-import com.google.gson.Gson;
+import com.example.eric.newtraveler.parcelable.Weather;
+import com.example.eric.newtraveler.retrofit.IWeatherRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,10 +22,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Model implements ISubject {
 
@@ -134,8 +139,18 @@ public class Model implements ISubject {
     }
 
     public void QueryWeatherForecast(int position) {
-        String repoCountyList = mRepository.getCountyList();
-        mBackgroundHandler.post(new RunnableQueryWeatherForecast(repoCountyList, position));
+        String countyName = getListItem(mRepository.getCountyList(), position);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://opendata.cwb.gov.tw/api/v1/rest/datastore/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        IWeatherRequest weatherRequest = retrofit.create(IWeatherRequest.class);
+
+        Call<Weather> call = weatherRequest.getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
+
+        call.enqueue(mWeatherCallback);
     }
 
     public void QueryFavoriteList() {
@@ -256,32 +271,26 @@ public class Model implements ISubject {
         }
     }
 
-    private class RunnableQueryWeatherForecast implements Runnable {
-        private String countyName;
-
-        public RunnableQueryWeatherForecast(String repoCountyList, int position) {
-            this.countyName =  getListItem(repoCountyList, position);
-        }
-
+    private Callback<Weather> mWeatherCallback = new Callback<Weather>() {
         @Override
-        public void run() {
-            String authorization = "Authorization=CWB-38A07514-8234-4044-AC3D-17FE6A4320BF";
-            String result = queryRestFullAPI("GET", "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?locationName=" + countyName + "&" + authorization);
-            Bundle bundle = getWeatherElement(result);
+        public void onResponse(Call<Weather> call, Response<Weather> response) {
+            Weather.Location location = null;
+            Bundle bundle = new Bundle();
+            if (response.body() != null) {
+                location = response.body().getRecords().getLocation().get(0);
+                ArrayList<Weather.WeatherElement> weatherElementArray = location.getWeatherElement();
+                String locationName = location.getLocationName();
+                bundle.putParcelableArrayList("weatherElementArray", weatherElementArray);
+                bundle.putString("locationName", locationName);
+            }
             notifyObservers(bundle);
         }
 
-        private Bundle getWeatherElement(String result) {
-            Gson gson = new Gson();
-            Weather weather = gson.fromJson(result, Weather.class);
-            Bundle bundle = new Bundle();
-            ArrayList<Weather.WeatherElement> weatherElementArray = weather.getRecords().getLocation().get(0).getWeatherElement();
-            String locationName = weather.getRecords().getLocation().get(0).getLocationName();
-            bundle.putParcelableArrayList("weatherElementArray", weatherElementArray);
-            bundle.putString("locationName", locationName);
-            return bundle;
+        @Override
+        public void onFailure(Call<Weather> call, Throwable t) {
+            Log.e(MainActivity.TAG, "WeatherCallback, onFailure");
         }
-    }
+    };
 
     private class RunnableQueryFavoriteList implements Runnable {
 

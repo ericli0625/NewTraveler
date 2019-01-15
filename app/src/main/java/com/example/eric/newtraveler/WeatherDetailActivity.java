@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.eric.newtraveler.adapter.WeatherDetailAdapter;
+import com.example.eric.newtraveler.parcelable.Weather;
 
 import java.util.ArrayList;
 

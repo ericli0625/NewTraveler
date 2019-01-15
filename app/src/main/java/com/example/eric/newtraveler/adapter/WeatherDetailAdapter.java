@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.eric.newtraveler.R;
-import com.example.eric.newtraveler.Weather;
+import com.example.eric.newtraveler.parcelable.Weather;
 
 import java.util.ArrayList;
 
