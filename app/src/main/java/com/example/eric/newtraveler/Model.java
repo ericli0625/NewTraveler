@@ -34,6 +34,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Model implements ISubject {
 
+    private static final boolean mUseTempDataToSpeedUp = true;
+
     private HandlerThread mBackgroundThread = null;
     private Handler mBackgroundHandler = null;
 
@@ -43,6 +45,8 @@ public class Model implements ISubject {
 
     private String mNowCountyName;
     private String mNowCityName;
+
+    private ArrayList<SpotDetail> mSpotDetailList;
 
     public Model(Repository repository) {
         this.mRepository = repository;
@@ -104,7 +108,7 @@ public class Model implements ISubject {
     public void backToCityListPage() {
         String countyName = getNowCountyName();
         if (mRepository.isExistPreloadList()) {
-            String repoCityList = mRepository.getCityList(countyName);
+            ArrayList repoCityList = mRepository.getCityList(countyName);
             notifyObservers(repoCityList);
         } else {
             queryCityList(countyName);
@@ -113,7 +117,7 @@ public class Model implements ISubject {
 
     public void queryCountyList() {
         if (mRepository.isExistPreloadList()) {
-            String repoCountyList = mRepository.getCountyList();
+            ArrayList repoCountyList = mRepository.getCountyList();
             notifyObservers(repoCountyList);
         } else {
             ITravelRequest travelRequest = getRetrofitTravelRequest();
@@ -124,7 +128,7 @@ public class Model implements ISubject {
 
     public void queryWeatherCountyList() {
         if (mRepository.isExistPreloadList()) {
-            String repoCountyList = mRepository.getCountyList();
+            ArrayList repoCountyList = mRepository.getCountyList();
             notifyObservers(repoCountyList);
         } else {
             queryCountyList();
@@ -134,7 +138,7 @@ public class Model implements ISubject {
     public void queryCityList(String countyName) {
         setNowCountyStatus(countyName);
         if (mRepository.isExistPreloadList()) {
-            String repoCityList = mRepository.getCityList(countyName);
+            ArrayList repoCityList = mRepository.getCityList(countyName);
             notifyObservers(repoCityList);
         } else {
             ITravelRequest travelRequest = getRetrofitTravelRequest();
@@ -159,9 +163,13 @@ public class Model implements ISubject {
     }
 
     public void querySpotDetail(String spotName) {
-        ITravelRequest travelRequest = getRetrofitTravelRequest();
-        Call<ArrayList<SpotDetail>> call = travelRequest.getTargetSpotDetail(spotName);
-        call.enqueue(mSpotDetailCallback);
+        if (mUseTempDataToSpeedUp) {
+            mBackgroundHandler.post(new RunnableQuerySpotDetail(spotName, mSpotDetailList));
+        } else {
+            ITravelRequest travelRequest = getRetrofitTravelRequest();
+            Call<ArrayList<SpotDetail>> call = travelRequest.getTargetSpotDetail(spotName);
+            call.enqueue(mSpotDetailCallback);
+        }
     }
 
     public void QueryWeatherForecast(String countyName) {
@@ -183,15 +191,15 @@ public class Model implements ISubject {
     }
 
     private Callback<ArrayList<TravelCountyAndCity>> mAllCountyListCallback = new Callback<ArrayList<TravelCountyAndCity>>() {
-        private String result;
+        private ArrayList repoCityList;
 
         @Override
         public void onResponse(Call<ArrayList<TravelCountyAndCity>> call, Response<ArrayList<TravelCountyAndCity>> response) {
             if (response.body() != null) {
                 mRepository.parserAllCountyAndCityList(response.body());
-                result = mRepository.getCountyList();
+                repoCityList = mRepository.getCountyList();
             }
-            notifyObservers(result);
+            notifyObservers(repoCityList);
         }
 
         @Override
@@ -230,7 +238,8 @@ public class Model implements ISubject {
         @Override
         public void onResponse(Call<ArrayList<SpotDetail>> call, Response<ArrayList<SpotDetail>> response) {
             ArrayList<String> arrayList = new ArrayList<String>();
-            for (SpotDetail spotDetail : response.body()) {
+            mSpotDetailList = response.body();
+            for (SpotDetail spotDetail : mSpotDetailList) {
                 arrayList.add(spotDetail.getName());
             }
             notifyObservers(arrayList);
@@ -241,6 +250,42 @@ public class Model implements ISubject {
             Log.e(MainActivity.TAG, "SpotListCallback, onFailure");
         }
     };
+
+    private class RunnableQuerySpotDetail implements Runnable {
+
+        private String spotName;
+        private ArrayList<SpotDetail> spotDetailList;
+
+        public RunnableQuerySpotDetail(String spotName, ArrayList<SpotDetail> spotDetailList) {
+            this.spotName = spotName;
+            this.spotDetailList = spotDetailList;
+        }
+
+        @Override
+        public void run() {
+            notifySpotDetailBundle(spotName, spotDetailList);
+        }
+
+        private void notifySpotDetailBundle(String spotName, ArrayList<SpotDetail> list) {
+            for (SpotDetail spotDetail : list) {
+                if (spotDetail.getName().equals(spotName)) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", spotDetail.getId());
+                    bundle.putString("name", spotDetail.getName());
+                    bundle.putString("city", spotDetail.getCity());
+                    bundle.putString("county", spotDetail.getCounty());
+                    bundle.putString("category", spotDetail.getCategory());
+                    bundle.putString("address", spotDetail.getAddress());
+                    bundle.putString("telephone", spotDetail.getTelephone());
+                    bundle.putString("longitude", spotDetail.getLongitude());
+                    bundle.putString("latitude", spotDetail.getLatitude());
+                    bundle.putString("content", spotDetail.getContent());
+                    bundle.putBoolean("favorite", false);
+                    notifyObservers(bundle);
+                }
+            }
+        }
+    }
 
     private Callback<ArrayList<SpotDetail>> mSpotDetailCallback = new Callback<ArrayList<SpotDetail>>() {
         @Override
@@ -298,8 +343,7 @@ public class Model implements ISubject {
 
         @Override
         public void run() {
-            String result = String.valueOf(queryFavoriteList());
-            notifyObservers(result);
+            notifyObservers(queryFavoriteList());
         }
     }
 
@@ -350,8 +394,7 @@ public class Model implements ISubject {
         @Override
         public void run() {
             SQLiteManager.getInstance().delete(spotName);
-            String result = String.valueOf(queryFavoriteList());
-            notifyObservers(result);
+            notifyObservers(queryFavoriteList());
         }
     }
 

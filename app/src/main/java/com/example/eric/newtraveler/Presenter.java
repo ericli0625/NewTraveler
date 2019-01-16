@@ -247,10 +247,10 @@ public class Presenter implements IPresenter {
             int msgType = msg.what;
             switch (msgType) {
                 case MSG_SHOW_COUNTY_LIST_RESULT:
-                    mainView.showCountyListResult((String) result);
+                    mainView.showCountyListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_CITY_LIST_RESULT:
-                    mainView.showCityListResult((String) result);
+                    mainView.showCityListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_SPOT_LIST_RESULT:
                     mainView.showSpotListResult((ArrayList<String>) result);
@@ -259,19 +259,19 @@ public class Presenter implements IPresenter {
                     mainView.showKeywordSearchSpotResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_WEATHER_COUNTY_LIST_RESULT:
-                    mainView.showWeatherCountyListResult((String) result);
+                    mainView.showWeatherCountyListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_WEATHER_FORECAST_RESULT:
                     mainView.showWeatherForecastResult((Bundle) result);
                     break;
                 case MSG_SHOW_FAVORITE_LIST_RESULT:
-                    mainView.showFavoriteListResult((String) result);
+                    mainView.showFavoriteListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_SPOT_DETAIL_RESULT:
                     mainView.showSpotDetailResult((Bundle) result);
                     break;
                 case MSG_DELETE_FAVORITE_SPOT:
-                    mainView.showDeleteFavoriteResult((String) result);
+                    mainView.showDeleteFavoriteResult((ArrayList<String>) result);
                     break;
                 default:
                     break;

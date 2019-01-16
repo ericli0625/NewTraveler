@@ -5,9 +5,9 @@ import android.os.Bundle;
 import java.util.ArrayList;
 
 public interface IMainView {
-    void showCountyListResult(String string);
+    void showCountyListResult(ArrayList<String> arrayList);
 
-    void showCityListResult(String arrayList);
+    void showCityListResult(ArrayList<String> arrayList);
 
     void showSpotListResult(ArrayList<String> arrayList);
 
@@ -15,11 +15,11 @@ public interface IMainView {
 
     void showSpotDetailResult(Bundle bundle);
 
-    void showWeatherCountyListResult(String string);
+    void showWeatherCountyListResult(ArrayList<String> arrayList);
 
     void showWeatherForecastResult(Bundle bundle);
 
-    void showFavoriteListResult(String string);
+    void showFavoriteListResult(ArrayList<String> arrayList);
 
-    void showDeleteFavoriteResult(String result);
+    void showDeleteFavoriteResult(ArrayList<String> arrayList);
 }

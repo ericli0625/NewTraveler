@@ -3,6 +3,7 @@ package com.example.eric.newtraveler;
 import android.content.SharedPreferences;
 
 import com.example.eric.newtraveler.parcelable.TravelCountyAndCity;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 
@@ -23,12 +24,16 @@ class Repository {
         return !sharedPreferences.getString(TAG_COUNTY_LIST, "").equals("");
     }
 
-    public String getCountyList() {
-        return sharedPreferences.getString(TAG_COUNTY_LIST, "");
+    public ArrayList getCountyList() {
+        String string = sharedPreferences.getString(TAG_COUNTY_LIST, "");
+        Gson gson = new Gson();
+        return gson.fromJson(string, ArrayList.class);
     }
 
-    public String getCityList(String countyName) {
-        return sharedPreferences.getString(TAG_CITY_LIST + "_" + countyName, "");
+    public ArrayList getCityList(String countyName) {
+        String string = sharedPreferences.getString(TAG_CITY_LIST + "_" + countyName, "");
+        Gson gson = new Gson();
+        return gson.fromJson(string, ArrayList.class);
     }
 
     public void parserAllCountyAndCityList(ArrayList<TravelCountyAndCity> arrayList) {

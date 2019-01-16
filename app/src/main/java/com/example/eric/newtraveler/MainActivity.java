@@ -184,17 +184,17 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     };
 
     @Override
-    public void showCountyListResult(String string) {
+    public void showCountyListResult(ArrayList<String> arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showCountyListResult ");
 
         // set result data to an adapter
-        BaseAdapter adapter = new NormalListAdapter(string, mNormalListRecyclerItemTouchListener);
+        BaseAdapter adapter = new NormalListAdapter(arrayList, mNormalListRecyclerItemTouchListener);
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void showCityListResult(String arrayList) {
+    public void showCityListResult(ArrayList<String> arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showCityListResult ");
 
         // set result data to an adapter
@@ -243,11 +243,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showWeatherCountyListResult(String string) {
+    public void showWeatherCountyListResult(ArrayList<String> arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showWeatherCountyListResult");
 
         // set result data to an adapter
-        BaseAdapter adapter = new NormalListAdapter(string, mWeatherForecastRecyclerItemTouchListener);
+        BaseAdapter adapter = new NormalListAdapter(arrayList, mWeatherForecastRecyclerItemTouchListener);
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
     }
@@ -266,20 +266,20 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showFavoriteListResult(String string) {
+    public void showFavoriteListResult(ArrayList<String> arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showFavoriteListResult");
 
         // set result data to an adapter
-        BaseAdapter adapter = new FavoriteListAdapter(string, mFavoriteListRecyclerItemTouchListener);
+        BaseAdapter adapter = new FavoriteListAdapter(arrayList, mFavoriteListRecyclerItemTouchListener);
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void showDeleteFavoriteResult(String string) {
+    public void showDeleteFavoriteResult(ArrayList<String> arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showDeleteFavoriteResult");
 
-        showFavoriteListResult(string);
+        showFavoriteListResult(arrayList);
     }
 
     public IBaseAdapterClickListener mNormalListRecyclerItemTouchListener = new IBaseAdapterClickListener() {
@@ -302,8 +302,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
                     mPresenter.showSpotList(result);
                     break;
                 case IN_SPOT_LIST_PAGE:
-                    showToast(true, Toast.LENGTH_SHORT);
-
                     mPresenter.showSpotDetail(result);
                     break;
             }

@@ -1,29 +1,27 @@
 package com.example.eric.newtraveler.adapter;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.example.eric.newtraveler.MainActivity;
 import com.example.eric.newtraveler.mvp.IBaseAdapterClickListener;
 
-import org.json.JSONException;
+import java.util.ArrayList;
 
 public class FavoriteListAdapter extends BaseAdapter {
 
-    public FavoriteListAdapter(String string, IBaseAdapterClickListener listener) {
-        super(string, listener);
+    public FavoriteListAdapter(ArrayList<String> arrayList, IBaseAdapterClickListener listener) {
+        super(arrayList, listener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        String string = null;
-        try {
-            string = (String) getJsonArray().get(position);
-        } catch (JSONException e) {
-            Log.e(MainActivity.TAG, "FavoriteListAdapter onBindViewHolder, JSONException");
-        }
-        viewHolder.getTextView().setText(string);
+        String content = getArrayList().get(position);
+        viewHolder.getTextView().setText(content);
+    }
+
+    @Override
+    public int getItemCount() {
+        return getArrayList() == null ? 0 : getArrayList().size();
     }
 
 }
