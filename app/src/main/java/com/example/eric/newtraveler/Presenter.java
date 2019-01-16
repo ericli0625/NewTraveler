@@ -10,6 +10,7 @@ import com.example.eric.newtraveler.mvp.IMainView;
 import com.example.eric.newtraveler.observer.IObserver;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 
 public class Presenter implements IPresenter {
@@ -64,15 +65,15 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showCityList(int position) {
+    public void showCityList(String countyName) {
         mModel.addObserver(mQueryCityListObserver);
-        mModel.queryCityList(position);
+        mModel.queryCityList(countyName);
     }
 
     @Override
-    public void showSpotList(int position) {
+    public void showSpotList(String cityName) {
         mModel.addObserver(mQuerySpotListObserver);
-        mModel.queryNormalSearchSpot(position);
+        mModel.queryNormalSearchSpot(cityName);
     }
 
     @Override
@@ -82,9 +83,9 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showSpotDetail(int position) {
+    public void showSpotDetail(String spotName) {
         mModel.addObserver(mQuerySpotDetailObserver);
-        mModel.querySpotDetail(position);
+        mModel.querySpotDetail(spotName);
     }
 
     @Override
@@ -93,10 +94,9 @@ public class Presenter implements IPresenter {
         mModel.queryWeatherCountyList();
     }
 
-    @Override
-    public void showWeatherForecast(int position) {
+    public void showWeatherForecast(String countyName) {
         mModel.addObserver(mQueryWeatherForecastObserver);
-        mModel.QueryWeatherForecast(position);
+        mModel.QueryWeatherForecast(countyName);
     }
 
     @Override
@@ -106,15 +106,15 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showFavoriteSpotDetail(int position) {
+    public void showFavoriteSpotDetail(String spotName) {
         mModel.addObserver(mQuerySpotDetailObserver);
-        mModel.QueryFavoriteSpotDetail(position);
+        mModel.QueryFavoriteSpotDetail(spotName);
     }
 
     @Override
-    public void deleteFavoriteSpot(int position) {
+    public void deleteFavoriteSpot(String spotName) {
         mModel.addObserver(mDeleteFavoriteSpotObserver);
-        mModel.DeleteFavoriteSpot(position);
+        mModel.DeleteFavoriteSpot(spotName);
     }
 
     public class QueryAllCityAndCountyListObserver implements IObserver {
@@ -152,22 +152,22 @@ public class Presenter implements IPresenter {
 
     public class QuerySpotListObserver implements IObserver {
         @Override
-        public <T> void notifyResult(T string) {
+        public <T> void notifyResult(T result) {
             mModel.removeObserver(mQuerySpotListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_SPOT_LIST_RESULT;
-            msg.obj = string;
+            msg.obj = result;
             mMainHandler.sendMessage(msg);
         }
     }
 
     public class QueryKeywordSearchSpotObserver implements IObserver {
         @Override
-        public <T> void notifyResult(T string) {
+        public <T> void notifyResult(T result) {
             mModel.removeObserver(mQueryKeywordSearchSpotObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT;
-            msg.obj = string;
+            msg.obj = result;
             mMainHandler.sendMessage(msg);
         }
     }
@@ -253,10 +253,10 @@ public class Presenter implements IPresenter {
                     mainView.showCityListResult((String) result);
                     break;
                 case MSG_SHOW_SPOT_LIST_RESULT:
-                    mainView.showSpotListResult((String) result);
+                    mainView.showSpotListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
-                    mainView.showKeywordSearchSpotResult((String) result);
+                    mainView.showKeywordSearchSpotResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_WEATHER_COUNTY_LIST_RESULT:
                     mainView.showWeatherCountyListResult((String) result);

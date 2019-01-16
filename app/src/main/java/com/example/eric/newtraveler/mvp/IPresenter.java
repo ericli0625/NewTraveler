@@ -5,11 +5,11 @@ public interface IPresenter {
 
     void showKeywordSearchSpot(String queryString);
 
-    void showSpotDetail(int position);
+    void showSpotDetail(String spotName);
 
-    void showCityList(int position);
+    void showCityList(String countyName);
 
-    void showSpotList(int position);
+    void showSpotList(String cityName);
 
     void preloadAllCountyAndCityList();
 
@@ -17,11 +17,11 @@ public interface IPresenter {
 
     void showWeatherCountyList();
 
-    void showWeatherForecast(int position);
+    void showWeatherForecast(String countyName);
 
     void showFavoriteList();
 
-    void showFavoriteSpotDetail(int position);
+    void showFavoriteSpotDetail(String spotName);
 
-    void deleteFavoriteSpot(int position);
+    void deleteFavoriteSpot(String spotName);
 }

@@ -15,10 +15,18 @@ import com.example.eric.newtraveler.mvp.IBaseAdapterClickListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
 
+    private ArrayList<String> mArrayList;
     private JSONArray mJsonArray;
     private IBaseAdapterClickListener mListener;
+
+    public BaseAdapter(ArrayList<String> arrayList, IBaseAdapterClickListener listener) {
+        this.mArrayList = arrayList;
+        this.mListener = listener;
+    }
 
     public BaseAdapter(String string, IBaseAdapterClickListener listener) {
         try {
@@ -27,6 +35,10 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
             Log.e(MainActivity.TAG, "BaseAdapter construct, JSONException");
         }
         this.mListener = listener;
+    }
+
+    protected ArrayList<String> getArrayList() {
+        return mArrayList;
     }
 
     protected JSONArray getJsonArray() {
@@ -43,9 +55,9 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
         // each data item is just a string in this case
         public ViewHolder(View v) {
             super(v);
-            v.setOnLongClickListener(this);
-            v.setOnClickListener(this);
             mTextView = (TextView) v.findViewById(R.id.recycle_view_item);
+            mTextView.setOnLongClickListener(this);
+            mTextView.setOnClickListener(this);
         }
 
         public TextView getTextView() {
@@ -54,12 +66,12 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            mListener.onItemClick(getAdapterPosition());
+            mListener.onItemClick(((TextView) v).getText().toString());
         }
 
         @Override
         public boolean onLongClick(View v) {
-            return mListener.onItemLongClick(getAdapterPosition());
+            return mListener.onItemLongClick(((TextView) v).getText().toString());
         }
 
         public void setListener(IBaseAdapterClickListener listener) {

@@ -27,8 +27,8 @@ class Repository {
         return sharedPreferences.getString(TAG_COUNTY_LIST, "");
     }
 
-    public String getCityList(int index) {
-        return sharedPreferences.getString(TAG_CITY_LIST + "_" + index, "");
+    public String getCityList(String countyName) {
+        return sharedPreferences.getString(TAG_CITY_LIST + "_" + countyName, "");
     }
 
     public void parserAllCountyAndCityList(ArrayList<TravelCountyAndCity> arrayList) {
@@ -46,14 +46,14 @@ class Repository {
         for (int i = 0; i < countyList.size(); i++) {
             ArrayList<String> innerCityList = new ArrayList<String>();
             for (int j = 0; j < arrayList.size(); j++) {
-                String county = arrayList.get(j).getCounty();
-                if (countyList.get(i).equals(county)) {
-                    String city = arrayList.get(j).getCity();
-                    innerCityList.add(city);
+                String countyName = arrayList.get(j).getCounty();
+                if (countyList.get(i).equals(countyName)) {
+                    String cityName = arrayList.get(j).getCity();
+                    innerCityList.add(cityName);
                 }
             }
             cityList.add(innerCityList);
-            sharedPreferences.edit().putString(TAG_CITY_LIST + "_" + i, new JSONArray(cityList.get(i)).toString()).apply();
+            sharedPreferences.edit().putString(TAG_CITY_LIST + "_" + countyList.get(i), new JSONArray(cityList.get(i)).toString()).apply();
         }
 
     }

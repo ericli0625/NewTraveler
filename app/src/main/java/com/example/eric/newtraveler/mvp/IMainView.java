@@ -2,14 +2,16 @@ package com.example.eric.newtraveler.mvp;
 
 import android.os.Bundle;
 
+import java.util.ArrayList;
+
 public interface IMainView {
     void showCountyListResult(String string);
 
-    void showCityListResult(String string);
+    void showCityListResult(String arrayList);
 
-    void showSpotListResult(String string);
+    void showSpotListResult(ArrayList<String> arrayList);
 
-    void showKeywordSearchSpotResult(String string);
+    void showKeywordSearchSpotResult(ArrayList<String> arrayList);
 
     void showSpotDetailResult(Bundle bundle);
 

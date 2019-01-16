@@ -23,7 +23,10 @@ import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
 import com.example.eric.newtraveler.database.SQLiteManager;
 import com.example.eric.newtraveler.mvp.IBaseAdapterClickListener;
 import com.example.eric.newtraveler.mvp.IMainView;
+import com.example.eric.newtraveler.mvp.IPresenter;
 import com.example.eric.newtraveler.widget.CustomItemDecoration;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
 
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private static final int IN_CITY_LIST_PAGE = 1;
     private static final int IN_SPOT_LIST_PAGE = 2;
 
-    private Presenter mPresenter;
+    private IPresenter mPresenter;
 
     private TextView mTextView;
     private EditText mEditText;
@@ -191,11 +194,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showCityListResult(String string) {
+    public void showCityListResult(String arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showCityListResult ");
 
         // set result data to an adapter
-        BaseAdapter adapter = new NormalListAdapter(string, mNormalListRecyclerItemTouchListener);
+        BaseAdapter adapter = new NormalListAdapter(arrayList, mNormalListRecyclerItemTouchListener);
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
 
@@ -203,11 +206,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showSpotListResult(String string) {
+    public void showSpotListResult(ArrayList<String> arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showSpotListResult ");
 
         // set result data to an adapter
-        BaseAdapter adapter = new SpotDetailAdapter(string, mNormalListRecyclerItemTouchListener);
+        BaseAdapter adapter = new SpotDetailAdapter(arrayList, mNormalListRecyclerItemTouchListener);
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
 
@@ -215,11 +218,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void showKeywordSearchSpotResult(String string) {
+    public void showKeywordSearchSpotResult(ArrayList<String> arrayList) {
         Log.v(MainActivity.TAG, "MainActivity, showKeywordSearchSpotResult ");
 
         // set result data to an adapter
-        BaseAdapter adapter = new SpotDetailAdapter(string, mKeywordSearchSpotRecyclerItemTouchListener);
+        BaseAdapter adapter = new SpotDetailAdapter(arrayList, mKeywordSearchSpotRecyclerItemTouchListener);
         adapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(adapter);
 
@@ -282,13 +285,13 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mNormalListRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(int position) {
+        public void onItemClick(String result) {
             switch (mTriggerListLevel) {
                 case IN_COUNTY_LIST_PAGE:
                     loadNormalCitySearchView();
                     showToast(true, Toast.LENGTH_LONG);
 
-                    mPresenter.showCityList(position);
+                    mPresenter.showCityList(result);
                     break;
                 case IN_CITY_LIST_PAGE:
                     loadNormalSpotSearch();
@@ -296,16 +299,18 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
                     mRecyclerView.setAdapter(null);
 
-                    mPresenter.showSpotList(position);
+                    mPresenter.showSpotList(result);
                     break;
                 case IN_SPOT_LIST_PAGE:
-                    mPresenter.showSpotDetail(position);
+                    showToast(true, Toast.LENGTH_SHORT);
+
+                    mPresenter.showSpotDetail(result);
                     break;
             }
         }
 
         @Override
-        public boolean onItemLongClick(int position) {
+        public boolean onItemLongClick(String result) {
             return false;
         }
     };
@@ -313,12 +318,14 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mKeywordSearchSpotRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(int position) {
-            mPresenter.showSpotDetail(position);
+        public void onItemClick(String spotName) {
+            showToast(true, Toast.LENGTH_LONG);
+
+            mPresenter.showSpotDetail(spotName);
         }
 
         @Override
-        public boolean onItemLongClick(int position) {
+        public boolean onItemLongClick(String result) {
             return false;
         }
     };
@@ -326,12 +333,12 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mWeatherForecastRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(int position) {
-            mPresenter.showWeatherForecast(position);
+        public void onItemClick(String countyName) {
+            mPresenter.showWeatherForecast(countyName);
         }
 
         @Override
-        public boolean onItemLongClick(int position) {
+        public boolean onItemLongClick(String result) {
             return false;
         }
     };
@@ -339,17 +346,17 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     public IBaseAdapterClickListener mFavoriteListRecyclerItemTouchListener = new IBaseAdapterClickListener() {
 
         @Override
-        public void onItemClick(int position) {
-            mPresenter.showFavoriteSpotDetail(position);
+        public void onItemClick(String spotName) {
+            mPresenter.showFavoriteSpotDetail(spotName);
         }
 
         @Override
-        public boolean onItemLongClick(int position) {
+        public boolean onItemLongClick(String spotName) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle(R.string.delete_dialog_title)
                     .setMessage(R.string.delete_dialog_message)
                     .setPositiveButton(R.string.delete_dialog_ok, (dialog, id) ->
-                            mPresenter.deleteFavoriteSpot(position))
+                            mPresenter.deleteFavoriteSpot(spotName))
                     .setNegativeButton(R.string.delete_dialog_cancel, (dialog, id) -> dialog.cancel());
             AlertDialog alert = builder.create();
             alert.show();

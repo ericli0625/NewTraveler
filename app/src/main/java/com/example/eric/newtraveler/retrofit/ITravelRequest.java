@@ -19,6 +19,12 @@ public interface ITravelRequest {
     @GET("travelcity/query_city")
     Call<ArrayList> getCityList(@Query("county") String county);
 
-    @GET("travelspot/query_spot/")
-    Call<ArrayList<SpotDetail>> getSpotDetail();
+    @GET("travelspot/query_spot")
+    Call<ArrayList<SpotDetail>> getNormalSearchSpotDetail(@Query("place") String spotName);
+
+    @GET("travelspot/query_spot_name")
+    Call<ArrayList<SpotDetail>> getKeywordSearchSpotDetail(@Query("spot_name") String spotName);
+
+    @GET("travelspot/query_spot_name")
+    Call<ArrayList<SpotDetail>> getTargetSpotDetail(@Query("spot_name") String spotName);
 }
