@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.mvp;
+package com.example.eric.newtraveler.ui;
 
 public interface IPresenter {
     void showCountyList();

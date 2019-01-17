@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.models;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -7,14 +7,16 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.eric.newtraveler.database.SQLiteManager;
+import com.example.eric.newtraveler.ui.MainActivity;
+import com.example.eric.newtraveler.util.SQLiteManager;
 import com.example.eric.newtraveler.observer.IObserver;
 import com.example.eric.newtraveler.observer.ISubject;
-import com.example.eric.newtraveler.parcelable.SpotDetail;
-import com.example.eric.newtraveler.parcelable.TravelCountyAndCity;
-import com.example.eric.newtraveler.parcelable.Weather;
-import com.example.eric.newtraveler.retrofit.ITravelRequest;
-import com.example.eric.newtraveler.retrofit.IWeatherRequest;
+import com.example.eric.newtraveler.network.responseData.SpotDetail;
+import com.example.eric.newtraveler.network.responseData.TravelCountyAndCity;
+import com.example.eric.newtraveler.network.responseData.Weather;
+import com.example.eric.newtraveler.network.ITravelRequest;
+import com.example.eric.newtraveler.network.IWeatherRequest;
+import com.example.eric.newtraveler.util.Repository;
 
 import java.io.BufferedReader;
 import java.io.IOException;

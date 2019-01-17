@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.mvp;
+package com.example.eric.newtraveler.adapters;
 
 public interface IBaseAdapterClickListener {
     void onItemClick(String position);

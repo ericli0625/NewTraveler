@@ -1,6 +1,6 @@
-package com.example.eric.newtraveler.retrofit;
+package com.example.eric.newtraveler.network;
 
-import com.example.eric.newtraveler.parcelable.Weather;
+import com.example.eric.newtraveler.network.responseData.Weather;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

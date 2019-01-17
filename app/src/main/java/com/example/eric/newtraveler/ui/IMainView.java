@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.mvp;
+package com.example.eric.newtraveler.ui;
 
 import android.os.Bundle;
 

@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.parcelable;
+package com.example.eric.newtraveler.network.responseData;
 
 public class TravelCountyAndCity {
     private String id;

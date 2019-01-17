@@ -1,7 +1,7 @@
-package com.example.eric.newtraveler.retrofit;
+package com.example.eric.newtraveler.network;
 
-import com.example.eric.newtraveler.parcelable.SpotDetail;
-import com.example.eric.newtraveler.parcelable.TravelCountyAndCity;
+import com.example.eric.newtraveler.network.responseData.SpotDetail;
+import com.example.eric.newtraveler.network.responseData.TravelCountyAndCity;
 
 import java.util.ArrayList;
 

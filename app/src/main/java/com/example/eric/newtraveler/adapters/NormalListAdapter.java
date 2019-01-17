@@ -1,8 +1,6 @@
-package com.example.eric.newtraveler.adapter;
+package com.example.eric.newtraveler.adapters;
 
 import android.support.annotation.NonNull;
-
-import com.example.eric.newtraveler.mvp.IBaseAdapterClickListener;
 
 import java.util.ArrayList;
 

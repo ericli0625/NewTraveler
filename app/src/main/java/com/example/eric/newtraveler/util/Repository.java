@@ -1,15 +1,15 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.util;
 
 import android.content.SharedPreferences;
 
-import com.example.eric.newtraveler.parcelable.TravelCountyAndCity;
+import com.example.eric.newtraveler.network.responseData.TravelCountyAndCity;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-class Repository {
+public class Repository {
 
     private final SharedPreferences sharedPreferences;
 

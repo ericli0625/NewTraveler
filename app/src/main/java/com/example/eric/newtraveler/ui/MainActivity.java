@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -16,15 +16,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.eric.newtraveler.adapter.BaseAdapter;
-import com.example.eric.newtraveler.adapter.FavoriteListAdapter;
-import com.example.eric.newtraveler.adapter.NormalListAdapter;
-import com.example.eric.newtraveler.adapter.SpotDetailAdapter;
-import com.example.eric.newtraveler.database.SQLiteManager;
-import com.example.eric.newtraveler.mvp.IBaseAdapterClickListener;
-import com.example.eric.newtraveler.mvp.IMainView;
-import com.example.eric.newtraveler.mvp.IPresenter;
-import com.example.eric.newtraveler.widget.CustomItemDecoration;
+import com.example.eric.newtraveler.R;
+import com.example.eric.newtraveler.adapters.BaseAdapter;
+import com.example.eric.newtraveler.adapters.FavoriteListAdapter;
+import com.example.eric.newtraveler.adapters.NormalListAdapter;
+import com.example.eric.newtraveler.adapters.SpotDetailAdapter;
+import com.example.eric.newtraveler.util.SQLiteManager;
+import com.example.eric.newtraveler.adapters.IBaseAdapterClickListener;
+import com.example.eric.newtraveler.util.Repository;
+import com.example.eric.newtraveler.ui.widget.CustomItemDecoration;
 
 import java.util.ArrayList;
 

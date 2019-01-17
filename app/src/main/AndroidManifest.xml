@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
-        android:name=".MyApplication"
+        android:name=".ui.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_backpack"
         android:label="@string/app_name"
@@ -20,7 +20,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,12 +28,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SpotDetailActivity"
+            android:name=".ui.SpotDetailActivity"
             android:label="@string/title_activity_main2"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".WeatherDetailActivity"
+            android:name=".ui.WeatherDetailActivity"
             android:label="@string/title_activity_main2"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />

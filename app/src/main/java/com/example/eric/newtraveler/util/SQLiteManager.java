@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.database;
+package com.example.eric.newtraveler.util;
 
 import android.content.ContentValues;
 import android.content.Context;

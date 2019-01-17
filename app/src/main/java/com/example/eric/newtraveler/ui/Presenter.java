@@ -1,13 +1,13 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.example.eric.newtraveler.mvp.IPresenter;
-import com.example.eric.newtraveler.mvp.IMainView;
+import com.example.eric.newtraveler.models.Model;
 import com.example.eric.newtraveler.observer.IObserver;
+import com.example.eric.newtraveler.util.Repository;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
