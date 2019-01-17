@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +10,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.eric.newtraveler.adapter.WeatherDetailAdapter;
+import com.example.eric.newtraveler.R;
+import com.example.eric.newtraveler.adapters.WeatherDetailAdapter;
+import com.example.eric.newtraveler.network.responseData.Weather;
 
 import java.util.ArrayList;
 

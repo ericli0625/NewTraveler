@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.ui;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -9,7 +9,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.eric.newtraveler.database.SQLiteManager;
+import com.example.eric.newtraveler.R;
+import com.example.eric.newtraveler.util.SQLiteManager;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;

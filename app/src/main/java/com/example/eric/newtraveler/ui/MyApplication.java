@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.ui;
 
 import android.app.Application;
 import android.util.Log;

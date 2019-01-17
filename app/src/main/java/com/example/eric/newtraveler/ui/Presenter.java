@@ -1,15 +1,16 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.example.eric.newtraveler.mvp.IPresenter;
-import com.example.eric.newtraveler.mvp.IMainView;
+import com.example.eric.newtraveler.models.Model;
 import com.example.eric.newtraveler.observer.IObserver;
+import com.example.eric.newtraveler.util.Repository;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 
 public class Presenter implements IPresenter {
@@ -64,15 +65,15 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showCityList(int position) {
+    public void showCityList(String countyName) {
         mModel.addObserver(mQueryCityListObserver);
-        mModel.queryCityList(position);
+        mModel.queryCityList(countyName);
     }
 
     @Override
-    public void showSpotList(int position) {
+    public void showSpotList(String cityName) {
         mModel.addObserver(mQuerySpotListObserver);
-        mModel.queryNormalSearchSpot(position);
+        mModel.queryNormalSearchSpot(cityName);
     }
 
     @Override
@@ -82,9 +83,9 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showSpotDetail(int position) {
+    public void showSpotDetail(String spotName) {
         mModel.addObserver(mQuerySpotDetailObserver);
-        mModel.querySpotDetail(position);
+        mModel.querySpotDetail(spotName);
     }
 
     @Override
@@ -93,10 +94,9 @@ public class Presenter implements IPresenter {
         mModel.queryWeatherCountyList();
     }
 
-    @Override
-    public void showWeatherForecast(int position) {
+    public void showWeatherForecast(String countyName) {
         mModel.addObserver(mQueryWeatherForecastObserver);
-        mModel.QueryWeatherForecast(position);
+        mModel.QueryWeatherForecast(countyName);
     }
 
     @Override
@@ -106,15 +106,15 @@ public class Presenter implements IPresenter {
     }
 
     @Override
-    public void showFavoriteSpotDetail(int position) {
+    public void showFavoriteSpotDetail(String spotName) {
         mModel.addObserver(mQuerySpotDetailObserver);
-        mModel.QueryFavoriteSpotDetail(position);
+        mModel.QueryFavoriteSpotDetail(spotName);
     }
 
     @Override
-    public void deleteFavoriteSpot(int position) {
+    public void deleteFavoriteSpot(String spotName) {
         mModel.addObserver(mDeleteFavoriteSpotObserver);
-        mModel.DeleteFavoriteSpot(position);
+        mModel.DeleteFavoriteSpot(spotName);
     }
 
     public class QueryAllCityAndCountyListObserver implements IObserver {
@@ -152,22 +152,22 @@ public class Presenter implements IPresenter {
 
     public class QuerySpotListObserver implements IObserver {
         @Override
-        public <T> void notifyResult(T string) {
+        public <T> void notifyResult(T result) {
             mModel.removeObserver(mQuerySpotListObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_SPOT_LIST_RESULT;
-            msg.obj = string;
+            msg.obj = result;
             mMainHandler.sendMessage(msg);
         }
     }
 
     public class QueryKeywordSearchSpotObserver implements IObserver {
         @Override
-        public <T> void notifyResult(T string) {
+        public <T> void notifyResult(T result) {
             mModel.removeObserver(mQueryKeywordSearchSpotObserver);
             Message msg = new Message();
             msg.what = MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT;
-            msg.obj = string;
+            msg.obj = result;
             mMainHandler.sendMessage(msg);
         }
     }
@@ -247,31 +247,31 @@ public class Presenter implements IPresenter {
             int msgType = msg.what;
             switch (msgType) {
                 case MSG_SHOW_COUNTY_LIST_RESULT:
-                    mainView.showCountyListResult((String) result);
+                    mainView.showCountyListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_CITY_LIST_RESULT:
-                    mainView.showCityListResult((String) result);
+                    mainView.showCityListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_SPOT_LIST_RESULT:
-                    mainView.showSpotListResult((String) result);
+                    mainView.showSpotListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_KEYWORD_SEARCH_SPOT_RESULT:
-                    mainView.showKeywordSearchSpotResult((String) result);
+                    mainView.showKeywordSearchSpotResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_WEATHER_COUNTY_LIST_RESULT:
-                    mainView.showWeatherCountyListResult((String) result);
+                    mainView.showWeatherCountyListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_WEATHER_FORECAST_RESULT:
                     mainView.showWeatherForecastResult((Bundle) result);
                     break;
                 case MSG_SHOW_FAVORITE_LIST_RESULT:
-                    mainView.showFavoriteListResult((String) result);
+                    mainView.showFavoriteListResult((ArrayList<String>) result);
                     break;
                 case MSG_SHOW_SPOT_DETAIL_RESULT:
                     mainView.showSpotDetailResult((Bundle) result);
                     break;
                 case MSG_DELETE_FAVORITE_SPOT:
-                    mainView.showDeleteFavoriteResult((String) result);
+                    mainView.showDeleteFavoriteResult((ArrayList<String>) result);
                     break;
                 default:
                     break;

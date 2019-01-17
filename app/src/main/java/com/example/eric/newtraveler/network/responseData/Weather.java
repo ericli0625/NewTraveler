@@ -1,11 +1,9 @@
-package com.example.eric.newtraveler;
+package com.example.eric.newtraveler.network.responseData;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Weather {
 

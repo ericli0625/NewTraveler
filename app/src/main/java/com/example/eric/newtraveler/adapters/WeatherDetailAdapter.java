@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.adapter;
+package com.example.eric.newtraveler.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.eric.newtraveler.R;
-import com.example.eric.newtraveler.Weather;
+import com.example.eric.newtraveler.network.responseData.Weather;
 
 import java.util.ArrayList;
 

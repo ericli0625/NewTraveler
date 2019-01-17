@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.widget;
+package com.example.eric.newtraveler.ui.widget;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
