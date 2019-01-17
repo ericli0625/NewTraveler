@@ -15,8 +15,7 @@ import com.example.eric.newtraveler.network.responseData.SpotDetail;
 import com.example.eric.newtraveler.network.responseData.TravelCountyAndCity;
 import com.example.eric.newtraveler.network.responseData.Weather;
 import com.example.eric.newtraveler.network.ITravelRequest;
-import com.example.eric.newtraveler.network.IWeatherRequest;
-import com.example.eric.newtraveler.util.Repository;
+import com.example.eric.newtraveler.network.IWeatherService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,10 +27,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Model implements ISubject {
@@ -41,7 +45,7 @@ public class Model implements ISubject {
     private HandlerThread mBackgroundThread = null;
     private Handler mBackgroundHandler = null;
 
-    private final Repository mRepository;
+//    private final Repository mRepository;
 
     private CopyOnWriteArrayList<IObserver> mObserveList = new CopyOnWriteArrayList<IObserver>();
 
@@ -50,8 +54,7 @@ public class Model implements ISubject {
 
     private ArrayList<SpotDetail> mSpotDetailList;
 
-    public Model(Repository repository) {
-        this.mRepository = repository;
+    public Model() {
     }
 
     public void initBackgroundHandler() {
@@ -81,6 +84,7 @@ public class Model implements ISubject {
     private ITravelRequest getRetrofitTravelRequest() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://travelplanbackend.herokuapp.com/api/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -88,103 +92,124 @@ public class Model implements ISubject {
     }
 
     @NonNull
-    private IWeatherRequest getRetrofitWeatherRequest() {
+    private IWeatherService getRetrofitWeatherService() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://opendata.cwb.gov.tw/api/v1/rest/datastore/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        return retrofit.create(IWeatherRequest.class);
+        return retrofit.create(IWeatherService.class);
     }
 
-    public void queryAllCountyAndCityList() {
-        if (mRepository.isExistPreloadList()) {
-            queryCountyList();
-        } else {
+    public void queryAllCountyAndCityList(Observer<ArrayList<TravelCountyAndCity>> observer) {
+//        if (mRepository.isExistPreloadList()) {
+//            queryCountyList();
+//        } else {
             ITravelRequest travelRequest = getRetrofitTravelRequest();
-            Call<ArrayList<TravelCountyAndCity>> call = travelRequest.getAllCountyAndCityList();
-            call.enqueue(mAllCountyListCallback);
-        }
+            Observable<ArrayList<TravelCountyAndCity>> observable = travelRequest.getAllCountyAndCityList();
+            observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+//            call.enqueue(mAllCountyListCallback);
+//        }
     }
 
-    public void backToCityListPage() {
-        String countyName = getNowCountyName();
-        if (mRepository.isExistPreloadList()) {
-            ArrayList repoCityList = mRepository.getCityList(countyName);
-            notifyObservers(repoCityList);
-        } else {
-            queryCityList(countyName);
-        }
+    public void backToCityListPage(String countyName, Observer<ArrayList> observer) {
+//        String countyName = getNowCountyName();
+//        if (mRepository.isExistPreloadList()) {
+//            ArrayList repoCityList = mRepository.getCityList(countyName);
+//            notifyObservers(repoCityList);
+//        } else {
+            queryCityList(countyName, observer);
+//        }
     }
 
-    public void queryCountyList() {
-        if (mRepository.isExistPreloadList()) {
-            ArrayList repoCountyList = mRepository.getCountyList();
-            notifyObservers(repoCountyList);
-        } else {
+    public void queryCountyList(Observer<ArrayList> observer) {
+//        if (mRepository.isExistPreloadList()) {
+//            ArrayList repoCountyList = mRepository.getCountyList();
+//            notifyObservers(repoCountyList);
+//        } else {
             ITravelRequest travelRequest = getRetrofitTravelRequest();
-            Call<ArrayList> call = travelRequest.getAllCountyList();
-            call.enqueue(mCountyListCallback);
-        }
+        Observable<ArrayList> observable = travelRequest.getAllCountyList();
+        observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+//            call.enqueue(mCountyListCallback);
+//        }
     }
 
-    public void queryWeatherCountyList() {
-        if (mRepository.isExistPreloadList()) {
-            ArrayList repoCountyList = mRepository.getCountyList();
-            notifyObservers(repoCountyList);
-        } else {
-            queryCountyList();
-        }
+    public void queryWeatherCountyList(Observer<ArrayList> observer) {
+//        if (mRepository.isExistPreloadList()) {
+//            ArrayList repoCountyList = mRepository.getCountyList();
+//            notifyObservers(repoCountyList);
+//        } else {
+            queryCountyList(observer);
+//        }
     }
 
-    public void queryCityList(String countyName) {
-        setNowCountyStatus(countyName);
-        if (mRepository.isExistPreloadList()) {
-            ArrayList repoCityList = mRepository.getCityList(countyName);
-            notifyObservers(repoCityList);
-        } else {
+    public void queryCityList(String countyName, Observer<ArrayList> observer) {
+//        setNowCountyStatus(countyName);
+//        if (mRepository.isExistPreloadList()) {
+//            ArrayList repoCityList = mRepository.getCityList(countyName);
+//            notifyObservers(repoCityList);
+//        } else {
             ITravelRequest travelRequest = getRetrofitTravelRequest();
-            Call<ArrayList> call = travelRequest.getCityList(countyName);
-            call.enqueue(mCityListCallback);
-        }
+            Observable<ArrayList> observable = travelRequest.getCityList(countyName);
+            observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+//            call.enqueue(mCityListCallback);
+//        }
     }
 
-    public void queryNormalSearchSpot(String cityName) {
-        setNowCityStatus(cityName);
+    public void queryNormalSearchSpot(String cityName, Observer<ArrayList<SpotDetail>> observer) {
         String countyName = getNowCountyName();
 
         ITravelRequest travelRequest = getRetrofitTravelRequest();
-        Call<ArrayList<SpotDetail>> call = travelRequest.getNormalSearchSpotDetail(countyName + "," + cityName);
-        call.enqueue(mSpotListCallback);
+        Observable<ArrayList<SpotDetail>> observable = travelRequest.getNormalSearchSpotDetail(countyName + "," + cityName);
+        observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+//        call.enqueue(mSpotListCallback);
     }
 
-    public void queryKeywordSearchSpot(String queryString) {
+    public void queryKeywordSearchSpot(String queryString, Observer<ArrayList<SpotDetail>> observer) {
         ITravelRequest travelRequest = getRetrofitTravelRequest();
-        Call<ArrayList<SpotDetail>> call = travelRequest.getKeywordSearchSpotDetail(queryString);
-        call.enqueue(mSpotListCallback);
+        Observable<ArrayList<SpotDetail>> observable = travelRequest.getKeywordSearchSpotDetail(queryString);
+        observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+//        call.enqueue(mSpotListCallback);
     }
 
-    public void querySpotDetail(String spotName) {
+    public void querySpotDetail(String spotName, Observer<ArrayList<SpotDetail>> observer) {
         if (mUseTempDataToSpeedUp) {
             mBackgroundHandler.post(new RunnableQuerySpotDetail(spotName, mSpotDetailList));
         } else {
             ITravelRequest travelRequest = getRetrofitTravelRequest();
-            Call<ArrayList<SpotDetail>> call = travelRequest.getTargetSpotDetail(spotName);
-            call.enqueue(mSpotDetailCallback);
+            Observable<ArrayList<SpotDetail>> observable = travelRequest.getTargetSpotDetail(spotName);
+            observable.subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+//            call.enqueue(mSpotDetailCallback);
         }
     }
 
-    public void QueryWeatherForecast(String countyName) {
-        IWeatherRequest weatherRequest = getRetrofitWeatherRequest();
-        Call<Weather> call = weatherRequest.getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
-        call.enqueue(mWeatherCallback);
+    public void QueryWeatherForecast(String countyName, Observer<Weather> observer) {
+        IWeatherService weatherService = getRetrofitWeatherService();
+        Observable<Weather> observable = weatherService.getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
+        observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+//        observable.enqueue(mWeatherCallback);
     }
 
     public void QueryFavoriteList() {
         mBackgroundHandler.post(new RunnableQueryFavoriteList());
     }
 
-    public void QueryFavoriteSpotDetail(String spotName) {
+    public void QueryFavoriteSpotDetail(String spotName, Observer<ArrayList<SpotDetail>> mSpotDetailObserver) {
         mBackgroundHandler.post(new RunnableQueryFavoriteSpotDetail(spotName));
     }
 
@@ -198,8 +223,8 @@ public class Model implements ISubject {
         @Override
         public void onResponse(Call<ArrayList<TravelCountyAndCity>> call, Response<ArrayList<TravelCountyAndCity>> response) {
             if (response.body() != null) {
-                mRepository.parserAllCountyAndCityList(response.body());
-                repoCityList = mRepository.getCountyList();
+//                mRepository.parserAllCountyAndCityList(response.body());
+//                repoCityList = mRepository.getCountyList();
             }
             notifyObservers(repoCityList);
         }
