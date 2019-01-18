@@ -9,7 +9,7 @@ import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface ITravelRequest {
+public interface ITravelService {
     @GET("travelcity")
     Observable<ArrayList<TravelCountyAndCity>> getAllCountyAndCityList();
 
@@ -24,7 +24,4 @@ public interface ITravelRequest {
 
     @GET("travelspot/query_spot_name")
     Observable<ArrayList<SpotDetail>> getKeywordSearchSpotDetail(@Query("spot_name") String spotName);
-
-    @GET("travelspot/query_spot_name")
-    Observable<ArrayList<SpotDetail>> getTargetSpotDetail(@Query("spot_name") String spotName);
 }

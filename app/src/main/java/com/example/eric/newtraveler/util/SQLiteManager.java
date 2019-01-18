@@ -14,7 +14,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
     private final static String DATABASE_NAME = "favorite_spot.db";
     private final static int DATABASE_VERSION = 1;
-    private final static String TABLE_NAME = "favorite";
+    private final static String TABLE_NAME = "favorite_icon";
     private final static String FIELD_Id = "_id";
     public final static String FIELD_Name = "name";
     public final static String FIELD_Category = "category";

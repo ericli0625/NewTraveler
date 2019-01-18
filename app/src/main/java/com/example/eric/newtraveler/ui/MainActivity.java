@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         Button keywordSearchButton = (Button) findViewById(R.id.keyword_search_button);
         keywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
+        mTriggerListLevel = IN_SPOT_LIST_PAGE;
     }
 
     private void loadWeatherForecastView() {

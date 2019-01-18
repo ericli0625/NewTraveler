@@ -60,8 +60,8 @@ public class SpotDetailActivity extends AppCompatActivity implements OnMapReadyC
             mContent = bundle.getString("content");
             mLongitude = bundle.getString("longitude");
             mLatitude = bundle.getString("latitude");
-            boolean isFavorite = bundle.getBoolean("favorite");
-            if (isFavorite) {
+            boolean isFavorite = bundle.getBoolean("favorite_icon");
+            if (!isFavorite) {
                 addFavoriteButton.setVisibility(View.INVISIBLE);
             }
 
