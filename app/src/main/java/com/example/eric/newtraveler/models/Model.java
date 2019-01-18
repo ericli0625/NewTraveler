@@ -80,51 +80,58 @@ public class Model {
     }
 
     public void queryBackToCityListPage(Observer<ArrayList> observer) {
-        String countyName = getNowCountyName();
-        queryCityList(countyName, observer);
+        queryCityList(getNowCountyName(), observer);
     }
 
     public void queryCountyList(Observer<ArrayList> observer) {
-        Observable<ArrayList> observable;
-        if (mRepository.isExistPreloadList()) {
-            observable = Observable.create(
+        Observable<ArrayList> observableRepository = Observable.create(
                     new ObservableOnSubscribe<ArrayList>() {
                         @Override
                         public void subscribe(ObservableEmitter<ArrayList> emitter) throws Exception {
-                            ArrayList repoCountyList = mRepository.getCountyList();
-                            emitter.onNext(repoCountyList);
-                            emitter.onComplete();
                             Log.i(MainActivity.TAG, "Model, queryCountyList, subscribe");
+                            ArrayList repoCountyList = mRepository.getCountyList();
+                            if (repoCountyList != null) {
+                                Log.v(MainActivity.TAG, "Model, queryCountyList, get data from Repository");
+                                emitter.onNext(repoCountyList);
+                            } else {
+                                Log.v(MainActivity.TAG, "Model, queryCountyList, get data from Network");
+                                emitter.onComplete();
+                            }
                         }
                     });
-        } else {
-            ITravelService travelRequest = getRetrofitTravelService();
-            observable = travelRequest.getAllCountyList();
-        }
-        observable.subscribeOn(Schedulers.newThread())
+
+        ITravelService travelRequest = getRetrofitTravelService();
+        Observable<ArrayList> observableNetwork = travelRequest.getAllCountyList();
+
+        Observable.concat(observableRepository, observableNetwork)
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 
     public void queryCityList(@NonNull String countyName, Observer<ArrayList> observer) {
-        setNowCountyStatus(countyName);
-        Observable<ArrayList> observable;
-        if (mRepository.isExistPreloadList()) {
-            observable = Observable.create(
-                    new ObservableOnSubscribe<ArrayList>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<ArrayList> emitter) throws Exception {
-                            ArrayList repoCityList = mRepository.getCityList(countyName);
+        Observable<ArrayList> observableRepository = Observable.create(
+                new ObservableOnSubscribe<ArrayList>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<ArrayList> emitter) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, queryCityList, subscribe");
+                        setNowCountyStatus(countyName);
+                        ArrayList repoCityList = mRepository.getCityList(countyName);
+                        if (repoCityList != null) {
+                            Log.v(MainActivity.TAG, "Model, queryCityList, get data from Repository");
                             emitter.onNext(repoCityList);
+                        } else {
+                            Log.v(MainActivity.TAG, "Model, queryCityList, get data from Network");
                             emitter.onComplete();
-                            Log.i(MainActivity.TAG, "Model, queryCityList, subscribe");
                         }
-                    });
-        } else {
-            ITravelService travelRequest = getRetrofitTravelService();
-            observable = travelRequest.getCityList(countyName);
-        }
-        observable.subscribeOn(Schedulers.newThread())
+                    }
+                });
+
+        ITravelService travelRequest = getRetrofitTravelService();
+        Observable<ArrayList> observableNetwork = travelRequest.getCityList(countyName);
+
+        Observable.concat(observableRepository, observableNetwork)
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
@@ -136,12 +143,12 @@ public class Model {
                 .map(new Function<ArrayList<SpotDetail>, ArrayList<String>>() {
                     @Override
                     public ArrayList<String> apply(ArrayList<SpotDetail> list) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, queryNormalSearchSpot, apply");
                         setSpotDetailList(list);
                         ArrayList<String> newArrayList = new ArrayList<String>();
                         for (SpotDetail spotDetail : list) {
                             newArrayList.add(spotDetail.getName());
                         }
-                        Log.i(MainActivity.TAG, "Model, queryNormalSearchSpot, apply");
                         return newArrayList;
                     }
                 })
@@ -156,12 +163,12 @@ public class Model {
                 .map(new Function<ArrayList<SpotDetail>, ArrayList<String>>() {
                     @Override
                     public ArrayList<String> apply(ArrayList<SpotDetail> list) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, queryKeywordSearchSpot, apply");
                         setSpotDetailList(list);
                         ArrayList<String> newArrayList = new ArrayList<String>();
                         for (SpotDetail spotDetail : list) {
                             newArrayList.add(spotDetail.getName());
                         }
-                        Log.i(MainActivity.TAG, "Model, queryNormalSearchSpot, apply");
                         return newArrayList;
                     }
                 })
@@ -174,13 +181,13 @@ public class Model {
                 new ObservableOnSubscribe<SpotDetail>() {
                     @Override
                     public void subscribe(ObservableEmitter<SpotDetail> emitter) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, querySpotDetail, subscribe");
                         for (SpotDetail spotDetail : getSpotDetailList()) {
                             if (spotDetail.getName().equals(spotName)) {
                                 emitter.onNext(spotDetail);
                             }
                         }
                         emitter.onComplete();
-                        Log.i(MainActivity.TAG, "Model, querySpotDetail, subscribe");
                     }
                 });
         observable.subscribeOn(Schedulers.newThread())
@@ -194,7 +201,6 @@ public class Model {
                 .subscribe(observer);
     }
 
-
     public void queryWeatherCountyList(Observer<ArrayList> observer) {
         queryCountyList(observer);
     }
@@ -206,6 +212,7 @@ public class Model {
                 .map(new Function<Weather, Bundle>() {
                     @Override
                     public Bundle apply(Weather weather) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, queryWeatherForecast, apply");
                         Weather.Location location = null;
                         Bundle bundle = new Bundle();
                         location = weather.getRecords().getLocation().get(0);
@@ -213,7 +220,6 @@ public class Model {
                         String locationName = location.getLocationName();
                         bundle.putParcelableArrayList("weatherElementArray", weatherElementArray);
                         bundle.putString("locationName", locationName);
-                        Log.i(MainActivity.TAG, "Model, queryWeatherForecast, apply");
                         return bundle;
                     }
                 })
@@ -221,17 +227,15 @@ public class Model {
                 .subscribe(observer);
     }
 
-
-
     public void queryFavoriteList(Observer<ArrayList<String>> observer) {
         Observable<ArrayList<String>> observable = Observable.create(
                 new ObservableOnSubscribe<ArrayList<String>>() {
                     @Override
                     public void subscribe(ObservableEmitter<ArrayList<String>> emitter) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, queryFavoriteList, subscribe");
                         queryFavoriteList();
                         emitter.onNext(queryFavoriteList());
                         emitter.onComplete();
-                        Log.i(MainActivity.TAG, "Model, queryFavoriteList, subscribe");
                     }
                 });
         observable.subscribeOn(Schedulers.newThread())
@@ -244,10 +248,10 @@ public class Model {
                 new ObservableOnSubscribe<SpotDetail>() {
                     @Override
                     public void subscribe(ObservableEmitter<SpotDetail> emitter) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, queryFavoriteSpotDetail, subscribe");
                         SpotDetail spotDetail = getSpotDetail(spotName);
                         emitter.onNext(spotDetail);
                         emitter.onComplete();
-                        Log.i(MainActivity.TAG, "Model, queryFavoriteSpotDetail, subscribe");
                     }
                 });
         observable.subscribeOn(Schedulers.newThread())
@@ -266,10 +270,10 @@ public class Model {
                 new ObservableOnSubscribe<ArrayList<String>>() {
                     @Override
                     public void subscribe(ObservableEmitter<ArrayList<String>> emitter) throws Exception {
+                        Log.i(MainActivity.TAG, "Model, deleteFavoriteSpot, subscribe");
                         SQLiteManager.getInstance().delete(spotName);
                         emitter.onNext(queryFavoriteList());
                         emitter.onComplete();
-                        Log.i(MainActivity.TAG, "Model, deleteFavoriteSpot, subscribe");
                     }
                 });
         observable.subscribeOn(Schedulers.newThread())
