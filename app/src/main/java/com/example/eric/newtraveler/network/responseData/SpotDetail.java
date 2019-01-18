@@ -12,6 +12,56 @@ public class SpotDetail {
     private String latitude;
     private String content;
 
+    public SpotDetail setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public SpotDetail setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public SpotDetail setCity(String city) {
+        this.city = city;
+        return this;
+    }
+
+    public SpotDetail setCounty(String county) {
+        this.county = county;
+        return this;
+    }
+
+    public SpotDetail setCategory(String category) {
+        this.category = category;
+        return this;
+    }
+
+    public SpotDetail setAddress(String address) {
+        this.address = address;
+        return this;
+    }
+
+    public SpotDetail setTelephone(String telephone) {
+        this.telephone = telephone;
+        return this;
+    }
+
+    public SpotDetail setLongitude(String longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+
+    public SpotDetail setLatitude(String latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+
+    public SpotDetail setContent(String content) {
+        this.content = content;
+        return this;
+    }
+
     public String getId() {
         return id;
     }
