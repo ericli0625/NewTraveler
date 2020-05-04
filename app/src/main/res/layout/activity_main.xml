@@ -31,7 +31,7 @@
         android:layout_marginBottom="@dimen/main_activity_all_view_margin"
         android:text="@string/chose_city_title" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/recyclerView_height"
