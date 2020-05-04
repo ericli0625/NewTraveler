@@ -33,13 +33,12 @@
 
     <string name="alert_dialog_no">否</string>
 
-    <string-array name="weather_title_array">
-        <item>"天氣狀況"</item>
-        <item>"降雨機率 (%)"</item>
-        <item>"最低溫度 (℃)"</item>
-        <item>"舒適度"</item>
-        <item>"最高溫度 (℃)"</item>
-    </string-array>
+    <string name="weather_date_title">"%s ~ %s"</string>
+    <string name="weather_condition">"天氣狀況: %s"</string>
+    <string name="weather_comfortable">"舒適度: %s"</string>
+    <string name="weather_opportunity">"降雨機率:\n %s"</string>
+    <string name="weather_min_temporary">"最低溫度 (℃):\n %s"</string>
+    <string name="weather_max_temporary">"最高溫度 (℃):\n %s"</string>
 
     <string name="already_add_favorite_toast">"您已經新增過了"</string>
 

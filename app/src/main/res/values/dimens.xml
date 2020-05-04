@@ -7,16 +7,12 @@
 
     <dimen name="weather_activity_all_view_margin">16dp</dimen>
     <dimen name="weather_activity_recycle_view_item_title_layout_width">56dp</dimen>
-    <dimen name="weather_activity_margin_start">@dimen/weather_item_view_margin_start</dimen>
+    <dimen name="weather_activity_margin_start">12dp</dimen>
     <dimen name="weather_activity_recyclerView_margin_top">32dp</dimen>
     <dimen name="weather_activity_margin_top">76dp</dimen>
 
     <dimen name="spot_activity_all_view_margin">@dimen/weather_activity_all_view_margin</dimen>
     <dimen name="spot_activity_title_margin">26dp</dimen>
     <dimen name="spot_activity_divider_height">3dp</dimen>
-
-    <dimen name="weather_item_view_title_layout_width">56dp</dimen>
-    <dimen name="weather_item_view_layout_width">80dp</dimen>
-    <dimen name="weather_item_view_margin_start">12dp</dimen>
 
 </resources>
