@@ -2,7 +2,6 @@ package com.example.eric.newtraveler.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.adapters.WeatherDetailAdapter
@@ -20,31 +19,28 @@ class WeatherDetailActivity : AppCompatActivity() {
     }
 
     private fun loadInitCommonView(bundle: Bundle?) {
-        return_icon.setOnClickListener {
-            setContentView(R.layout.activity_main)
-            onBackPressed()
-        }
-
         val weatherElementArray: ArrayList<WeatherElement> =
                 bundle?.getParcelableArrayList("weatherElementArray") ?: arrayListOf()
         val locationName = bundle?.getString("locationName") ?: ""
 
         setupRecycleView(weatherElementArray)
 
-        location_name.text = locationName
+        with(topAppBar) {
+            title = locationName
+            setNavigationOnClickListener { onBackPressed() }
+        }
     }
 
     private fun setupRecycleView(weatherElementArray: ArrayList<WeatherElement>) {
         val viewInfo = weatherViewInfoConverter(weatherElementArray)
-        val adapter = WeatherDetailAdapter(viewInfo)
+        val weatherDetailAdapter = WeatherDetailAdapter(viewInfo)
 
         with(recyclerView_weather_forecast_detail) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            this.adapter = adapter
+            adapter = weatherDetailAdapter
         }
-        adapter.notifyDataSetChanged()
+        weatherDetailAdapter.notifyDataSetChanged()
     }
 
     private fun weatherViewInfoConverter(

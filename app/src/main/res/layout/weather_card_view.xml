@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -18,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="預測時段"
+            android:text="@string/weather_date_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="天氣狀況"
+            android:text="@string/weather_condition"
             app:layout_constraintEnd_toEndOf="@+id/forecast_time_text"
             app:layout_constraintStart_toStartOf="@+id/forecast_time_text"
             app:layout_constraintTop_toBottomOf="@+id/forecast_time_text" />
@@ -38,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="舒適度"
+            android:text="@string/weather_comfortable"
             app:layout_constraintEnd_toEndOf="@+id/condition_text"
             app:layout_constraintStart_toStartOf="@+id/condition_text"
             app:layout_constraintTop_toBottomOf="@+id/condition_text" />
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="降雨機率"
+            android:text="@string/weather_opportunity"
             app:layout_constraintEnd_toStartOf="@+id/min_temporary_text"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="最低溫度"
+            android:text="@string/weather_min_temporary"
             app:layout_constraintEnd_toStartOf="@+id/max_temporary_text"
             app:layout_constraintStart_toEndOf="@+id/rain_opportunity_text"
             app:layout_constraintTop_toBottomOf="@+id/comfortable_text" />
@@ -72,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="最高溫度"
+            android:text="@string/weather_max_temporary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/min_temporary_text"
             app:layout_constraintTop_toBottomOf="@+id/comfortable_text" />

@@ -51,4 +51,6 @@
     <string name="delete_dialog_ok">"確定"</string>
     <string name="delete_dialog_cancel">"取消"</string>
 
+    <string name="weather_location">Location</string>
+
 </resources>
