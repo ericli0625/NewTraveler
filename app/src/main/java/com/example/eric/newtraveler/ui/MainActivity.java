@@ -63,14 +63,14 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     public void loadCommonView() {
-        ImageButton normalSearchModeButton = (ImageButton) findViewById(R.id.normal_search);
-        ImageButton keywordSearchModeButton = (ImageButton) findViewById(R.id.keyword_search);
-        ImageButton weatherForecastButton = (ImageButton) findViewById(R.id.weather_forecast);
-        ImageButton favoriteListButton = (ImageButton) findViewById(R.id.favorite_list);
-        normalSearchModeButton.setOnClickListener(mNormalSearchModeButtonListener);
-        keywordSearchModeButton.setOnClickListener(mKeywordSearchModeButtonListener);
-        weatherForecastButton.setOnClickListener(mWeatherForecastButtonListener);
-        favoriteListButton.setOnClickListener(mFavoriteListButtonListener);
+//        ImageButton normalSearchModeButton = (ImageButton) findViewById(R.id.normal_search);
+//        ImageButton keywordSearchModeButton = (ImageButton) findViewById(R.id.keyword_search);
+//        ImageButton weatherForecastButton = (ImageButton) findViewById(R.id.weather_forecast);
+//        ImageButton favoriteListButton = (ImageButton) findViewById(R.id.favorite_list);
+//        normalSearchModeButton.setOnClickListener(mNormalSearchModeButtonListener);
+//        keywordSearchModeButton.setOnClickListener(mKeywordSearchModeButtonListener);
+//        weatherForecastButton.setOnClickListener(mWeatherForecastButtonListener);
+//        favoriteListButton.setOnClickListener(mFavoriteListButtonListener);
     }
 
     private RecyclerView getRecycleView(int recyclerViewId) {
@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         mEditText = (EditText) findViewById(R.id.editText);
 
-        Button keywordSearchButton = (Button) findViewById(R.id.keyword_search_button);
-        keywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
+//        Button keywordSearchButton = (Button) findViewById(R.id.keyword_search_button);
+//        keywordSearchButton.setOnClickListener(mKeywordSearchButtonListener);
         mTriggerListLevel = IN_SPOT_LIST_PAGE;
     }
 
