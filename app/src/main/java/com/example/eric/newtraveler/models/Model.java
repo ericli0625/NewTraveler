@@ -6,11 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
-import com.example.eric.newtraveler.network.ITravelService;
-import com.example.eric.newtraveler.network.IWeatherService;
-import com.example.eric.newtraveler.network.responseData.SpotDetail;
-import com.example.eric.newtraveler.network.responseData.TravelCountyAndCity;
-import com.example.eric.newtraveler.network.responseData.Weather;
+import com.example.eric.newtraveler.network.NetworkApi;
+import com.example.eric.newtraveler.network.NetworkWeatherApi;
+import com.example.eric.newtraveler.network.TravelService;
+import com.example.eric.newtraveler.network.WeatherService;
+import com.example.eric.newtraveler.network.response.SpotDetail;
+import com.example.eric.newtraveler.network.response.TravelCountyAndCity;
+import com.example.eric.newtraveler.network.response.Weather;
 import com.example.eric.newtraveler.ui.MainActivity;
 import com.example.eric.newtraveler.util.Repository;
 import com.example.eric.newtraveler.util.SQLiteManager;
@@ -39,32 +41,11 @@ public class Model {
         this.mRepository = repository;
     }
 
-    @NonNull
-    private ITravelService getRetrofitTravelService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://travelplanbackend.herokuapp.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(ITravelService.class);
-    }
-
-    @NonNull
-    private IWeatherService getRetrofitWeatherService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://opendata.cwb.gov.tw/api/v1/rest/datastore/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(IWeatherService.class);
-    }
-
     public void queryAllCountyAndCityList(Observer<ArrayList> observer) {
         if (mRepository.isExistPreloadList()) {
             queryCountyList(observer);
         } else {
-            ITravelService travelRequest = getRetrofitTravelService();
-            Observable<ArrayList<TravelCountyAndCity>> observable = travelRequest.getAllCountyAndCityList();
+            Observable<ArrayList<TravelCountyAndCity>> observable = NetworkApi.sharedInstance().getAllCountyAndCityList();
             observable.subscribeOn(Schedulers.newThread())
                     .map(new Function<ArrayList<TravelCountyAndCity>, ArrayList>() {
                         @Override
@@ -100,8 +81,7 @@ public class Model {
                         }
                     });
 
-        ITravelService travelRequest = getRetrofitTravelService();
-        Observable<ArrayList> observableNetwork = travelRequest.getAllCountyList();
+        Observable<ArrayList<String>> observableNetwork = NetworkApi.sharedInstance().getAllCountyList();
 
         Observable.concat(observableRepository, observableNetwork)
                 .subscribeOn(Schedulers.newThread())
@@ -127,8 +107,7 @@ public class Model {
                     }
                 });
 
-        ITravelService travelRequest = getRetrofitTravelService();
-        Observable<ArrayList> observableNetwork = travelRequest.getCityList(countyName);
+        Observable<ArrayList<String>> observableNetwork = NetworkApi.sharedInstance().getCityList(countyName);
 
         Observable.concat(observableRepository, observableNetwork)
                 .subscribeOn(Schedulers.newThread())
@@ -137,8 +116,7 @@ public class Model {
     }
 
     public void queryNormalSearchSpot(@NonNull String cityName, Observer<ArrayList<String>> observer) {
-        ITravelService travelRequest = getRetrofitTravelService();
-        Observable<ArrayList<SpotDetail>> observable = travelRequest.getNormalSearchSpotDetail(getNowCountyName() + "," + cityName);
+        Observable<ArrayList<SpotDetail>> observable = NetworkApi.sharedInstance().getNormalSearchSpotDetail(getNowCountyName() + "," + cityName);
         observable.subscribeOn(Schedulers.newThread())
                 .map(new Function<ArrayList<SpotDetail>, ArrayList<String>>() {
                     @Override
@@ -157,8 +135,7 @@ public class Model {
     }
 
     public void queryKeywordSearchSpot(@Nullable String queryString, Observer<ArrayList<String>> observer) {
-        ITravelService travelRequest = getRetrofitTravelService();
-        Observable<ArrayList<SpotDetail>> observable = travelRequest.getKeywordSearchSpotDetail(queryString);
+        Observable<ArrayList<SpotDetail>> observable = NetworkApi.sharedInstance().getKeywordSearchSpotDetail(queryString);
         observable.subscribeOn(Schedulers.newThread())
                 .map(new Function<ArrayList<SpotDetail>, ArrayList<String>>() {
                     @Override
@@ -206,8 +183,7 @@ public class Model {
     }
 
     public void queryWeatherForecast(@NonNull String countyName, Observer<Bundle> observer) {
-        IWeatherService weatherService = getRetrofitWeatherService();
-        Observable<Weather> observable = weatherService.getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
+        Observable<Weather> observable = NetworkWeatherApi.sharedInstance().getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
         observable.subscribeOn(Schedulers.newThread())
                 .map(new Function<Weather, Bundle>() {
                     @Override

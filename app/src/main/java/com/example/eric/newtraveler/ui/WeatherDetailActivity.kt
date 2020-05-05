@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.adapters.WeatherDetailAdapter
 import com.example.eric.newtraveler.model.WeatherViewInfo
-import com.example.eric.newtraveler.network.responseData.Weather.WeatherElement
+import com.example.eric.newtraveler.network.response.Weather.WeatherElement
 import kotlinx.android.synthetic.main.activity_weather_detail.*
 import java.util.*
 

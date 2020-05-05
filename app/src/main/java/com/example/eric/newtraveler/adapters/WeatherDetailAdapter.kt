@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.model.WeatherViewInfo
-import com.example.eric.newtraveler.network.responseData.Weather
+import com.example.eric.newtraveler.network.response.Weather
 import kotlinx.android.synthetic.main.weather_card_view.view.*
 
 class WeatherDetailAdapter(

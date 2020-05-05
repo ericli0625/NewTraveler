@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.network.responseData;
+package com.example.eric.newtraveler.network.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -2,7 +2,7 @@ package com.example.eric.newtraveler.util;
 
 import android.content.SharedPreferences;
 
-import com.example.eric.newtraveler.network.responseData.TravelCountyAndCity;
+import com.example.eric.newtraveler.network.response.TravelCountyAndCity;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;

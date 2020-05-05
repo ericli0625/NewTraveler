@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.network.responseData;
+package com.example.eric.newtraveler.network.response;
 
 public class TravelCountyAndCity {
     private String id;
