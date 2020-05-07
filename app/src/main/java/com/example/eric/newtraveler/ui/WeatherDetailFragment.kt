@@ -1,21 +1,28 @@
 package com.example.eric.newtraveler.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.adapters.WeatherDetailAdapter
 import com.example.eric.newtraveler.model.WeatherViewInfo
 import com.example.eric.newtraveler.network.response.Weather.WeatherElement
-import kotlinx.android.synthetic.main.activity_weather_detail.*
+import kotlinx.android.synthetic.main.fragment_weather_detail.*
 import java.util.*
 
-class WeatherDetailActivity : AppCompatActivity() {
+class WeatherDetailFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_weather_detail)
-        loadInitCommonView(intent.extras)
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_weather_detail, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun loadInitCommonView(bundle: Bundle?) {
@@ -27,7 +34,9 @@ class WeatherDetailActivity : AppCompatActivity() {
 
         with(topAppBar) {
             title = locationName
-            setNavigationOnClickListener { onBackPressed() }
+            setNavigationOnClickListener {
+
+            }
         }
     }
 
@@ -37,7 +46,6 @@ class WeatherDetailActivity : AppCompatActivity() {
 
         with(recyclerView_weather_forecast_detail) {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
             adapter = weatherDetailAdapter
         }
         weatherDetailAdapter.notifyDataSetChanged()
