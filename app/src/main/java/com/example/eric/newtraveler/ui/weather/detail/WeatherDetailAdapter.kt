@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.adapters
+package com.example.eric.newtraveler.ui.weather.detail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,16 +8,23 @@ import com.example.eric.newtraveler.model.WeatherViewInfo
 import com.example.eric.newtraveler.network.response.Weather
 import kotlinx.android.synthetic.main.weather_card_view.view.*
 
-class WeatherDetailAdapter(
-        private val weatherViewInfo: WeatherViewInfo
-) : RecyclerView.Adapter<WeatherDetailAdapter.ViewHolder>() {
+class WeatherDetailAdapter : RecyclerView.Adapter<WeatherDetailAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent)
+    private var weatherViewInfo = WeatherViewInfo.defaultInstance
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            ViewHolder(
+                    parent)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
             holder.bind(weatherViewInfo.weatherParameterList[position])
 
     override fun getItemCount() = weatherViewInfo.weatherParameterList.size
+
+    fun updateData(weatherViewInfo: WeatherViewInfo) {
+        this.weatherViewInfo = weatherViewInfo
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(parent: ViewGroup) :
             RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
