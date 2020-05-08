@@ -1,17 +1,20 @@
 package com.example.eric.newtraveler.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.ui.adapter.*
+import com.example.eric.newtraveler.ui.base.BaseActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<MainViewModel>() {
+
+    override val layoutRes: Int = R.layout.activity_main
+    override val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
         view_pager.adapter = sectionsPagerAdapter

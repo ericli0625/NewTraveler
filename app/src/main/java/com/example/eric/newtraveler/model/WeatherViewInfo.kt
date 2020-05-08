@@ -4,4 +4,8 @@ import com.example.eric.newtraveler.network.response.Weather
 
 data class WeatherViewInfo(
         val weatherParameterList: List<List<Weather.Time>>
-)
+) {
+    companion object {
+        val defaultInstance = WeatherViewInfo(listOf())
+    }
+}

@@ -2,7 +2,11 @@ package com.example.eric.newtraveler.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.eric.newtraveler.ui.*
+import com.example.eric.newtraveler.ui.FavorFragment
+import com.example.eric.newtraveler.ui.MainActivity
+import com.example.eric.newtraveler.ui.SearchFragment
+import com.example.eric.newtraveler.ui.weather.WeatherFragment
+import com.example.eric.newtraveler.ui.home.HomeFragment
 
 const val HOME_PAGE_INDEX = 0
 const val SEARCH_PAGE_INDEX = 1
