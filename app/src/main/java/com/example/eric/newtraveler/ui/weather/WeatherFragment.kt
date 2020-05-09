@@ -21,14 +21,14 @@ class WeatherFragment : BaseFragment<WeatherViewModel>() {
         viewModel.onActivityCreated()
     }
 
-    private fun initLayout() {
-        recycler_view.adapter = weatherAdapter
-    }
-
     override fun subscribeObservers() {
         super.subscribeObservers()
         subscribeToShowCountyList()
         subscribeToShowWeather()
+    }
+
+    private fun initLayout() {
+        recycler_view.adapter = weatherAdapter
     }
 
     private fun onCountyClickListener(countyName: String) {
@@ -47,5 +47,9 @@ class WeatherFragment : BaseFragment<WeatherViewModel>() {
         viewModel.showWeatherEvent.observe(this) {
             WeatherDetailActivity.launch(requireContext(), it.peekContent())
         }
+    }
+
+    companion object {
+        fun newInstance() = WeatherFragment()
     }
 }

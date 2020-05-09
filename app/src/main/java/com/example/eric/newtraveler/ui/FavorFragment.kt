@@ -16,4 +16,7 @@ class FavorFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_favor, container, false)
     }
 
+    companion object {
+        fun newInstance() = FavorFragment()
+    }
 }

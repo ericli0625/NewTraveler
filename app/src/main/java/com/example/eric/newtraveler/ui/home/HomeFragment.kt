@@ -22,14 +22,14 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         viewModel.onActivityCreated()
     }
 
-    private fun initLayout() {
-        recycler_view.adapter = homeViewInfoAdapter
-    }
-
     override fun subscribeObservers() {
         super.subscribeObservers()
         subscribeToShowCountyList()
         subscribeToShowCityList()
+    }
+
+    private fun initLayout() {
+        recycler_view.adapter = homeViewInfoAdapter
     }
 
     private fun onCountyClickListener(countyName: String) {
@@ -48,5 +48,9 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         viewModel.showCityListEvent.observe(this) {
             homeViewInfoAdapter.updateData(it.peekContent())
         }
+    }
+
+    companion object {
+        fun newInstance() = HomeFragment()
     }
 }
