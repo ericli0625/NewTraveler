@@ -20,7 +20,7 @@ class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repo
 
     fun onActivityCreated() {
         disposables.add(
-                repository.queryAllCountyAndCityList()
+                repository.queryLocationList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
@@ -32,6 +32,8 @@ class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repo
     fun getCityList(countyName: String) {
         disposables.add(
                 repository.getCityList(countyName)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
                             _showCityListEvent.value = Event(it)
                         }

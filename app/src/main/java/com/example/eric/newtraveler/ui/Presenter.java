@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.eric.newtraveler.models.Model;
-import com.example.eric.newtraveler.util.Repository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -17,8 +17,8 @@ public class Presenter implements IPresenter {
     private final Model mModel;
     private final IMainView mMainView;
 
-    public Presenter(IMainView mainView, Repository repository) {
-        this.mModel = new Model(repository);
+    public Presenter(IMainView mainView) {
+        this.mModel = new Model();
         this.mMainView = mainView;
     }
 
@@ -151,7 +151,7 @@ public class Presenter implements IPresenter {
         mModel.queryNormalSearchSpot(cityName, mSpotListObserver);
     }
 
-    private Observer<ArrayList<String>> mSpotListObserver = new Observer<ArrayList<String>>() {
+    private Observer<List<String>> mSpotListObserver = new Observer<List<String>>() {
 
         @Override
         public void onSubscribe(Disposable d) {
@@ -159,10 +159,10 @@ public class Presenter implements IPresenter {
         }
 
         @Override
-        public void onNext(ArrayList<String> arrayList) {
+        public void onNext(List<String> arrayList) {
             Log.v(MainActivity.TAG, "SpotListObserver, onNext");
             if (arrayList != null) {
-                mMainView.showSpotListResult(arrayList);
+//                mMainView.showSpotListResult(arrayList);
             }
         }
 

@@ -2,20 +2,20 @@ package com.example.eric.newtraveler.models;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
 
 import com.example.eric.newtraveler.network.NetworkApi;
 import com.example.eric.newtraveler.network.NetworkWeatherApi;
 import com.example.eric.newtraveler.network.response.SpotDetail;
-import com.example.eric.newtraveler.network.response.TravelCountyAndCity;
 import com.example.eric.newtraveler.network.response.WeatherInfo;
 import com.example.eric.newtraveler.ui.MainActivity;
-import com.example.eric.newtraveler.util.Repository;
 import com.example.eric.newtraveler.util.SQLiteManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -27,97 +27,31 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Model {
 
-    private final Repository mRepository;
-
-    private ArrayList<SpotDetail> mSpotDetailList;
+    private List<SpotDetail> mSpotDetailList;
     private String mNowCountyName;
 
-    public Model(Repository repository) {
-        this.mRepository = repository;
-    }
+    public Model() { }
 
     public void queryAllCountyAndCityList(Observer<ArrayList> observer) {
-        if (mRepository.isExistPreloadList()) {
-            queryCountyList(observer);
-        } else {
-            Observable<ArrayList<TravelCountyAndCity>> observable = NetworkApi.sharedInstance().getAllCountyAndCityList();
-            observable.subscribeOn(Schedulers.newThread())
-                    .map(new Function<ArrayList<TravelCountyAndCity>, ArrayList>() {
-                        @Override
-                        public ArrayList apply(ArrayList<TravelCountyAndCity> arrayList) throws Exception {
-                            mRepository.parserAllCountyAndCityList(arrayList);
-                            Log.i(MainActivity.TAG, "Model, queryAllCountyAndCityList, apply");
-                            return mRepository.getCountyList();
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(observer);
-        }
+
     }
 
     public void queryBackToCityListPage(Observer<ArrayList> observer) {
         queryCityList(getNowCountyName(), observer);
     }
 
-    public void queryCountyList(Observer<ArrayList> observer) {
-        Observable<ArrayList> observableRepository = Observable.create(
-                    new ObservableOnSubscribe<ArrayList>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<ArrayList> emitter) throws Exception {
-                            Log.i(MainActivity.TAG, "Model, queryCountyList, subscribe");
-                            ArrayList repoCountyList = mRepository.getCountyList();
-                            if (repoCountyList != null) {
-                                Log.v(MainActivity.TAG, "Model, queryCountyList, get data from Repository");
-                                emitter.onNext(repoCountyList);
-                            } else {
-                                Log.v(MainActivity.TAG, "Model, queryCountyList, get data from Network");
-                                emitter.onComplete();
-                            }
-                        }
-                    });
+    public void queryCountyList(Observer<ArrayList> observer) { }
 
-        Observable<ArrayList<String>> observableNetwork = NetworkApi.sharedInstance().getAllCountyList();
+    public void queryCityList(@NonNull String countyName, Observer<ArrayList> observer) { }
 
-        Observable.concat(observableRepository, observableNetwork)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
-
-    public void queryCityList(@NonNull String countyName, Observer<ArrayList> observer) {
-        Observable<ArrayList> observableRepository = Observable.create(
-                new ObservableOnSubscribe<ArrayList>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<ArrayList> emitter) throws Exception {
-                        Log.i(MainActivity.TAG, "Model, queryCityList, subscribe");
-                        setNowCountyStatus(countyName);
-                        ArrayList repoCityList = mRepository.getCityList(countyName);
-                        if (repoCityList != null) {
-                            Log.v(MainActivity.TAG, "Model, queryCityList, get data from Repository");
-                            emitter.onNext(repoCityList);
-                        } else {
-                            Log.v(MainActivity.TAG, "Model, queryCityList, get data from Network");
-                            emitter.onComplete();
-                        }
-                    }
-                });
-
-        Observable<ArrayList<String>> observableNetwork = NetworkApi.sharedInstance().getCityList(countyName);
-
-        Observable.concat(observableRepository, observableNetwork)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
-
-    public void queryNormalSearchSpot(@NonNull String cityName, Observer<ArrayList<String>> observer) {
-        Observable<ArrayList<SpotDetail>> observable = NetworkApi.sharedInstance().getNormalSearchSpotDetail(getNowCountyName() + "," + cityName);
+    public void queryNormalSearchSpot(@NonNull String cityName, Observer<List<String>> observer) {
+        Observable<List<SpotDetail>> observable = NetworkApi.sharedInstance().getNormalSearchSpotDetail(getNowCountyName() + "," + cityName);
         observable.subscribeOn(Schedulers.newThread())
-                .map(new Function<ArrayList<SpotDetail>, ArrayList<String>>() {
+                .map(new Function<List<SpotDetail>, List<String>>() {
                     @Override
-                    public ArrayList<String> apply(ArrayList<SpotDetail> list) throws Exception {
+                    public List<String> apply(List<SpotDetail> list) throws Exception {
                         Log.i(MainActivity.TAG, "Model, queryNormalSearchSpot, apply");
-                        setSpotDetailList(list);
+//                        setSpotDetailList(list);
                         ArrayList<String> newArrayList = new ArrayList<String>();
                         for (SpotDetail spotDetail : list) {
                             newArrayList.add(spotDetail.getName());
@@ -129,12 +63,12 @@ public class Model {
                 .subscribe(observer);
     }
 
-    public void queryKeywordSearchSpot(@Nullable String queryString, Observer<ArrayList<String>> observer) {
-        Observable<ArrayList<SpotDetail>> observable = NetworkApi.sharedInstance().getKeywordSearchSpotDetail(queryString);
+    public void queryKeywordSearchSpot(@Nullable String queryString, Observer<List<String>> observer) {
+        Observable<List<SpotDetail>> observable = NetworkApi.sharedInstance().getKeywordSearchSpotDetail(queryString);
         observable.subscribeOn(Schedulers.newThread())
-                .map(new Function<ArrayList<SpotDetail>, ArrayList<String>>() {
+                .map(new Function<List<SpotDetail>, List<String>>() {
                     @Override
-                    public ArrayList<String> apply(ArrayList<SpotDetail> list) throws Exception {
+                    public List<String> apply(List<SpotDetail> list) throws Exception {
                         Log.i(MainActivity.TAG, "Model, queryKeywordSearchSpot, apply");
                         setSpotDetailList(list);
                         ArrayList<String> newArrayList = new ArrayList<String>();
@@ -260,11 +194,11 @@ public class Model {
         mNowCountyName = countyName;
     }
 
-    private void setSpotDetailList(ArrayList<SpotDetail> spotDetailList) {
+    private void setSpotDetailList(List<SpotDetail> spotDetailList) {
         mSpotDetailList = spotDetailList;
     }
 
-    private ArrayList<SpotDetail> getSpotDetailList() {
+    private List<SpotDetail> getSpotDetailList() {
         return mSpotDetailList;
     }
 
@@ -284,21 +218,21 @@ public class Model {
     }
 
     private SpotDetail getSpotDetail(String spotName) {
-        SpotDetail spotDetail = new SpotDetail();
-        Cursor cursor = SQLiteManager.getInstance().findSpot(spotName);
-        cursor.moveToFirst();
-        for (int i = 0; i < cursor.getCount(); i++) {
-            spotDetail.setId(cursor.getString(0));
-            spotDetail.setName(cursor.getString(1));
-            spotDetail.setCategory(cursor.getString(2));
-            spotDetail.setAddress(cursor.getString(3));
-            spotDetail.setTelephone(cursor.getString(4));
-            spotDetail.setLongitude(cursor.getString(5));
-            spotDetail.setLatitude(cursor.getString(6));
-            spotDetail.setContent(cursor.getString(7));
-            cursor.moveToNext();
-        }
-        cursor.close();
+        SpotDetail spotDetail = SpotDetail.getDefaultInstance();
+//        Cursor cursor = SQLiteManager.getInstance().findSpot(spotName);
+//        cursor.moveToFirst();
+//        for (int i = 0; i < cursor.getCount(); i++) {
+//            spotDetail.setId(cursor.getString(0));
+//            spotDetail.setName(cursor.getString(1));
+//            spotDetail.setCategory(cursor.getString(2));
+//            spotDetail.setAddress(cursor.getString(3));
+//            spotDetail.setTelephone(cursor.getString(4));
+//            spotDetail.setLongitude(cursor.getString(5));
+//            spotDetail.setLatitude(cursor.getString(6));
+//            spotDetail.setContent(cursor.getString(7));
+//            cursor.moveToNext();
+//        }
+//        cursor.close();
         return spotDetail;
     }
 

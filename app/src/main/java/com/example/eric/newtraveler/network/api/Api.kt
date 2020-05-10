@@ -1,19 +1,19 @@
 package com.example.eric.newtraveler.network.api
 
 import com.example.eric.newtraveler.network.response.SpotDetail
-import com.example.eric.newtraveler.network.response.TravelCountyAndCity
+import com.example.eric.newtraveler.network.response.LocationInfo
 import io.reactivex.Observable
 import java.util.*
 
 interface Api {
 
-    fun getAllCountyAndCityList(): Observable<ArrayList<TravelCountyAndCity>>
+    fun getLocationList(): Observable<List<LocationInfo>>
 
-    fun getAllCountyList(): Observable<ArrayList<String>>
+    fun getCountyList(): Observable<List<String>>
 
-    fun getCityList(county: String): Observable<ArrayList<String>>
+    fun getCityList(county: String): Observable<List<String>>
 
-    fun getNormalSearchSpotDetail(spotName: String): Observable<ArrayList<SpotDetail>>
+    fun getNormalSearchSpotDetail(spotName: String): Observable<List<SpotDetail>>
 
-    fun getKeywordSearchSpotDetail(spotName: String): Observable<ArrayList<SpotDetail>>
+    fun getKeywordSearchSpotDetail(spotName: String): Observable<List<SpotDetail>>
 }
