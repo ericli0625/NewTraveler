@@ -33,7 +33,7 @@ class HomeViewInfoAdapter(
         fun bind(item: String, onCountyClickListener: (String) -> Unit) {
             with(itemView) {
                 county_name.text = item
-                county_layout.setOnClickListener {
+                card_view.setOnClickListener {
                     onCountyClickListener(item)
                 }
             }
