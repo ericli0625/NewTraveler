@@ -21,18 +21,17 @@ class WeatherFragment : BaseFragment<WeatherViewModel>() {
         viewModel.onActivityCreated()
     }
 
+    override fun subscribeObservers() {
+        super.subscribeObservers()
+        subscribeToShowCountyList()
+    }
+
     private fun initLayout() {
         recycler_view.adapter = weatherAdapter
     }
 
-    override fun subscribeObservers() {
-        super.subscribeObservers()
-        subscribeToShowCountyList()
-        subscribeToShowWeather()
-    }
-
     private fun onCountyClickListener(countyName: String) {
-        viewModel.queryWeatherForecast(countyName)
+        WeatherDetailActivity.launch(requireContext(), countyName)
     }
 
     /***** Subscribe methods implementation *****/
@@ -43,9 +42,7 @@ class WeatherFragment : BaseFragment<WeatherViewModel>() {
         }
     }
 
-    private fun subscribeToShowWeather() {
-        viewModel.showWeatherEvent.observe(this) {
-            WeatherDetailActivity.launch(requireContext(), it.peekContent())
-        }
+    companion object {
+        fun newInstance() = WeatherFragment()
     }
 }

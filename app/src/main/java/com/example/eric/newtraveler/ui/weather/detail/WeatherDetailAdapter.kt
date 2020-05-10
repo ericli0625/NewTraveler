@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.model.WeatherViewInfo
-import com.example.eric.newtraveler.network.response.Weather
+import com.example.eric.newtraveler.network.response.Time
 import kotlinx.android.synthetic.main.weather_card_view.view.*
 
 class WeatherDetailAdapter : RecyclerView.Adapter<WeatherDetailAdapter.ViewHolder>() {
@@ -30,7 +30,7 @@ class WeatherDetailAdapter : RecyclerView.Adapter<WeatherDetailAdapter.ViewHolde
             RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
                     .inflate(R.layout.weather_card_view, parent, false)) {
 
-        fun bind(data: List<Weather.Time?>) {
+        fun bind(data: List<Time>) {
             with(itemView) {
                 forecast_time_text.text =
                         String.format(
@@ -44,35 +44,35 @@ class WeatherDetailAdapter : RecyclerView.Adapter<WeatherDetailAdapter.ViewHolde
                         String.format(
                                 resources.getString(
                                         R.string.weather_condition,
-                                        data[0]?.parameter?.parameterName
+                                        data[0].parameter?.name
                                 )
                         )
                 comfortable_text.text =
                         String.format(
                                 resources.getString(
                                         R.string.weather_comfortable,
-                                        data[3]?.parameter?.parameterName
+                                        data[3].parameter?.name
                                 )
                         )
                 rain_opportunity_text.text =
                         String.format(
                                 resources.getString(
                                         R.string.weather_opportunity,
-                                        data[1]?.parameter?.parameterName
+                                        data[1].parameter?.name
                                 )
                         )
                 min_temporary_text.text =
                         String.format(
                                 resources.getString(
                                         R.string.weather_min_temporary,
-                                        data[2]?.parameter?.parameterName
+                                        data[2].parameter?.name
                                 )
                         )
                 max_temporary_text.text =
                         String.format(
                                 resources.getString(
                                         R.string.weather_max_temporary,
-                                        data[4]?.parameter?.parameterName
+                                        data[4].parameter?.name
                                 )
                         )
             }

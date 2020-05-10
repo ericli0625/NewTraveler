@@ -25,8 +25,6 @@ class MyApplication : Application() {
         if (DEBUG) {
             LeakCanary.install(this)
         }
-        NetworkApi.sharedInstance().initialize()
-        NetworkWeatherApi.sharedInstance().initialize()
         SharedPreferencesHelper.sharedInstance().apply { initialize(this@MyApplication) }
     }
 

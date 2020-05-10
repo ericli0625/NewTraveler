@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: "kotlin-android-extensions"
 
 android {
     compileSdkVersion 29
@@ -22,8 +23,11 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
-    kotlinOptions{
+    kotlinOptions {
         jvmTarget = "1.8"
+    }
+    androidExtensions {
+        experimental = true
     }
 }
 
@@ -57,6 +61,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycleVersion"
 
     // retrofit2
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'

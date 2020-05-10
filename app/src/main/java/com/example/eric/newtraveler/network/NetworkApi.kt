@@ -1,34 +1,30 @@
 package com.example.eric.newtraveler.network
 
-import com.example.eric.newtraveler.network.response.SpotDetail
-import com.example.eric.newtraveler.network.response.TravelCountyAndCity
+import com.example.eric.newtraveler.network.api.Api
+import com.example.eric.newtraveler.network.response.LocationInfo
+import com.example.eric.newtraveler.network.response.AttractionDetail
 import com.example.eric.newtraveler.network.retrofit.RetrofitApi
 import io.reactivex.Observable
-import java.util.*
 
 class NetworkApi : Api {
 
-    override fun initialize() {
-        return api.initialize()
+    override fun getLocationList(): Observable<List<LocationInfo>> {
+        return api.getLocationList()
     }
 
-    override fun getAllCountyAndCityList(): Observable<ArrayList<TravelCountyAndCity>> {
-        return api.getAllCountyAndCityList()
+    override fun getCountyList(): Observable<List<String>> {
+        return api.getCountyList()
     }
 
-    override fun getAllCountyList(): Observable<ArrayList<String>> {
-        return api.getAllCountyList()
-    }
-
-    override fun getCityList(county: String): Observable<ArrayList<String>> {
+    override fun getCityList(county: String): Observable<List<String>> {
         return api.getCityList(county)
     }
 
-    override fun getNormalSearchSpotDetail(spotName: String): Observable<ArrayList<SpotDetail>> {
+    override fun getNormalSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>> {
         return api.getNormalSearchSpotDetail(spotName)
     }
 
-    override fun getKeywordSearchSpotDetail(spotName: String): Observable<ArrayList<SpotDetail>> {
+    override fun getKeywordSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>> {
         return api.getKeywordSearchSpotDetail(spotName)
     }
 

@@ -1,6 +1,6 @@
-package com.example.eric.newtraveler.network
+package com.example.eric.newtraveler.network.service
 
-import com.example.eric.newtraveler.network.response.Weather
+import com.example.eric.newtraveler.network.response.WeatherInfo
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -11,5 +11,5 @@ interface WeatherService {
     fun getWeather(
             @Query("locationName") locationName: String,
             @Header("Authorization") authHeader: String
-    ): Observable<Weather>
+    ): Observable<WeatherInfo>
 }

@@ -5,8 +5,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.eric.newtraveler.ui.FavorFragment
 import com.example.eric.newtraveler.ui.MainActivity
 import com.example.eric.newtraveler.ui.SearchFragment
-import com.example.eric.newtraveler.ui.weather.WeatherFragment
 import com.example.eric.newtraveler.ui.home.HomeFragment
+import com.example.eric.newtraveler.ui.weather.WeatherFragment
 
 const val HOME_PAGE_INDEX = 0
 const val SEARCH_PAGE_INDEX = 1
@@ -16,10 +16,10 @@ const val FAVOR_PAGE_INDEX = 3
 class SectionsPagerAdapter(activity: MainActivity) : FragmentStateAdapter(activity) {
 
     private val tabFragmentsCreators: Map<Int, () -> Fragment> = mapOf(
-            HOME_PAGE_INDEX to { HomeFragment() },
-            SEARCH_PAGE_INDEX to { SearchFragment() },
-            WEATHER_PAGE_INDEX to { WeatherFragment() },
-            FAVOR_PAGE_INDEX to { FavorFragment() }
+            HOME_PAGE_INDEX to { HomeFragment.newInstance() },
+            SEARCH_PAGE_INDEX to { SearchFragment.newInstance() },
+            WEATHER_PAGE_INDEX to { WeatherFragment.newInstance() },
+            FAVOR_PAGE_INDEX to { FavorFragment.newInstance() }
     )
 
     override fun getItemCount() = tabFragmentsCreators.size

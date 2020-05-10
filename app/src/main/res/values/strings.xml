@@ -5,15 +5,11 @@
 
     <string name="chose_city_title">請選擇城市</string>
 
-    <string name="chose_spot_title">請選擇景點</string>
+    <string name="chose_attraction_title">請選擇景點</string>
 
     <string name="weather_forecast">天氣預報</string>
 
     <string name="toast_searching">搜尋中</string>
-
-    <string name="title_activity_main2">SpotDetailActivity</string>
-
-    <string name="title_activity_weather_detail">WeatherDetailActivity</string>
 
     <string name="input_hint">請輸入景點</string>
 

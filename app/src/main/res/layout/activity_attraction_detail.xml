@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ui.attraction.detail.AttractionDetailActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_return"
+            app:title="@string/weather_location"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ui.attraction.detail.AttractionDetailActivity">
+
+            <TextView
+                android:id="@+id/textView_category_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+                android:text=""
+                app:layout_constraintBottom_toTopOf="@+id/textView_address_detail"
+                app:layout_constraintStart_toEndOf="@+id/textView_category" />
+
+            <TextView
+                android:id="@+id/textView_address_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+                android:text=""
+                app:layout_constraintBottom_toTopOf="@+id/textView_telephone_detail"
+                app:layout_constraintStart_toEndOf="@+id/textView_address" />
+
+            <TextView
+                android:id="@+id/textView_telephone_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+                android:text=""
+                app:layout_constraintBottom_toTopOf="@+id/divider_2"
+                app:layout_constraintStart_toEndOf="@+id/textView_telephone" />
+
+            <TextView
+                android:id="@+id/textView_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+                android:text="@string/spot_detail_category"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+                android:text="@string/spot_detail_address"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_category" />
+
+            <TextView
+                android:id="@+id/textView_telephone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+                android:text="@string/spot_detail_telephone"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_address" />
+
+            <View
+                android:id="@+id/divider_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spot_activity_divider_height"
+                android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintTop_toBottomOf="@+id/textView_telephone"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="@dimen/spot_activity_all_view_margin" />
+
+            <TextView
+                android:id="@+id/textView_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+                android:layout_marginEnd="@dimen/spot_activity_all_view_margin"
+                android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+                android:text="@string/spot_detail_content"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/textView_content_detail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider_2" />
+
+            <TextView
+                android:id="@+id/textView_content_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+                android:layout_marginEnd="@dimen/spot_activity_all_view_margin"
+                android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+                android:text=""
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_content" />
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="@dimen/spot_activity_all_view_margin"
+                android:layout_marginTop="@dimen/spot_activity_all_view_margin"
+                android:layout_marginEnd="@dimen/spot_activity_all_view_margin"
+                android:layout_marginBottom="@dimen/spot_activity_all_view_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_content_detail" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
