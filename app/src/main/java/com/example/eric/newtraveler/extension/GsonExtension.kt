@@ -7,7 +7,7 @@ import java.lang.reflect.Type
 
 fun <T> Gson.fromJsonOrElse(json: String, typeOfT: Type, defaultValue: () -> T): T =
         try {
-            fromJson(json, typeOfT)
+            fromJson(json, typeOfT) ?: defaultValue()
         } catch (e: JsonSyntaxException) {
             defaultValue()
         } catch (e: JsonParseException) {

@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.example.eric.newtraveler.network.NetworkApi;
 import com.example.eric.newtraveler.network.NetworkWeatherApi;
-import com.example.eric.newtraveler.network.response.SpotDetail;
+import com.example.eric.newtraveler.network.response.AttractionDetail;
 import com.example.eric.newtraveler.network.response.WeatherInfo;
 import com.example.eric.newtraveler.ui.MainActivity;
 import com.example.eric.newtraveler.util.SQLiteManager;
@@ -27,7 +27,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Model {
 
-    private List<SpotDetail> mSpotDetailList;
+    private List<AttractionDetail> mSpotDetailList;
     private String mNowCountyName;
 
     public Model() { }
@@ -45,15 +45,15 @@ public class Model {
     public void queryCityList(@NonNull String countyName, Observer<ArrayList> observer) { }
 
     public void queryNormalSearchSpot(@NonNull String cityName, Observer<List<String>> observer) {
-        Observable<List<SpotDetail>> observable = NetworkApi.sharedInstance().getNormalSearchSpotDetail(getNowCountyName() + "," + cityName);
+        Observable<List<AttractionDetail>> observable = NetworkApi.sharedInstance().getNormalSearchSpotDetail(getNowCountyName() + "," + cityName);
         observable.subscribeOn(Schedulers.newThread())
-                .map(new Function<List<SpotDetail>, List<String>>() {
+                .map(new Function<List<AttractionDetail>, List<String>>() {
                     @Override
-                    public List<String> apply(List<SpotDetail> list) throws Exception {
+                    public List<String> apply(List<AttractionDetail> list) throws Exception {
                         Log.i(MainActivity.TAG, "Model, queryNormalSearchSpot, apply");
 //                        setSpotDetailList(list);
                         ArrayList<String> newArrayList = new ArrayList<String>();
-                        for (SpotDetail spotDetail : list) {
+                        for (AttractionDetail spotDetail : list) {
                             newArrayList.add(spotDetail.getName());
                         }
                         return newArrayList;
@@ -64,15 +64,15 @@ public class Model {
     }
 
     public void queryKeywordSearchSpot(@Nullable String queryString, Observer<List<String>> observer) {
-        Observable<List<SpotDetail>> observable = NetworkApi.sharedInstance().getKeywordSearchSpotDetail(queryString);
+        Observable<List<AttractionDetail>> observable = NetworkApi.sharedInstance().getKeywordSearchSpotDetail(queryString);
         observable.subscribeOn(Schedulers.newThread())
-                .map(new Function<List<SpotDetail>, List<String>>() {
+                .map(new Function<List<AttractionDetail>, List<String>>() {
                     @Override
-                    public List<String> apply(List<SpotDetail> list) throws Exception {
+                    public List<String> apply(List<AttractionDetail> list) throws Exception {
                         Log.i(MainActivity.TAG, "Model, queryKeywordSearchSpot, apply");
                         setSpotDetailList(list);
                         ArrayList<String> newArrayList = new ArrayList<String>();
-                        for (SpotDetail spotDetail : list) {
+                        for (AttractionDetail spotDetail : list) {
                             newArrayList.add(spotDetail.getName());
                         }
                         return newArrayList;
@@ -83,12 +83,12 @@ public class Model {
     }
 
     public void querySpotDetail(@NonNull String spotName, Observer<Bundle> observer) {
-        Observable<SpotDetail> observable = Observable.create(
-                new ObservableOnSubscribe<SpotDetail>() {
+        Observable<AttractionDetail> observable = Observable.create(
+                new ObservableOnSubscribe<AttractionDetail>() {
                     @Override
-                    public void subscribe(ObservableEmitter<SpotDetail> emitter) throws Exception {
+                    public void subscribe(ObservableEmitter<AttractionDetail> emitter) throws Exception {
                         Log.i(MainActivity.TAG, "Model, querySpotDetail, subscribe");
-                        for (SpotDetail spotDetail : getSpotDetailList()) {
+                        for (AttractionDetail spotDetail : getSpotDetailList()) {
                             if (spotDetail.getName().equals(spotName)) {
                                 emitter.onNext(spotDetail);
                             }
@@ -97,9 +97,9 @@ public class Model {
                     }
                 });
         observable.subscribeOn(Schedulers.newThread())
-                .map(new Function<SpotDetail, Bundle>() {
+                .map(new Function<AttractionDetail, Bundle>() {
                     @Override
-                    public Bundle apply(SpotDetail spotDetail) throws Exception {
+                    public Bundle apply(AttractionDetail spotDetail) throws Exception {
                         return getSpotDetailBundle(spotDetail, true);
                     }
                 })
@@ -149,20 +149,20 @@ public class Model {
     }
 
     public void queryFavoriteSpotDetail(@NonNull String spotName, Observer<Bundle> observer) {
-        Observable<SpotDetail> observable = Observable.create(
-                new ObservableOnSubscribe<SpotDetail>() {
+        Observable<AttractionDetail> observable = Observable.create(
+                new ObservableOnSubscribe<AttractionDetail>() {
                     @Override
-                    public void subscribe(ObservableEmitter<SpotDetail> emitter) throws Exception {
+                    public void subscribe(ObservableEmitter<AttractionDetail> emitter) throws Exception {
                         Log.i(MainActivity.TAG, "Model, queryFavoriteSpotDetail, subscribe");
-                        SpotDetail spotDetail = getSpotDetail(spotName);
+                        AttractionDetail spotDetail = getSpotDetail(spotName);
                         emitter.onNext(spotDetail);
                         emitter.onComplete();
                     }
                 });
         observable.subscribeOn(Schedulers.newThread())
-                .map(new Function<SpotDetail, Bundle>() {
+                .map(new Function<AttractionDetail, Bundle>() {
                     @Override
-                    public Bundle apply(SpotDetail spotDetail) throws Exception {
+                    public Bundle apply(AttractionDetail spotDetail) throws Exception {
                         return getSpotDetailBundle(spotDetail, false);
                     }
                 })
@@ -194,11 +194,11 @@ public class Model {
         mNowCountyName = countyName;
     }
 
-    private void setSpotDetailList(List<SpotDetail> spotDetailList) {
+    private void setSpotDetailList(List<AttractionDetail> spotDetailList) {
         mSpotDetailList = spotDetailList;
     }
 
-    private List<SpotDetail> getSpotDetailList() {
+    private List<AttractionDetail> getSpotDetailList() {
         return mSpotDetailList;
     }
 
@@ -217,8 +217,8 @@ public class Model {
         return arrayList;
     }
 
-    private SpotDetail getSpotDetail(String spotName) {
-        SpotDetail spotDetail = SpotDetail.getDefaultInstance();
+    private AttractionDetail getSpotDetail(String spotName) {
+        AttractionDetail spotDetail = AttractionDetail.getDefaultInstance();
 //        Cursor cursor = SQLiteManager.getInstance().findSpot(spotName);
 //        cursor.moveToFirst();
 //        for (int i = 0; i < cursor.getCount(); i++) {
@@ -236,7 +236,7 @@ public class Model {
         return spotDetail;
     }
 
-    private Bundle getSpotDetailBundle(SpotDetail spotDetail , Boolean isShowIcon) {
+    private Bundle getSpotDetailBundle(AttractionDetail spotDetail , Boolean isShowIcon) {
         Bundle bundle = new Bundle();
         bundle.putString("id", spotDetail.getId());
         bundle.putString("name", spotDetail.getName());

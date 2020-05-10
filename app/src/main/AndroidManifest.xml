@@ -34,10 +34,13 @@
 
         <activity
             android:name=".ui.weather.detail.WeatherDetailActivity"
-            android:label="@string/title_activity_weather_detail"
             android:launchMode="singleTask"
-            android:theme="@style/WeatherTheme" />
+            android:theme="@style/NoTabTheme" />
 
+        <activity
+            android:name=".ui.attraction.detail.AttractionDetailActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/NoTabTheme" />
     </application>
 
 </manifest>

@@ -8,12 +8,12 @@ import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.model.WeatherViewInfo
 import com.example.eric.newtraveler.network.response.WeatherElement
 import com.example.eric.newtraveler.ui.base.BaseActivity
-import kotlinx.android.synthetic.main.fragment_weather_detail.*
+import kotlinx.android.synthetic.main.activity_weather_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WeatherDetailActivity : BaseActivity<WeatherDetailViewModel>() {
 
-    override val layoutRes: Int = R.layout.fragment_weather_detail
+    override val layoutRes: Int = R.layout.activity_weather_detail
     override val viewModel: WeatherDetailViewModel by viewModel()
 
     private val weatherDetailAdapter by lazy { WeatherDetailAdapter() }

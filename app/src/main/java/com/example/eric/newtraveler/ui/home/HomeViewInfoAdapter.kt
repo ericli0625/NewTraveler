@@ -7,7 +7,7 @@ import com.example.eric.newtraveler.R
 import kotlinx.android.synthetic.main.component_county_card.view.*
 
 class HomeViewInfoAdapter(
-        private val onCountyClickListener: (String) -> Unit
+        private val onClickItemListener: (String) -> Unit
 ) : RecyclerView.Adapter<HomeViewInfoAdapter.ViewHolder>() {
 
     private var items: List<String> = listOf()
@@ -18,7 +18,7 @@ class HomeViewInfoAdapter(
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-            holder.bind(items[position], onCountyClickListener)
+            holder.bind(items[position], onClickItemListener)
 
     fun updateData(items: List<String>) {
         this.items = items
@@ -30,11 +30,11 @@ class HomeViewInfoAdapter(
                     .inflate(R.layout.component_county_card, parent, false)
     ) {
 
-        fun bind(item: String, onCountyClickListener: (String) -> Unit) {
+        fun bind(item: String, onClickItemListener: (String) -> Unit) {
             with(itemView) {
-                county_name.text = item
+                text_title.text = item
                 card_view.setOnClickListener {
-                    onCountyClickListener(item)
+                    onClickItemListener(item)
                 }
             }
         }
