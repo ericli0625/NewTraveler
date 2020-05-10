@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.network
+package com.example.eric.newtraveler.network.api
 
 import com.example.eric.newtraveler.network.response.SpotDetail
 import com.example.eric.newtraveler.network.response.TravelCountyAndCity
@@ -6,8 +6,6 @@ import io.reactivex.Observable
 import java.util.*
 
 interface Api {
-
-    fun initialize()
 
     fun getAllCountyAndCityList(): Observable<ArrayList<TravelCountyAndCity>>
 

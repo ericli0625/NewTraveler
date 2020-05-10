@@ -30,8 +30,12 @@ class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repo
     }
 
     fun getCityList(countyName: String) {
-        val cityList = repository.getCityList(countyName)
-        _showCityListEvent.value = Event(cityList)
+        disposables.add(
+                repository.getCityList(countyName)
+                        .subscribe {
+                            _showCityListEvent.value = Event(it)
+                        }
+        )
     }
 
     override fun onCleared() {

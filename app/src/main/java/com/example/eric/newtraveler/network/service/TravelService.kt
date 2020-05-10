@@ -1,4 +1,4 @@
-package com.example.eric.newtraveler.network
+package com.example.eric.newtraveler.network.service
 
 import com.example.eric.newtraveler.network.response.SpotDetail
 import com.example.eric.newtraveler.network.response.TravelCountyAndCity

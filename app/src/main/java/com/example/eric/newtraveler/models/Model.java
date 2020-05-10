@@ -8,11 +8,9 @@ import android.util.Log;
 
 import com.example.eric.newtraveler.network.NetworkApi;
 import com.example.eric.newtraveler.network.NetworkWeatherApi;
-import com.example.eric.newtraveler.network.TravelService;
-import com.example.eric.newtraveler.network.WeatherService;
 import com.example.eric.newtraveler.network.response.SpotDetail;
 import com.example.eric.newtraveler.network.response.TravelCountyAndCity;
-import com.example.eric.newtraveler.network.response.Weather;
+import com.example.eric.newtraveler.network.response.WeatherInfo;
 import com.example.eric.newtraveler.ui.MainActivity;
 import com.example.eric.newtraveler.util.Repository;
 import com.example.eric.newtraveler.util.SQLiteManager;
@@ -26,9 +24,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Model {
 
@@ -183,19 +178,19 @@ public class Model {
     }
 
     public void queryWeatherForecast(@NonNull String countyName, Observer<Bundle> observer) {
-        Observable<Weather> observable = NetworkWeatherApi.sharedInstance().getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
+        Observable<WeatherInfo> observable = NetworkWeatherApi.sharedInstance().getWeather(countyName, "CWB-38A07514-8234-4044-AC3D-17FE6A4320BF");
         observable.subscribeOn(Schedulers.newThread())
-                .map(new Function<Weather, Bundle>() {
+                .map(new Function<WeatherInfo, Bundle>() {
                     @Override
-                    public Bundle apply(Weather weather) throws Exception {
+                    public Bundle apply(WeatherInfo weatherInfo) throws Exception {
                         Log.i(MainActivity.TAG, "Model, queryWeatherForecast, apply");
-                        Weather.Location location = null;
+//                        Weather.Location location = null;
                         Bundle bundle = new Bundle();
-                        location = weather.getRecords().getLocation().get(0);
-                        ArrayList<Weather.WeatherElement> weatherElementArray = location.getWeatherElement();
-                        String locationName = location.getLocationName();
-                        bundle.putParcelableArrayList("weatherElementArray", weatherElementArray);
-                        bundle.putString("locationName", locationName);
+//                        location = weather.getRecords().getLocation().get(0);
+//                        ArrayList<Weather.WeatherElement> weatherElementArray = location.getWeatherElement();
+//                        String locationName = location.getLocationName();
+//                        bundle.putParcelableArrayList("weatherElementArray", weatherElementArray);
+//                        bundle.putString("locationName", locationName);
                         return bundle;
                     }
                 })
