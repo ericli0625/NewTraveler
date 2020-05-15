@@ -9,10 +9,15 @@ import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.network.response.AttractionDetail
 import com.example.eric.newtraveler.ui.base.BaseActivity
 import com.example.eric.newtraveler.util.SQLiteManager
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_attraction_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>() {
+class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMapReadyCallback {
 
     override val layoutRes: Int = R.layout.activity_attraction_detail
     override val viewModel: AttractionDetailViewModel by viewModel()
@@ -30,6 +35,9 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>() {
         val attraction = intent.extras?.getParcelable("attraction")
                 ?: AttractionDetail.defaultInstance
         initLayout(attraction)
+
+        mapView.onCreate(savedInstanceState)
+        mapView?.getMapAsync(this)
     }
 
     private fun initLayout(attraction: AttractionDetail) {
@@ -75,7 +83,33 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        mapView.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+        googleMap ?: return
+        val location = LatLng(latitude.toDouble(), longitude.toDouble())
+        with(googleMap) {
+            addMarker(MarkerOptions().position(location).title(name))
+            moveCamera(CameraUpdateFactory.newLatLngZoom(location, ZOOM_LEVEL))
+        }
+    }
+
     companion object {
+        const val ZOOM_LEVEL = 13f
+
         fun launch(context: Context, attraction: AttractionDetail) {
             val intent = Intent().apply {
                 setClass(context, AttractionDetailActivity::class.java)
