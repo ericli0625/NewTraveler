@@ -33,7 +33,7 @@ class WeatherDetailActivity : BaseActivity<WeatherDetailViewModel>() {
     private fun initLayout(locationName: String) {
         recyclerView_weather_forecast_detail.adapter = weatherDetailAdapter
 
-        with(topAppBar) {
+        with(toolbar) {
             title = locationName
             setNavigationOnClickListener { onBackPressed() }
         }

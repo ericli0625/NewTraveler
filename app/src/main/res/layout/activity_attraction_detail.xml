@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_return"
@@ -29,11 +29,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:context=".ui.attraction.detail.AttractionDetailActivity">
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/textView_category"
+                android:id="@+id/text_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -43,66 +42,66 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView_category_detail"
+                android:id="@+id/text_category_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView_category"
+                app:layout_constraintBottom_toBottomOf="@+id/text_category"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView_category"
-                app:layout_constraintTop_toTopOf="@+id/textView_category" />
+                app:layout_constraintStart_toEndOf="@+id/text_category"
+                app:layout_constraintTop_toTopOf="@+id/text_category" />
 
             <TextView
-                android:id="@+id/textView_address_detail"
+                android:id="@+id/text_address_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:layout_marginBottom="51dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView_address"
+                app:layout_constraintBottom_toBottomOf="@+id/text_address"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView_address"
-                app:layout_constraintTop_toTopOf="@+id/textView_address" />
+                app:layout_constraintStart_toEndOf="@+id/text_address"
+                app:layout_constraintTop_toTopOf="@+id/text_address" />
 
             <TextView
-                android:id="@+id/textView_address"
+                android:id="@+id/text_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:text="@string/spot_detail_address"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_category" />
+                app:layout_constraintTop_toBottomOf="@+id/text_category" />
 
             <TextView
-                android:id="@+id/textView_telephone"
+                android:id="@+id/text_telephone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:text="@string/spot_detail_telephone"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_address" />
+                app:layout_constraintTop_toBottomOf="@+id/text_address" />
 
             <TextView
-                android:id="@+id/textView_telephone_detail"
+                android:id="@+id/text_telephone_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView_telephone"
+                app:layout_constraintBottom_toBottomOf="@+id/text_telephone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView_telephone"
-                app:layout_constraintTop_toTopOf="@+id/textView_telephone" />
+                app:layout_constraintStart_toEndOf="@+id/text_telephone"
+                app:layout_constraintTop_toTopOf="@+id/text_telephone" />
 
             <View
-                android:id="@+id/divider_2"
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="16dp"
                 android:background="@android:color/darker_gray"
-                app:layout_constraintTop_toBottomOf="@+id/textView_telephone" />
+                app:layout_constraintTop_toBottomOf="@+id/text_telephone" />
 
             <TextView
-                android:id="@+id/textView_content"
+                android:id="@+id/text_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -110,26 +109,26 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider_2" />
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <TextView
-                android:id="@+id/textView_content_detail"
+                android:id="@+id/text_content_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_content" />
+                app:layout_constraintTop_toBottomOf="@+id/text_content" />
 
             <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
+                android:id="@+id/map_view"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
                 android:layout_margin="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_content_detail" />
+                app:layout_constraintTop_toBottomOf="@+id/text_content_detail" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
