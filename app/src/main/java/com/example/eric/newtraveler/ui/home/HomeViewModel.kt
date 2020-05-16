@@ -4,34 +4,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.eric.newtraveler.ui.base.BaseViewModel
 import com.kkday.scm.util.wrapper.Event
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.Observables
 import io.reactivex.schedulers.Schedulers
 
 class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repository) {
 
-    private var countyName: String = ""
+    private var allCityList: MutableList<List<String>> = mutableListOf()
 
     private val _showCountyListEvent by lazy {
-        MutableLiveData<Event<List<String>>>()
+        MutableLiveData<Event<Pair<List<String>, List<List<String>>>>>()
     }
-    val showCountyListEvent: LiveData<Event<List<String>>> by lazy {
+    val showCountyListEvent: LiveData<Event<Pair<List<String>, List<List<String>>>>> by lazy {
         _showCountyListEvent
     }
 
-    private val _showCityListEvent by lazy {
-        MutableLiveData<Event<List<String>>>()
+    private val _queryLocationList by lazy {
+        MutableLiveData<Event<Unit>>()
     }
-    val showCityListEvent: LiveData<Event<List<String>>> by lazy {
-        _showCityListEvent
-    }
-
-    private val _showAttractionListEvent by lazy {
-        MutableLiveData<Event<Pair<String, String>>>()
-    }
-    val showAttractionListEvent: LiveData<Event<Pair<String, String>>> by lazy {
-        _showAttractionListEvent
+    val queryLocationList: LiveData<Event<Unit>> by lazy {
+        _queryLocationList
     }
 
     private val disposables = CompositeDisposable()
@@ -42,27 +35,24 @@ class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repo
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            _showCountyListEvent.value = Event(it)
+                            _queryLocationList.value = Event(it)
                         }
         )
     }
 
-    fun showCardItems(locationName: String) {
-        val getCityListS = repository.getCityList(locationName)
-        val getCountyListS = repository.getCountyList()
-
+    fun showCountyList() {
+        val countyList = repository.getCountyList()
         disposables.add(
-                Observables.zip(getCityListS, getCountyListS)
+                Observable.just(countyList)
+                        .flatMap { Observable.fromIterable(it) }
+                        .map(repository::getCityList)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete {
+                            _showCountyListEvent.value = Event(Pair(countyList, allCityList))
+                        }
                         .subscribe {
-                            if (it.second.contains(locationName)) {
-                                countyName = locationName
-                                _showCityListEvent.value = Event(it.first)
-                            } else {
-                                _showAttractionListEvent.value =
-                                        Event(Pair(countyName, locationName))
-                            }
+                            allCityList.add(it)
                         }
         )
     }

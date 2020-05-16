@@ -1,12 +1,13 @@
 package com.example.eric.newtraveler.ui.attraction
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.lifecycle.observe
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.network.response.AttractionDetail
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailActivity
 import com.example.eric.newtraveler.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_weather.*
+import kotlinx.android.synthetic.main.fragment_attraction_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AttractionListFragment : BaseFragment<AttractionListViewModel>() {
@@ -19,6 +20,7 @@ class AttractionListFragment : BaseFragment<AttractionListViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initLayout()
+        requireActivity().onBackPressedDispatcher.addCallback(this) { backFragment() }
         viewModel.queryAttractionList(getCountyName(), getCityName())
     }
 
@@ -29,6 +31,14 @@ class AttractionListFragment : BaseFragment<AttractionListViewModel>() {
 
     private fun initLayout() {
         recycler_view.adapter = attractionListAdapter
+        image_arrow.setOnClickListener { backFragment() }
+    }
+
+    private fun backFragment() {
+        activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.remove(this)
+                ?.commit()
     }
 
     private fun onClickItemListener(attraction: AttractionDetail) {

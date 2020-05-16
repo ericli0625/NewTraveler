@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.eric.newtraveler.ui.base.BaseViewModel
 import com.kkday.scm.util.wrapper.Event
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
 class WeatherViewModel(private val repository: WeatherRepository) : BaseViewModel(repository) {
@@ -19,7 +20,7 @@ class WeatherViewModel(private val repository: WeatherRepository) : BaseViewMode
 
     fun onActivityCreated() {
         disposables.add(
-                repository.getCountyList()
+                Observable.just(repository.getCountyList())
                         .subscribe {
                             _showCountyListEvent.value = Event(it)
                         }
