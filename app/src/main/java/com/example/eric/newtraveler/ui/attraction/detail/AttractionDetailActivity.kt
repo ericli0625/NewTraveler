@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.example.eric.newtraveler.R
+import com.example.eric.newtraveler.extension.hide
 import com.example.eric.newtraveler.network.response.AttractionDetail
 import com.example.eric.newtraveler.ui.base.BaseActivity
 import com.example.eric.newtraveler.util.SQLiteManager
@@ -36,8 +37,8 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
                 ?: AttractionDetail.defaultInstance
         initLayout(attraction)
 
-        mapView.onCreate(savedInstanceState)
-        mapView?.getMapAsync(this)
+        map_view.onCreate(savedInstanceState)
+        map_view?.getMapAsync(this)
     }
 
     private fun initLayout(attraction: AttractionDetail) {
@@ -49,12 +50,35 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
         longitude = attraction.longitude
         latitude = attraction.latitude
 
-        textView_category_detail.text = category
-        textView_address_detail.text = address
-        textView_telephone_detail.text = telephone
-        textView_content_detail.text = content
+        if (category.isBlank()) {
+            text_category.hide()
+            text_category_detail.hide()
+        } else {
+            text_category_detail.text = category
+        }
 
-        with(topAppBar) {
+        if (address.isBlank()) {
+            text_address.hide()
+            text_address_detail.hide()
+        } else {
+            text_address_detail.text = address
+        }
+
+        if (telephone.isBlank()) {
+            text_telephone.hide()
+            text_telephone_detail.hide()
+        } else {
+            text_telephone_detail.text = telephone
+        }
+
+        if (content.isBlank()) {
+            text_content.hide()
+            text_content_detail.hide()
+        } else {
+            text_content_detail.text = content
+        }
+
+        with(toolbar) {
             title = name
             setNavigationOnClickListener { onBackPressed() }
         }
@@ -85,16 +109,16 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        map_view.onResume()
     }
 
     override fun onPause() {
-        mapView.onPause()
+        map_view.onPause()
         super.onPause()
     }
 
     override fun onDestroy() {
-        mapView.onDestroy()
+        map_view.onDestroy()
         super.onDestroy()
     }
 

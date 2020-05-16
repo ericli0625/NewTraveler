@@ -7,12 +7,12 @@ import io.reactivex.Observable
 
 class HomeRepository : BaseRepository() {
 
-    fun queryLocationList(): Observable<List<String>> {
+    fun queryLocationList(): Observable<Unit> {
         return NetworkApi.sharedInstance().getLocationList()
                 .map(::parserLocationList)
     }
 
-    private fun parserLocationList(list: List<LocationInfo>): List<String> {
+    private fun parserLocationList(list: List<LocationInfo>) {
         val countyList = list
                 .map(LocationInfo::county)
                 .distinct()
@@ -24,6 +24,5 @@ class HomeRepository : BaseRepository() {
                     .map { it.city }
             preferencesHelper.updateCityList(cityList, county)
         }
-        return countyList
     }
 }

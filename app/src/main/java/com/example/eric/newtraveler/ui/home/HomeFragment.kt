@@ -14,61 +14,56 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     override val layoutRes: Int = R.layout.fragment_home
     override val viewModel: HomeViewModel by viewModel()
 
-    private val homeViewInfoAdapter by lazy {
-        HomeViewInfoAdapter(::onClickItemListener)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        initLayout()
         viewModel.onActivityCreated()
     }
 
     override fun subscribeObservers() {
         super.subscribeObservers()
+        subscribeToQueryLocationList()
         subscribeToShowCountyList()
-        subscribeToShowCityList()
-        subscribeToShowAttractionList()
-    }
-
-    private fun initLayout() {
-        recycler_view.adapter = homeViewInfoAdapter
-    }
-
-    private fun onClickItemListener(countyName: String) {
-        viewModel.showCardItems(countyName)
     }
 
     /***** Subscribe methods implementation *****/
 
+    private fun subscribeToQueryLocationList() {
+        viewModel.queryLocationList.observe(this) {
+            viewModel.showCountyList()
+        }
+    }
+
     private fun subscribeToShowCountyList() {
         viewModel.showCountyListEvent.observe(this) {
-            homeViewInfoAdapter.updateData(it.peekContent())
+            val adapter = ExpandableListViewAdapter(
+                    requireContext(), it.peekContent().first, it.peekContent().second
+            )
+
+            with(list_view) {
+                setAdapter(adapter)
+                setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+                    val countyName = adapter.getGroup(groupPosition).toString()
+                    val cityName = adapter.getChild(groupPosition, childPosition).toString()
+                    showAttractionList(countyName, cityName)
+                    false
+                }
+            }
         }
     }
 
-    private fun subscribeToShowCityList() {
-        viewModel.showCityListEvent.observe(this) {
-            homeViewInfoAdapter.updateData(it.peekContent())
-        }
-    }
-
-    private fun subscribeToShowAttractionList() {
-        viewModel.showAttractionListEvent.observe(this) {
-            activity?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.add(
-                            R.id.layout_home,
-                            AttractionListFragment.newInstance().apply {
-                                val (countyName, cityName) = it.peekContent()
-                                arguments = bundleOf(
-                                        COUNTY_NAME to countyName,
-                                        CITY_NAME to cityName
-                                )
-                            }
-                    )
-                    ?.commit()
-        }
+    private fun showAttractionList(countyName: String, cityName: String) {
+        activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.add(
+                        R.id.layout_home,
+                        AttractionListFragment.newInstance().apply {
+                            arguments = bundleOf(
+                                    COUNTY_NAME to countyName,
+                                    CITY_NAME to cityName
+                            )
+                        }
+                )
+                ?.commit()
     }
 
     companion object {
