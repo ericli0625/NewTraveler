@@ -7,12 +7,14 @@ import io.reactivex.Observable
 
 class SearchRepository : BaseRepository() {
 
-    fun fetchAndActivateRemoteConfig(onTemplateKeyFetchedListener: (String) -> Unit) {
+    fun fetchAndActivateRemoteConfig(onTemplateKeyFetchedListener: (List<String>) -> Unit) {
         remoteConfig.fetchAndActivate()
                 .addOnCompleteListener { task ->
                     if (!task.isSuccessful) return@addOnCompleteListener
 
-                    onTemplateKeyFetchedListener(remoteConfig.getString(KEY_TEMPLATE))
+                    val result = remoteConfig.getString(KEY_TEMPLATE)
+                    val list = result.split(",")
+                    onTemplateKeyFetchedListener(list)
                 }
     }
 
