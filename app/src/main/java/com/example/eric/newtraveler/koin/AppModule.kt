@@ -1,12 +1,15 @@
 package com.example.eric.newtraveler.koin
 
 import com.example.eric.newtraveler.ui.MainRepository
+import com.example.eric.newtraveler.ui.MainViewModel
 import com.example.eric.newtraveler.ui.attraction.AttractionListRepository
 import com.example.eric.newtraveler.ui.attraction.AttractionListViewModel
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailRepository
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailViewModel
 import com.example.eric.newtraveler.ui.home.HomeRepository
 import com.example.eric.newtraveler.ui.home.HomeViewModel
+import com.example.eric.newtraveler.ui.search.SearchRepository
+import com.example.eric.newtraveler.ui.search.SearchViewModel
 import com.example.eric.newtraveler.ui.weather.WeatherRepository
 import com.example.eric.newtraveler.ui.weather.WeatherViewModel
 import com.example.eric.newtraveler.ui.weather.detail.WeatherDetailRepository
@@ -24,15 +27,19 @@ val repositoryModule: Module = module {
     factory { WeatherDetailRepository() }
     factory { AttractionListRepository() }
     factory { AttractionDetailRepository() }
+    factory { SearchRepository() }
 }
 
 val viewModule: Module = module {
+    // activity
+    viewModel { MainViewModel(get()) }
     // fragment
     viewModel { HomeViewModel(get()) }
     viewModel { WeatherViewModel(get()) }
     viewModel { WeatherDetailViewModel(get()) }
     viewModel { AttractionListViewModel(get()) }
     viewModel { AttractionDetailViewModel(get()) }
+    viewModel { SearchViewModel(get()) }
 }
 
 val appModule = listOf(repositoryModule, viewModule)
