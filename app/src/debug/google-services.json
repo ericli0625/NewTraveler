@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "904489820740",
+    "firebase_url": "https://avian-cable-227906.firebaseio.com",
+    "project_id": "avian-cable-227906",
+    "storage_bucket": "avian-cable-227906.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904489820740:android:0056e392cadeeed4211211",
+        "android_client_info": {
+          "package_name": "com.example.eric.newtraveler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "904489820740-o1p1jneidtmldumfjsssihsub79rhip8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eric.newtraveler",
+            "certificate_hash": "33251fe5405f42dcd94a6da75d5dfce5d23f8309"
+          }
+        },
+        {
+          "client_id": "904489820740-f1knpdof8kfgujuimvt51h218r7p8qn5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_rxFXU3LSS61XGnbl5uuJ0ss8652LEII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "904489820740-f1knpdof8kfgujuimvt51h218r7p8qn5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

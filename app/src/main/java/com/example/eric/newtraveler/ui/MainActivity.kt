@@ -15,6 +15,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.onCreate()
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
         view_pager.adapter = sectionsPagerAdapter

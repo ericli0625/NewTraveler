@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.eric.newtraveler.ui.FavorFragment
 import com.example.eric.newtraveler.ui.MainActivity
-import com.example.eric.newtraveler.ui.SearchFragment
+import com.example.eric.newtraveler.ui.search.SearchFragment
 import com.example.eric.newtraveler.ui.home.HomeFragment
 import com.example.eric.newtraveler.ui.weather.WeatherFragment
 
