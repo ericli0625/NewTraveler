@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Traveler</string>
 
-    <string name="spot_detail_category">景點類型:</string>
-    <string name="spot_detail_address">地址:</string>
-    <string name="spot_detail_telephone">電話:</string>
-    <string name="spot_detail_content">景點介紹:</string>
+    <string name="attraction_detail_category">景點類型:</string>
+    <string name="attraction_detail_address">地址:</string>
+    <string name="attraction_detail_telephone">電話:</string>
+    <string name="attraction_detail_content">景點介紹:</string>
 
     <string name="weather_date_title">"%s ~ %s"</string>
     <string name="weather_condition">"天氣狀況: %s"</string>

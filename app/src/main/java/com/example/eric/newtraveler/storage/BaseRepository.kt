@@ -1,7 +1,7 @@
 package com.example.eric.newtraveler.storage
 
-import com.example.eric.newtraveler.network.response.AttractionDetail
-import com.example.eric.newtraveler.storage.dao.AttractionDetailDao
+import com.example.eric.newtraveler.network.response.AttractionInfo
+import com.example.eric.newtraveler.storage.dao.AttractionInfoDao
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
@@ -11,7 +11,7 @@ import org.koin.core.inject
 
 abstract class BaseRepository : KoinComponent {
 
-    protected val attractionDetailDao: AttractionDetailDao by inject()
+    protected val attractionInfoDao: AttractionInfoDao by inject()
 
     protected val remoteConfig by lazy { Firebase.remoteConfig }
     protected val preferencesHelper: PreferencesHelper by lazy { SharedPreferencesHelper.sharedInstance() }
@@ -31,7 +31,7 @@ abstract class BaseRepository : KoinComponent {
         return preferencesHelper.getCityList(countyName)
     }
 
-    fun getAllAttractions(): Observable<List<AttractionDetail>> {
-        return attractionDetailDao.getAllAttractions()
+    fun getAllAttractions(): Observable<List<AttractionInfo>> {
+        return attractionInfoDao.getAllAttractions()
     }
 }

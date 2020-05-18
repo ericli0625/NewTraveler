@@ -3,7 +3,7 @@ package com.example.eric.newtraveler.ui.favor
 import android.os.Bundle
 import androidx.lifecycle.observe
 import com.example.eric.newtraveler.R
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.ui.attraction.AttractionListAdapter
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailActivity
 import com.example.eric.newtraveler.ui.base.BaseFragment
@@ -32,7 +32,7 @@ class FavorFragment : BaseFragment<FavorViewModel>() {
         recycler_view.adapter = attractionListAdapter
     }
 
-    private fun onClickItemListener(attraction: AttractionDetail) {
+    private fun onClickItemListener(attraction: AttractionInfo) {
         AttractionDetailActivity.launch(requireContext(), attraction)
     }
 

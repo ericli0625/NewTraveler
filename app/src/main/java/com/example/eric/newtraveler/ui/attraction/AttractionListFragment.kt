@@ -5,7 +5,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.commit
 import androidx.lifecycle.observe
 import com.example.eric.newtraveler.R
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailActivity
 import com.example.eric.newtraveler.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_attraction_list.*
@@ -41,7 +41,7 @@ class AttractionListFragment : BaseFragment<AttractionListViewModel>() {
         }
     }
 
-    private fun onClickItemListener(attraction: AttractionDetail) {
+    private fun onClickItemListener(attraction: AttractionInfo) {
         AttractionDetailActivity.launch(requireContext(), attraction)
     }
 

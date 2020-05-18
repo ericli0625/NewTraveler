@@ -33,7 +33,7 @@ val repositoryModule: Module = module {
     factory { SearchRepository() }
     factory { FavorRepository() }
 
-    single { AppDatabase.getInstance(get()).attractionDetail() }
+    single { AppDatabase.getInstance(get()).attractionInfo() }
 }
 
 val viewModule: Module = module {

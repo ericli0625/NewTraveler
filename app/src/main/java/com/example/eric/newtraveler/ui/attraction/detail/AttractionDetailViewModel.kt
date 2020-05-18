@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.eric.newtraveler.R
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.ui.base.BaseViewModel
 import com.kkday.scm.util.wrapper.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,14 +32,14 @@ class AttractionDetailViewModel(
 
     private val disposables = CompositeDisposable()
 
-    fun addFavorite(attraction: AttractionDetail) {
+    fun addFavorite(attraction: AttractionInfo) {
         viewModelScope.launch {
             repository.addFavorite(attraction)
             _showSnackBarEvent.value = Event(R.string.snack_bar_add_msg)
         }
     }
 
-    fun deleteFavorite(attraction: AttractionDetail) {
+    fun deleteFavorite(attraction: AttractionInfo) {
         viewModelScope.launch {
             repository.deleteFavorite(attraction)
             _showSnackBarEvent.value = Event(R.string.snack_bar_delete_msg)
@@ -53,7 +53,7 @@ class AttractionDetailViewModel(
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
                             val attraction = it.firstOrNull { it.name == name }
-                                    ?: AttractionDetail.defaultInstance
+                                    ?: AttractionInfo.defaultInstance
                             _showOrHideFavorIcon.value = Event(attraction.name == name)
                         }
         )

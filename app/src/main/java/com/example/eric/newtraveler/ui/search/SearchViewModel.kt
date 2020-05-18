@@ -2,7 +2,7 @@ package com.example.eric.newtraveler.ui.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.ui.base.BaseViewModel
 import com.kkday.scm.util.wrapper.Event
 import io.reactivex.Observable
@@ -12,14 +12,14 @@ import io.reactivex.schedulers.Schedulers
 
 class SearchViewModel(private val repository: SearchRepository) : BaseViewModel(repository) {
 
-    private val attractionList: MutableList<AttractionDetail> = mutableListOf()
+    private val attractionList: MutableList<AttractionInfo> = mutableListOf()
 
     private val disposables = CompositeDisposable()
 
     private val _showAttractionListEvent by lazy {
-        MutableLiveData<Event<List<AttractionDetail>>>()
+        MutableLiveData<Event<List<AttractionInfo>>>()
     }
-    val showAttractionListEvent: LiveData<Event<List<AttractionDetail>>> by lazy {
+    val showAttractionListEvent: LiveData<Event<List<AttractionInfo>>> by lazy {
         _showAttractionListEvent
     }
 
@@ -31,7 +31,7 @@ class SearchViewModel(private val repository: SearchRepository) : BaseViewModel(
         disposables.add(
                 Observable.just(queries)
                         .flatMap { Observable.fromIterable(it) }
-                        .flatMap { repository.getKeywordSearchSpotDetail(it) }
+                        .flatMap { repository.getAttractionInfoByName(it) }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete {

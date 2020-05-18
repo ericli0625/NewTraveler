@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.eric.newtraveler.network.response.AttractionDetail
-import com.example.eric.newtraveler.storage.dao.AttractionDetailDao
+import com.example.eric.newtraveler.network.response.AttractionInfo
+import com.example.eric.newtraveler.storage.dao.AttractionInfoDao
 
-@Database(entities = [AttractionDetail::class], version = 1, exportSchema = false)
+@Database(entities = [AttractionInfo::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun attractionDetail(): AttractionDetailDao
+    abstract fun attractionInfo(): AttractionInfoDao
 
     companion object {
 
