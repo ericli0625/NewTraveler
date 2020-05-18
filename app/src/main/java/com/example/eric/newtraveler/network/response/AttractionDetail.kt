@@ -1,12 +1,16 @@
 package com.example.eric.newtraveler.network.response
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@Entity(tableName = "attractions")
 data class AttractionDetail(
-        @SerializedName("id") private val _id: String?,
+        @PrimaryKey @ColumnInfo(name = "id") @SerializedName("id") val id: String,
         @SerializedName("name") private val _name: String?,
         @SerializedName("city") private val _city: String?,
         @SerializedName("county") private val _county: String?,
@@ -17,9 +21,6 @@ data class AttractionDetail(
         @SerializedName("latitude") private val _latitude: String?,
         @SerializedName("content") private val _content: String?
 ) : Parcelable {
-
-    val id: String
-        get() = _id ?: ""
 
     val name: String
         get() = _name ?: ""

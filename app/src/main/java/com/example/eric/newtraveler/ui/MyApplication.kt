@@ -2,10 +2,9 @@ package com.example.eric.newtraveler.ui
 
 import android.app.Application
 import com.example.eric.newtraveler.koin.appModule
-import com.example.eric.newtraveler.network.NetworkApi
-import com.example.eric.newtraveler.network.NetworkWeatherApi
 import com.example.eric.newtraveler.storage.SharedPreferencesHelper
 import com.squareup.leakcanary.LeakCanary
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class MyApplication : Application() {
@@ -14,6 +13,7 @@ class MyApplication : Application() {
         super.onCreate()
 
         startKoin {
+            androidContext(this@MyApplication)
             modules(appModule)
         }
 

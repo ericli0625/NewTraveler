@@ -2,14 +2,14 @@ package com.example.eric.newtraveler.ui.attraction.detail
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.observe
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.extension.hide
 import com.example.eric.newtraveler.network.response.AttractionDetail
 import com.example.eric.newtraveler.ui.base.BaseActivity
-import com.example.eric.newtraveler.util.SQLiteManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_attraction_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMapReadyCallback {
 
@@ -50,6 +51,8 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
         longitude = attraction.longitude
         latitude = attraction.latitude
 
+        viewModel.showOrHideFavorIcon(name)
+
         if (category.isBlank()) {
             text_category.hide()
             text_category_detail.hide()
@@ -81,30 +84,29 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
         with(toolbar) {
             title = name
             setNavigationOnClickListener { onBackPressed() }
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_favorite -> {
+                        if (checkMenuAction(it.icon)) {
+                            viewModel.addFavorite(attraction)
+                        } else {
+                            viewModel.deleteFavorite(attraction)
+                        }
+                    }
+                }
+                true
+            }
         }
     }
 
-    var mReturnButtonListener = View.OnClickListener { v: View? ->
-        setContentView(R.layout.activity_main)
-        onBackPressed()
+    private fun checkMenuAction(icon: Drawable): Boolean {
+        val favorite = ContextCompat.getDrawable(applicationContext, R.drawable.ic_favorite_border)
+        return Objects.equals(icon.constantState, favorite?.constantState)
     }
-    var mAddFavoriteButtonListener = View.OnClickListener { v: View ->
-        val cursor = SQLiteManager.getInstance()
-                .matchData(name, category, address, telephone,
-                        longitude, latitude, content)
-        val rows_num = cursor.count
-        cursor.close()
-        if (rows_num == 1) {
-            Toast.makeText(v.context, R.string.already_add_favorite_toast,
-                    Toast.LENGTH_SHORT)
-                    .show()
-        } else {
-            SQLiteManager.getInstance()
-                    .insert(name, category, address, telephone, longitude, latitude,
-                            content)
-            Toast.makeText(v.context, R.string.add_favorite_toast, Toast.LENGTH_SHORT)
-                    .show()
-        }
+
+    override fun subscribeObservers() {
+        super.subscribeObservers()
+        subscribeToShowOrHideFavorIcon()
     }
 
     override fun onResume() {
@@ -128,6 +130,25 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
         with(googleMap) {
             addMarker(MarkerOptions().position(location).title(name))
             moveCamera(CameraUpdateFactory.newLatLngZoom(location, ZOOM_LEVEL))
+        }
+    }
+
+    /***** Subscribe methods implementation *****/
+
+    private fun subscribeToShowOrHideFavorIcon() {
+        viewModel.showOrHideFavorIcon.observe(this) {
+            if (it.peekContent()) {
+                with(toolbar.menu) {
+                    findItem(R.id.action_favorite).icon =
+                            ContextCompat.getDrawable(applicationContext, R.drawable.ic_favorite)
+                }
+            } else {
+                with(toolbar.menu) {
+                    findItem(R.id.action_favorite).icon =
+                            ContextCompat.getDrawable(applicationContext,
+                                    R.drawable.ic_favorite_border)
+                }
+            }
         }
     }
 
