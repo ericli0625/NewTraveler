@@ -54,7 +54,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
     private fun showAttractionList(countyName: String, cityName: String) {
         activity?.supportFragmentManager?.commit {
-            add(
+            replace(
                     R.id.layout_home,
                     AttractionListFragment.newInstance().apply {
                         arguments = bundleOf(
