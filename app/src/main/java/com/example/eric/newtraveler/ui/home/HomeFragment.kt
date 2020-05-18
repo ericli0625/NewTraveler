@@ -2,6 +2,7 @@ package com.example.eric.newtraveler.ui.home
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.fragment.app.commit
 import androidx.lifecycle.observe
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.ui.attraction.AttractionListFragment
@@ -52,18 +53,17 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     }
 
     private fun showAttractionList(countyName: String, cityName: String) {
-        activity?.supportFragmentManager
-                ?.beginTransaction()
-                ?.add(
-                        R.id.layout_home,
-                        AttractionListFragment.newInstance().apply {
-                            arguments = bundleOf(
-                                    COUNTY_NAME to countyName,
-                                    CITY_NAME to cityName
-                            )
-                        }
-                )
-                ?.commit()
+        activity?.supportFragmentManager?.commit {
+            add(
+                    R.id.layout_home,
+                    AttractionListFragment.newInstance().apply {
+                        arguments = bundleOf(
+                                COUNTY_NAME to countyName,
+                                CITY_NAME to cityName
+                        )
+                    }
+            )
+        }
     }
 
     companion object {

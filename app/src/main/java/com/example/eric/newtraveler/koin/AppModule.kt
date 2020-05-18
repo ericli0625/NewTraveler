@@ -1,11 +1,14 @@
 package com.example.eric.newtraveler.koin
 
+import com.example.eric.newtraveler.storage.AppDatabase
 import com.example.eric.newtraveler.ui.MainRepository
 import com.example.eric.newtraveler.ui.MainViewModel
 import com.example.eric.newtraveler.ui.attraction.AttractionListRepository
 import com.example.eric.newtraveler.ui.attraction.AttractionListViewModel
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailRepository
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailViewModel
+import com.example.eric.newtraveler.ui.favor.FavorRepository
+import com.example.eric.newtraveler.ui.favor.FavorViewModel
 import com.example.eric.newtraveler.ui.home.HomeRepository
 import com.example.eric.newtraveler.ui.home.HomeViewModel
 import com.example.eric.newtraveler.ui.search.SearchRepository
@@ -28,6 +31,9 @@ val repositoryModule: Module = module {
     factory { AttractionListRepository() }
     factory { AttractionDetailRepository() }
     factory { SearchRepository() }
+    factory { FavorRepository() }
+
+    single { AppDatabase.getInstance(get()).attractionDetail() }
 }
 
 val viewModule: Module = module {
@@ -40,6 +46,7 @@ val viewModule: Module = module {
     viewModel { AttractionListViewModel(get()) }
     viewModel { AttractionDetailViewModel(get()) }
     viewModel { SearchViewModel(get()) }
+    viewModel { FavorViewModel(get()) }
 }
 
 val appModule = listOf(repositoryModule, viewModule)
