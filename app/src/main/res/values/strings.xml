@@ -1,27 +1,10 @@
 <resources>
     <string name="app_name">Traveler</string>
 
-    <string name="click_keyword_search_button">查詢</string>
-
-    <string name="toast_searching">搜尋中</string>
-
-    <string name="input_hint">請輸入景點</string>
-
-    <string name="spot_detail_name">景點名稱:</string>
-
     <string name="spot_detail_category">景點類型:</string>
-
     <string name="spot_detail_address">地址:</string>
-
     <string name="spot_detail_telephone">電話:</string>
-
     <string name="spot_detail_content">景點介紹:</string>
-
-    <string name="alert_dialog_content">你是否確定要離開?</string>
-
-    <string name="alert_dialog_yes">是</string>
-
-    <string name="alert_dialog_no">否</string>
 
     <string name="weather_date_title">"%s ~ %s"</string>
     <string name="weather_condition">"天氣狀況: %s"</string>
@@ -30,18 +13,11 @@
     <string name="weather_min_temporary">"最低溫度 (℃):\n %s"</string>
     <string name="weather_max_temporary">"最高溫度 (℃):\n %s"</string>
 
-    <string name="already_add_favorite_toast">"您已經新增過了"</string>
-
-    <string name="add_favorite_toast">"新增至我的最愛"</string>
+    <string name="snack_bar_add_msg">"新增景點"</string>
+    <string name="snack_bar_delete_msg">"刪除景點"</string>
 
     <string name="favorite_title">"我的最愛"</string>
-
-    <string name="delete_dialog_title">"刪除"</string>
-    <string name="delete_dialog_message">"是否刪除此景點"</string>
-    <string name="delete_dialog_ok">"確定"</string>
-    <string name="delete_dialog_cancel">"取消"</string>
-
-    <string name="weather_location">Location</string>
+    <string name="weather_location">"地區"</string>
 
     <string name="title_home">首頁</string>
     <string name="title_search">搜尋</string>

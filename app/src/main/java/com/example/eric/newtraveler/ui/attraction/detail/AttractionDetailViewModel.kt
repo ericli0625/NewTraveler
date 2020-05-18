@@ -3,6 +3,7 @@ package com.example.eric.newtraveler.ui.attraction.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.network.response.AttractionDetail
 import com.example.eric.newtraveler.ui.base.BaseViewModel
 import com.kkday.scm.util.wrapper.Event
@@ -22,17 +23,26 @@ class AttractionDetailViewModel(
         _showOrHideFavorIcon
     }
 
+    private val _showSnackBarEvent by lazy {
+        MutableLiveData<Event<Int>>()
+    }
+    val showSnackBarEvent: LiveData<Event<Int>> by lazy {
+        _showSnackBarEvent
+    }
+
     private val disposables = CompositeDisposable()
 
     fun addFavorite(attraction: AttractionDetail) {
         viewModelScope.launch {
             repository.addFavorite(attraction)
+            _showSnackBarEvent.value = Event(R.string.snack_bar_add_msg)
         }
     }
 
     fun deleteFavorite(attraction: AttractionDetail) {
         viewModelScope.launch {
             repository.deleteFavorite(attraction)
+            _showSnackBarEvent.value = Event(R.string.snack_bar_delete_msg)
         }
     }
 

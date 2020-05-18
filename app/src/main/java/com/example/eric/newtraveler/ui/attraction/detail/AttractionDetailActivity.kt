@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_attraction_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -107,6 +108,7 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
     override fun subscribeObservers() {
         super.subscribeObservers()
         subscribeToShowOrHideFavorIcon()
+        subscribeToSnackBar()
     }
 
     override fun onResume() {
@@ -149,6 +151,13 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
                                     R.drawable.ic_favorite_border)
                 }
             }
+        }
+    }
+
+    private fun subscribeToSnackBar() {
+        viewModel.showSnackBarEvent.observe(this) {
+            Snackbar.make(layout_root, it.peekContent(), Snackbar.LENGTH_SHORT)
+                    .show()
         }
     }
 
