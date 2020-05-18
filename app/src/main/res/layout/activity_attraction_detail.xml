@@ -16,8 +16,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/top_bar_attraction"
             app:navigationIcon="@drawable/ic_return"
-            app:menu="@menu/top_app_bar"
             app:title="@string/weather_location"
             app:titleTextColor="@color/white" />
 

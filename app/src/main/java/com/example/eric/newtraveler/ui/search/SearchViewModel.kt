@@ -27,6 +27,17 @@ class SearchViewModel(private val repository: SearchRepository) : BaseViewModel(
         repository.fetchAndActivateRemoteConfig(::getTemplateKey)
     }
 
+    fun searchAttraction(name: String) {
+        disposables.add(
+                repository.getAttractionInfoByName(name)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            _showAttractionListEvent.value = Event(it)
+                        }
+        )
+    }
+
     private fun getTemplateKey(queries: List<String>) {
         disposables.add(
                 Observable.just(queries)
