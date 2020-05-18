@@ -1,17 +1,25 @@
 package com.example.eric.newtraveler.ui
 
 import android.os.Bundle
+import android.view.Menu
+import androidx.appcompat.widget.SearchView
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.ui.adapter.*
 import com.example.eric.newtraveler.ui.base.BaseActivity
+import com.example.eric.newtraveler.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<MainViewModel>() {
 
     override val layoutRes: Int = R.layout.activity_main
     override val viewModel: MainViewModel by viewModel()
+
+    private var searchDataListener: OnSearchDataReceivedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +32,36 @@ class MainActivity : BaseActivity<MainViewModel>() {
             tab.setIcon(getTabIcon(position))
             tab.text = getTabTitle(position)
         }.attach()
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.top_bar_search, menu)
+        val searchItem = menu.findItem(R.id.menu_search)
+        val searchView = searchItem.actionView as (SearchView)
+        searchView.setOnQueryTextListener(onQueryTextListener)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private val onQueryTextListener = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String): Boolean {
+            view_pager.currentItem = 1
+            GlobalScope.launch {
+                delay(100)
+                searchDataListener?.onDataReceived(query)
+            }
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String): Boolean {
+            return false
+        }
+    }
+
+    fun setSearchDataListener(listener: OnSearchDataReceivedListener) {
+        searchDataListener = listener
     }
 
     private fun getTabIcon(position: Int): Int {
@@ -44,9 +82,5 @@ class MainActivity : BaseActivity<MainViewModel>() {
             FAVOR_PAGE_INDEX -> getString(R.string.title_favor)
             else -> null
         }
-    }
-
-    companion object {
-        const val TAG = "Travel"
     }
 }
