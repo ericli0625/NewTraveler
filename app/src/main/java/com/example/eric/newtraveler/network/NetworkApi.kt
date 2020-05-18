@@ -2,7 +2,7 @@ package com.example.eric.newtraveler.network
 
 import com.example.eric.newtraveler.network.api.Api
 import com.example.eric.newtraveler.network.response.LocationInfo
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.network.retrofit.RetrofitApi
 import io.reactivex.Observable
 
@@ -20,12 +20,12 @@ class NetworkApi : Api {
         return api.getCityList(county)
     }
 
-    override fun getNormalSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>> {
-        return api.getNormalSearchSpotDetail(spotName)
+    override fun getAttractionInfoByPlace(placeName: String): Observable<List<AttractionInfo>> {
+        return api.getAttractionInfoByPlace(placeName)
     }
 
-    override fun getKeywordSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>> {
-        return api.getKeywordSearchSpotDetail(spotName)
+    override fun getAttractionInfoByName(attractionName: String): Observable<List<AttractionInfo>> {
+        return api.getAttractionInfoByName(attractionName)
     }
 
     companion object {

@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity(tableName = "attractions")
-data class AttractionDetail(
+data class AttractionInfo(
         @PrimaryKey @ColumnInfo(name = "id") @SerializedName("id") val id: String,
         @SerializedName("name") private val _name: String?,
         @SerializedName("city") private val _city: String?,
@@ -51,6 +51,6 @@ data class AttractionDetail(
 
     companion object {
         @JvmStatic
-        val defaultInstance = AttractionDetail("", "", "", "", "", "", "", "", "", "")
+        val defaultInstance = AttractionInfo("", "", "", "", "", "", "", "", "", "")
     }
 }

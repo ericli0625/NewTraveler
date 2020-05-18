@@ -2,7 +2,7 @@ package com.example.eric.newtraveler.ui.favor
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.ui.base.BaseViewModel
 import com.kkday.scm.util.wrapper.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,9 +12,9 @@ import io.reactivex.schedulers.Schedulers
 class FavorViewModel(private val repository: FavorRepository) : BaseViewModel(repository) {
 
     private val _showAttractionListEvent by lazy {
-        MutableLiveData<Event<List<AttractionDetail>>>()
+        MutableLiveData<Event<List<AttractionInfo>>>()
     }
-    val showAttractionListEvent: LiveData<Event<List<AttractionDetail>>> by lazy {
+    val showAttractionListEvent: LiveData<Event<List<AttractionInfo>>> by lazy {
         _showAttractionListEvent
     }
 

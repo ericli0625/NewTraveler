@@ -2,7 +2,7 @@ package com.example.eric.newtraveler.ui.attraction
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.ui.base.BaseViewModel
 import com.kkday.scm.util.wrapper.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,9 +13,9 @@ class AttractionListViewModel(private val repository: AttractionListRepository) 
         BaseViewModel(repository) {
 
     private val _showAttractionListEvent by lazy {
-        MutableLiveData<Event<List<AttractionDetail>>>()
+        MutableLiveData<Event<List<AttractionInfo>>>()
     }
-    val showAttractionListEvent: LiveData<Event<List<AttractionDetail>>> by lazy {
+    val showAttractionListEvent: LiveData<Event<List<AttractionInfo>>> by lazy {
         _showAttractionListEvent
     }
 
@@ -23,7 +23,7 @@ class AttractionListViewModel(private val repository: AttractionListRepository) 
 
     fun queryAttractionList(countyName: String, cityName: String) {
         disposables.add(
-                repository.queryAttractionDetail(countyName, cityName)
+                repository.getAttractionInfoByPlace(countyName, cityName)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {

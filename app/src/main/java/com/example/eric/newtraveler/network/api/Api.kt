@@ -1,6 +1,6 @@
 package com.example.eric.newtraveler.network.api
 
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.network.response.LocationInfo
 import io.reactivex.Observable
 
@@ -12,7 +12,7 @@ interface Api {
 
     fun getCityList(county: String): Observable<List<String>>
 
-    fun getNormalSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>>
+    fun getAttractionInfoByPlace(placeName: String): Observable<List<AttractionInfo>>
 
-    fun getKeywordSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>>
+    fun getAttractionInfoByName(attractionName: String): Observable<List<AttractionInfo>>
 }

@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.observe
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.extension.hide
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.ui.base.BaseActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,14 +36,14 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val attraction = intent.extras?.getParcelable("attraction")
-                ?: AttractionDetail.defaultInstance
+                ?: AttractionInfo.defaultInstance
         initLayout(attraction)
 
         map_view.onCreate(savedInstanceState)
         map_view?.getMapAsync(this)
     }
 
-    private fun initLayout(attraction: AttractionDetail) {
+    private fun initLayout(attraction: AttractionInfo) {
         name = attraction.name
         category = attraction.category
         address = attraction.address
@@ -164,7 +164,7 @@ class AttractionDetailActivity : BaseActivity<AttractionDetailViewModel>(), OnMa
     companion object {
         const val ZOOM_LEVEL = 13f
 
-        fun launch(context: Context, attraction: AttractionDetail) {
+        fun launch(context: Context, attraction: AttractionInfo) {
             val intent = Intent().apply {
                 setClass(context, AttractionDetailActivity::class.java)
                 putExtra("attraction", attraction)

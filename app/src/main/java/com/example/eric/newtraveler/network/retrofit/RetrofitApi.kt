@@ -3,7 +3,7 @@ package com.example.eric.newtraveler.network.retrofit
 import com.example.eric.newtraveler.network.Config.BASE_API_URL
 import com.example.eric.newtraveler.network.api.Api
 import com.example.eric.newtraveler.network.response.LocationInfo
-import com.example.eric.newtraveler.network.response.AttractionDetail
+import com.example.eric.newtraveler.network.response.AttractionInfo
 import com.example.eric.newtraveler.network.service.TravelService
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -37,11 +37,11 @@ class RetrofitApi : Api {
         return travelService.getCityList(county)
     }
 
-    override fun getNormalSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>> {
-        return travelService.getNormalSearchSpotDetail(spotName)
+    override fun getAttractionInfoByPlace(placeName: String): Observable<List<AttractionInfo>> {
+        return travelService.getAttractionInfoByPlace(placeName)
     }
 
-    override fun getKeywordSearchSpotDetail(spotName: String): Observable<List<AttractionDetail>> {
-        return travelService.getKeywordSearchSpotDetail(spotName)
+    override fun getAttractionInfoByName(attractionName: String): Observable<List<AttractionInfo>> {
+        return travelService.getAttractionInfoByName(attractionName)
     }
 }
