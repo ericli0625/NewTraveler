@@ -17,7 +17,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.onActivityCreated()
+        viewModel.queryLocationList()
     }
 
     override fun subscribeObservers() {
@@ -29,7 +29,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     /***** Subscribe methods implementation *****/
 
     private fun subscribeToQueryLocationList() {
-        viewModel.queryLocationList.observe(this) {
+        viewModel.queryLocationListEvent.observe(this) {
             viewModel.showCountyList()
         }
     }

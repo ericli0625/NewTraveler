@@ -20,22 +20,22 @@ class HomeViewModel(private val repository: HomeRepository) : BaseViewModel(repo
         _showCountyListEvent
     }
 
-    private val _queryLocationList by lazy {
+    private val _queryLocationListEvent by lazy {
         MutableLiveData<Event<Unit>>()
     }
-    val queryLocationList: LiveData<Event<Unit>> by lazy {
-        _queryLocationList
+    val queryLocationListEvent: LiveData<Event<Unit>> by lazy {
+        _queryLocationListEvent
     }
 
     private val disposables = CompositeDisposable()
 
-    fun onActivityCreated() {
+    fun queryLocationList() {
         disposables.add(
                 repository.queryLocationList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            _queryLocationList.value = Event(it)
+                            _queryLocationListEvent.value = Event(it)
                         }
         )
     }
