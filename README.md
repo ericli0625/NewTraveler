@@ -6,13 +6,17 @@ Using Retrofit2 + RxJava2 + MVVM.
 3. 架設Restful APIs在Heroku
 
 首頁
-![image] (https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/home.jpg)
+
+<img src="https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/home.jpg" alt="drawing" width="200"/>
 
 景點詳情
-![image] (https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/attraction.jpg)
+
+<img src="https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/attraction.jpg" alt="drawing" width="200"/>
 
 搜尋結果
-![image] (https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/search.jpg)
+
+<img src="https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/search.jpg" alt="drawing" width="200"/>
 
 天氣詳情
-![image] (https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/weather.jpg)
+
+<img src="https://github.com/ericli0625/NewTraveler/blob/dev/screenshot/weather.jpg" alt="drawing" width="200"/>
