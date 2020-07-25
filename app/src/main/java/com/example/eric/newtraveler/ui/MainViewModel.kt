@@ -7,4 +7,8 @@ class MainViewModel(private val repository: MainRepository) : BaseViewModel(repo
     fun onCreate() {
         repository.initRemoteConfig()
     }
+
+    fun fetchAndActivateRemoteConfig() {
+        repository.fetchAndActivateRemoteConfig()
+    }
 }

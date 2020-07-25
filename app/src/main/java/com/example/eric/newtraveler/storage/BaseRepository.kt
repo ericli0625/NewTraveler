@@ -31,6 +31,10 @@ abstract class BaseRepository : KoinComponent {
         return preferencesHelper.getCityList(countyName)
     }
 
+    fun getRemoteConfigResult(): List<String> {
+        return preferencesHelper.getRemoteConfigResult()
+    }
+
     fun getAllAttractions(): Observable<List<AttractionInfo>> {
         return attractionInfoDao.getAllAttractions()
     }

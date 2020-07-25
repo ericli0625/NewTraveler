@@ -23,10 +23,6 @@ class SearchViewModel(private val repository: SearchRepository) : BaseViewModel(
         _showAttractionListEvent
     }
 
-    fun fetchAndActivateRemoteConfig() {
-        repository.fetchAndActivateRemoteConfig(::getTemplateKey)
-    }
-
     fun searchAttraction(name: String) {
         disposables.add(
                 repository.getAttractionInfoByName(name)
@@ -38,9 +34,9 @@ class SearchViewModel(private val repository: SearchRepository) : BaseViewModel(
         )
     }
 
-    private fun getTemplateKey(queries: List<String>) {
+    fun getDefaultAttractionKey() {
         disposables.add(
-                Observable.just(queries)
+                Observable.just(repository.getRemoteConfigResult())
                         .flatMap { Observable.fromIterable(it) }
                         .flatMap { repository.getAttractionInfoByName(it) }
                         .subscribeOn(Schedulers.io())
