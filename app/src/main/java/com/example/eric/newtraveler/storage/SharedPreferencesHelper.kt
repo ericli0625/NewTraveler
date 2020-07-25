@@ -39,6 +39,16 @@ class SharedPreferencesHelper private constructor() : PreferencesHelper {
         preferences.edit { putString(TAG_CITY_LIST + "_" + countyName, toJson(cityList)) }
     }
 
+    override fun getRemoteConfigResult(): List<String> {
+        val type = object : TypeToken<List<String>>() {}.type
+        val json = preferences.getStringOrElse(TAG_REMOTE_CONFIG, "")
+        return Gson().fromJsonOrElse(json, type) { listOf() }
+    }
+
+    override fun updateRemoteConfigResult(remoteConfigs: List<String>) {
+        preferences.edit { putString(TAG_REMOTE_CONFIG, toJson(remoteConfigs)) }
+    }
+
     private fun <T> toJson(data: T): String {
         val type = object : TypeToken<T>() {}.type
         return Gson().toJson(data, type)
@@ -49,6 +59,7 @@ class SharedPreferencesHelper private constructor() : PreferencesHelper {
 
         private const val TAG_COUNTY_LIST = "countylist"
         private const val TAG_CITY_LIST = "citylist"
+        private const val TAG_REMOTE_CONFIG = "remote_config"
 
         private val sharedPreferencesHelper = SharedPreferencesHelper()
 

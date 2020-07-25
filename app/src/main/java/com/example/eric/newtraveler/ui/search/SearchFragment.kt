@@ -4,15 +4,13 @@ import android.os.Bundle
 import androidx.lifecycle.observe
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.network.response.AttractionInfo
-import com.example.eric.newtraveler.ui.MainActivity
-import com.example.eric.newtraveler.ui.OnSearchDataReceivedListener
 import com.example.eric.newtraveler.ui.attraction.AttractionListAdapter
 import com.example.eric.newtraveler.ui.attraction.detail.AttractionDetailActivity
 import com.example.eric.newtraveler.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment : BaseFragment<SearchViewModel>(), OnSearchDataReceivedListener {
+class SearchFragment : BaseFragment<SearchViewModel>() {
 
     override val layoutRes: Int = R.layout.fragment_search
     override val viewModel: SearchViewModel by viewModel()
@@ -22,8 +20,7 @@ class SearchFragment : BaseFragment<SearchViewModel>(), OnSearchDataReceivedList
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initLayout()
-//        viewModel.fetchAndActivateRemoteConfig()
-        (activity as MainActivity).setSearchDataListener(this)
+        viewModel.getDefaultAttractionKey()
     }
 
     override fun subscribeObservers() {
@@ -39,16 +36,16 @@ class SearchFragment : BaseFragment<SearchViewModel>(), OnSearchDataReceivedList
         AttractionDetailActivity.launch(requireContext(), attraction)
     }
 
+    fun searchAttraction(name: String) {
+        viewModel.searchAttraction(name)
+    }
+
     /***** Subscribe methods implementation *****/
 
     private fun subscribeToShowAttractionList() {
         viewModel.showAttractionListEvent.observe(this) {
             attractionListAdapter.updateData(it.peekContent())
         }
-    }
-
-    override fun onDataReceived(name: String) {
-        viewModel.searchAttraction(name)
     }
 
     companion object {

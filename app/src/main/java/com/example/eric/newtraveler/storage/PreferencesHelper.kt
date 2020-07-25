@@ -1,7 +1,5 @@
 package com.example.eric.newtraveler.storage
 
-import java.util.*
-
 interface PreferencesHelper {
 
     fun getCountyList(): List<String>
@@ -12,4 +10,7 @@ interface PreferencesHelper {
             cityList: List<String>,
             countyName: String
     )
+
+    fun getRemoteConfigResult(): List<String>
+    fun updateRemoteConfigResult(remoteConfigs: List<String>)
 }

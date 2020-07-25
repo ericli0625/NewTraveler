@@ -6,7 +6,7 @@ import androidx.appcompat.widget.SearchView
 import com.example.eric.newtraveler.R
 import com.example.eric.newtraveler.ui.adapter.*
 import com.example.eric.newtraveler.ui.base.BaseActivity
-import com.example.eric.newtraveler.ui.home.HomeFragment
+import com.example.eric.newtraveler.ui.search.SearchFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
@@ -18,8 +18,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override val layoutRes: Int = R.layout.activity_main
     override val viewModel: MainViewModel by viewModel()
-
-    private var searchDataListener: OnSearchDataReceivedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +33,8 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        viewModel.fetchAndActivateRemoteConfig()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -50,7 +50,11 @@ class MainActivity : BaseActivity<MainViewModel>() {
             view_pager.currentItem = 1
             GlobalScope.launch {
                 delay(100)
-                searchDataListener?.onDataReceived(query)
+                supportFragmentManager.fragments.forEach {
+                    if (it is SearchFragment) {
+                        it.searchAttraction(query)
+                    }
+                }
             }
             return true
         }
@@ -58,10 +62,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
         override fun onQueryTextChange(newText: String): Boolean {
             return false
         }
-    }
-
-    fun setSearchDataListener(listener: OnSearchDataReceivedListener) {
-        searchDataListener = listener
     }
 
     private fun getTabIcon(position: Int): Int {
